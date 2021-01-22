@@ -11,7 +11,6 @@ import javax.persistence.Id;
 @Entity
 public class Teacher {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String teacherNo;
     private String teacherName;
     private String teacherAddress;

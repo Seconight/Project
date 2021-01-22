@@ -24,4 +24,20 @@ class StudentRepositoryTest {
         Student student=repository.findByStudentNo("0121810880214");
         System.out.println(student);
     }
+    @Test
+    void findAllByStudentClass(){
+        List<Student> list=repository.findAllByStudentClass("计算机1801");
+        for(Student student:list){
+            System.out.println(student);
+        }
+    }
+    @Test
+    void save(){
+        Student student=new Student();
+        student.setStudentNo("0121810880201");
+        student.setStudentName("罗文平");
+        student.setStudentClass("计算机1802");
+        student.setStudentPassword("123456");
+        repository.save(student);
+    }
 }
