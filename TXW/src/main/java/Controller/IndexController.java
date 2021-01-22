@@ -14,7 +14,7 @@ public class IndexController {
     @ResponseBody
     public Map<String,String> index(){
         Map map = new HashMap<String,String>();
-        map.put("jiji:","小王宇");
+        map.put("say:","小王宇");
         map.put("name:","徐凯");
         map.put("l&*:","田家兴");
         return map;
