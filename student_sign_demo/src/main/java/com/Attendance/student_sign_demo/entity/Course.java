@@ -20,58 +20,6 @@ public class Course {
     private String courseSemester;
     private String courseTeacherNo;
 
-<<<<<<< HEAD
-    public String getCourseNo(){
-        return this.courseNo;
-    }
-    public String getCourseName(){
-        return this.courseName;
-    }
-    public Integer getCourseStartTime(){
-        return this.courseStartTime;
-    }
-    public Integer getCourseEndTime(){
-        return this.courseEndTime;
-    }
-    public String [] getCourseShouldStudent(){
-        String[] students=null;
-        if(this.courseShouldStudent!=null||!this.courseShouldStudent.equals(""))
-        {
-            students=this.courseShouldStudent.split(",");
-        }
-        return students;
-    }
-    public List<Integer> getCourseDays(){
-        String[] days=null;
-        List<Integer> dayList=new ArrayList<Integer>();
-        if(this.courseDay!=null)
-        {
-            days=this.courseDay.split(",");
-            for(int i=0;i<days.length;i++){
-                dayList.add(Integer.parseInt(days[i]));
-            }
-        }
-        return dayList;
-    }
-    public List<Integer> getCourseWeeks(){
-        String[] days=null;
-        List<Integer> dayList=new ArrayList<Integer>();
-        if(this.courseWeek!=null)
-        {
-            days=this.courseWeek.split(",");
-            for(int i=0;i<days.length;i++){
-                dayList.add(Integer.parseInt(days[i]));
-            }
-        }
-        return dayList;
-    }
-    public String getCourseSemester(){
-        return this.courseSemester;
-    }
-    public String getCourseTeacherNo(){
-        return this.courseTeacherNo;
-=======
     public Course() {
->>>>>>> e438378afe1848fcee7a0dfb2ef3832fb2082e47
     }
 }

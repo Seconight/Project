@@ -23,14 +23,6 @@ class AttendanceRepositoryTest {
     @Test
     void findByAttendanceNo(){
         Attendance attendance=repository.findByAttendanceNo("0000000001");
-<<<<<<< HEAD
-        System.out.println(attendance);
-    }
-    @Test
-    void findByAttendanceCourseNo(){
-        List<Attendance> attendance=repository.findByAttendanceCourseNo("0000000001");
-=======
->>>>>>> e438378afe1848fcee7a0dfb2ef3832fb2082e47
         System.out.println(attendance);
     }
 }
