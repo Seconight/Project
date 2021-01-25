@@ -14,6 +14,10 @@ public class Attendance {
     private String attendanceActualStudent;
     private String attendanceAbsentStudent;
     private String attendanceCourseNo;
+<<<<<<< HEAD
+    public String getAttendanceNo(){
+        return this.attendanceNo;
+    }
     public String getAttendanceTime(){
         return this.attendanceTime;
     }
@@ -21,4 +25,16 @@ public class Attendance {
     {
         return this.attendanceActualStudent;
     }
+    public String getAttendanceAbsentStudent(){
+        return this.attendanceAbsentStudent;
+    }
+    public void setAttendanceActualStudent(String s){
+        this.attendanceActualStudent=s;
+    }
+    public void setAttendanceAbsentStudent(String s){
+        this.attendanceAbsentStudent=s;
+    }
+=======
+
+>>>>>>> e438378afe1848fcee7a0dfb2ef3832fb2082e47
 }

@@ -3,11 +3,10 @@ package com.Attendance.student_sign_demo.vo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 @Data
-public class CourseVO {
+public class TeacherCourseVO {
     @JsonProperty("id")
     private String id;
     @JsonProperty("name")
@@ -22,9 +21,6 @@ public class CourseVO {
     private List<Integer> weeks;
     @JsonProperty("semester")
     private String semester;
-    @JsonProperty("teachername")
-    private String teacherName;
-
     public void setId(String courseNo) {
         this.id=courseNo;
     }
@@ -53,7 +49,4 @@ public class CourseVO {
         this.semester=courseSemester;
     }
 
-    public void setCourseTeacher(String teacherName) {
-        this.teacherName=teacherName;
-    }
 }

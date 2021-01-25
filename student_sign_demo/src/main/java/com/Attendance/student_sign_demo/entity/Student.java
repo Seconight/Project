@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
@@ -37,14 +35,11 @@ public class Student {
     public String getStudentPassword(){
         return this.studentPassword;
     }
-    public String[] getStudentCourse(){
-        String[] courses=null;
-        if(this.studentCourse!=null)
-        {
-            courses=this.studentCourse.split(",");
-        }
-        return courses;
-    }
+//    public String[] getStudentCourse(){
+//        if(this.studentCourse!=null)
+//            String[] courses=this.studentCourse.split(",");
+//        return courses;
+//    }
     public void setStudentNo(String studentNo){
         this.studentNo=studentNo;
     }

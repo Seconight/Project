@@ -1,2 +1,5 @@
 /TXW/src/main/resources/application.properties
 TXW/src/main/resources/application.yml
+*.class
+*.xml
+*.yml

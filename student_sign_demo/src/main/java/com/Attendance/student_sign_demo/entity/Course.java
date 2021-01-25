@@ -4,8 +4,6 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
@@ -22,6 +20,7 @@ public class Course {
     private String courseSemester;
     private String courseTeacherNo;
 
+<<<<<<< HEAD
     public String getCourseNo(){
         return this.courseNo;
     }
@@ -33,6 +32,14 @@ public class Course {
     }
     public Integer getCourseEndTime(){
         return this.courseEndTime;
+    }
+    public String [] getCourseShouldStudent(){
+        String[] students=null;
+        if(this.courseShouldStudent!=null||!this.courseShouldStudent.equals(""))
+        {
+            students=this.courseShouldStudent.split(",");
+        }
+        return students;
     }
     public List<Integer> getCourseDays(){
         String[] days=null;
@@ -63,5 +70,8 @@ public class Course {
     }
     public String getCourseTeacherNo(){
         return this.courseTeacherNo;
+=======
+    public Course() {
+>>>>>>> e438378afe1848fcee7a0dfb2ef3832fb2082e47
     }
 }
