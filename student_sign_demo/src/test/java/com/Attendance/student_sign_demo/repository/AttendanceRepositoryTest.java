@@ -25,4 +25,9 @@ class AttendanceRepositoryTest {
         Attendance attendance=repository.findByAttendanceNo("0000000001");
         System.out.println(attendance);
     }
+    @Test
+    void findByAttendanceCourseNo(){
+        List<Attendance> attendance=repository.findByAttendanceCourseNo("0000000001");
+        System.out.println(attendance);
+    }
 }
