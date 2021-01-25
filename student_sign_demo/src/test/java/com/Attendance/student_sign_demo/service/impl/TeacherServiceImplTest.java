@@ -22,7 +22,7 @@ class TeacherServiceImplTest {
     }
     @Test
     void getCourseStudent(){
-        List<CourseStudentVO> courseStudentVOList=teacherService.getCourseStudent("0000000004");
+        List<CourseStudentVO> courseStudentVOList=teacherService.getCourseStudent("0000000001");
         int a=0;
     }
     @Test

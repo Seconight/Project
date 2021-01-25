@@ -47,4 +47,8 @@ class StudentRepositoryTest {
         student.setStudentPassword("111111");
         repository.save(student);
     }
+    @Test
+    void checkFace(){
+        System.out.println("this is "+repository.faceInfoIsNull("0121810880207"));
+    }
 }

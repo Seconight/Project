@@ -18,4 +18,9 @@ class StudentServiceImplTest {
         LoginVO loginVO=studentService.checkLogin("000000001","123456");
         int a=0;
     }
+    @Test
+    void checkFaceInfo(){
+        boolean result = studentService.checkFace("0121810880207");
+        int a=0;
+    }
 }

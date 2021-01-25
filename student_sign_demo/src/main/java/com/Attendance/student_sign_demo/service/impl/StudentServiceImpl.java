@@ -17,7 +17,6 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private TeacherRepository teacherRepository;
 
-
     @Override
     public LoginVO checkLogin(String id, String pwd) {
         LoginVO loginVO=new LoginVO();
@@ -46,5 +45,13 @@ public class StudentServiceImpl implements StudentService {
             }
         }
         return loginVO;
+    }
+
+    //人脸信息是否存在接口实现
+    @Override
+    public boolean checkFace(String id) {
+        if(studentRepository.faceInfoIsNull(id)==null)
+        return false;
+        else return true;
     }
 }
