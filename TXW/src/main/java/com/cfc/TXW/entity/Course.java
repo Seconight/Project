@@ -22,5 +22,6 @@ public class Course {
     private String courseTeacherNo;
 
     public Course() {
+
     }
 }
