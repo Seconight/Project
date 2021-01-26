@@ -73,6 +73,33 @@ public class Course {
         return this.courseTeacherNo;
     }
 
+    public void setCourseNo(String courseNo){
+        this.courseNo=courseNo;
+    }
+    public void setCourseName(String courseName){
+        this.courseName=courseName;
+    }
+    public void setCourseShouldStudent(String s){
+        this.courseShouldStudent=s;
+    }
+    public void setCourseStartTime(Integer t){
+        this.courseStartTime=t;
+    }
+    public void setCourseEndTime(Integer t){
+        this.courseEndTime=t;
+    }
+    public void setCourseDay(String days){
+        this.courseDay=days;
+    }
+    public void setCourseWeek(String weeks){
+        this.courseWeek=weeks;
+    }
+    public void setCourseSemester(String semester){
+        this.courseSemester=semester;
+    }
+    public void setCourseTeacherNo(String teacherNo){
+        this.courseTeacherNo=teacherNo;
+    };
     public Course() {
 
     }

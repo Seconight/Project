@@ -35,11 +35,14 @@ public class Student {
     public String getStudentPassword(){
         return this.studentPassword;
     }
-//    public String[] getStudentCourse(){
-//        if(this.studentCourse!=null)
-//            String[] courses=this.studentCourse.split(",");
-//        return courses;
-//    }
+    public String[] getStudentCourse(){
+        String[] courses=null;
+        if(this.studentCourse!=null&&!this.studentCourse.equals(("")))
+        {
+            courses=this.studentCourse.split(",");
+        }
+        return courses;
+    }
     public void setStudentNo(String studentNo){
         this.studentNo=studentNo;
     }
