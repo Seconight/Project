@@ -1,6 +1,6 @@
 <template>
   <van-tabbar v-model="active">
-    <van-tabbar-item to="/home" icon="apps-o">任务</van-tabbar-item>
+    <van-tabbar-item to="/course" icon="apps-o">课程</van-tabbar-item>
     <van-tabbar-item to="/user" icon="user-o">我的</van-tabbar-item>
   </van-tabbar>
 </template>
