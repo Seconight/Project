@@ -36,4 +36,15 @@ public class Attendance {
     }
 
 
+    public void setAttendanceNo(String attendanceId) {
+        this.attendanceNo=attendanceId;
+    }
+
+    public void setAttendanceTime(String s) {
+        this.attendanceTime=s;
+    }
+
+    public void setAttendanceCourseNo(String courseId) {
+        this.attendanceCourseNo=courseId;
+    }
 }

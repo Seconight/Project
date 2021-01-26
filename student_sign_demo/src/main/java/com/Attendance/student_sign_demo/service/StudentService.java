@@ -4,6 +4,7 @@ import com.Attendance.student_sign_demo.entity.Student;
 import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
 import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,4 +15,5 @@ public interface StudentService {
     public boolean checkFace(String id);
     public List<CourseVO> getCourses(String id);
     public List<StudentAttendanceVO> getStudentAttendance(String courseId, String studentId);
+    public Boolean updateFace(String studentNo, MultipartFile faceImage);
 }

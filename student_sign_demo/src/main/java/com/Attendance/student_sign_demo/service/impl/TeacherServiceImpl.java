@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -185,5 +185,94 @@ public class TeacherServiceImpl implements TeacherService {
        courseStudents=courseStudents.substring(0,courseStudents.length()-1);
        newCourse.setCourseShouldStudent(courseStudents);
        courseRepository.save(newCourse);
+    }
+
+    @Override
+    public void Sign(MultipartFile imageFile,String courseId) {
+        //先将文件存到本地
+        String filePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/attendance.jpg"; //定义上传文件的存放位置
+        //将传来的图片保存到本地
+        try{
+            imageFile.transferTo(new File(filePath));
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        //根据课程号把学生名单以及对应的人脸encoding保存到文件中
+        String [] studentsId=courseRepository.findByCourseNo(courseId).getCourseShouldStudent();
+        String studentAndEncoding="";
+        for(int i=0;i<studentsId.length-1;i++){
+            Student student=studentRepository.findByStudentNo(studentsId[i]);
+            studentAndEncoding=studentAndEncoding+studentsId[i]+":"+student.getStudentEncoding()+";";
+        }
+        Student student=studentRepository.findByStudentNo(studentsId[studentsId.length-1]);
+        studentAndEncoding=studentAndEncoding+studentsId[studentsId.length-1]+":"+student.getStudentEncoding();
+        try{
+            BufferedWriter bufferedWriter=new BufferedWriter(new FileWriter(new File("E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/shouldStudents.txt")));
+            bufferedWriter.write(studentAndEncoding);
+            bufferedWriter.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        //进行人脸识别将识别出的人脸保存到文件里
+        String actualStudentFilePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/actualStudent.txt"; //定义学生文件的存放位置
+        String absentStudentFilePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/absentStudent.txt";
+        try{
+            String exe="python";
+            String command="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/face_recognize.py";
+            String[] cmdArr = new String[] { exe, command };
+            Process process = Runtime.getRuntime().exec(cmdArr);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        BufferedReader reader=null;
+        StringBuffer stringBuffer=new StringBuffer();
+        try{
+            reader=new BufferedReader(new FileReader(new File(actualStudentFilePath)));
+            String tempStr;
+            while((tempStr=reader.readLine())!=null){
+                stringBuffer.append(tempStr);
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String actualStudent=stringBuffer.toString();
+        stringBuffer=new StringBuffer();
+        try{
+            reader=new BufferedReader(new FileReader(new File(absentStudentFilePath)));
+            String tempStr;
+            while((tempStr=reader.readLine())!=null){
+                stringBuffer.append(tempStr);
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String absentStudent=stringBuffer.toString();
+        //新建签到对象
+        Attendance attendance=new Attendance();
+        //设置签到号
+        List<Attendance> attendanceList=attendanceRepository.findAll();
+        Integer newAttendanceNum=attendanceList.toArray().length+1;
+        String number=String.valueOf(newAttendanceNum);
+        String attendanceId="";
+        for(int i=0;i<10-number.length();i++){
+            attendanceId=attendanceId+"0";
+        }
+        attendanceId=attendanceId+number;
+        attendance.setAttendanceNo(attendanceId);
+        //设置周次几周
+
+        attendance.setAttendanceTime("");
+        //设置实到学生，缺席学生
+        attendance.setAttendanceActualStudent(actualStudent);
+        attendance.setAttendanceAbsentStudent(absentStudent);
+        attendance.setAttendanceCourseNo(courseId);
     }
 }

@@ -14,4 +14,5 @@ public interface TeacherService {
     public List<AttendanceVO> getAttendanceInfo(String courseId);
     public boolean supplyAttendance(String studentId,String attendanceId);
     public void newCourse(String courseName, Integer startTime, Integer endTime, String days, String weeks, String semester, String teacherId, MultipartFile studentsFile);
+    public void Sign(MultipartFile imageFile,String courseId);
 }

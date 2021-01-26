@@ -14,7 +14,9 @@ import com.Attendance.student_sign_demo.vo.LoginVO;
 import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,5 +102,51 @@ public class StudentServiceImpl implements StudentService {
             studentAttendanceVOList.add(studentAttendanceVO);
         }
         return studentAttendanceVOList;
+    }
+
+    @Override
+    public Boolean updateFace(String studentNo, MultipartFile faceImage) {
+        //先将文件存到本地
+        String filePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/userFace/face.jpg"; //定义上传文件的存放位置
+        try{
+            faceImage.transferTo(new File(filePath));
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        //运行python程序获得人脸encoding并保存在文件中
+        String encodingFilePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/userFace/encoding.txt"; //定义encoding文件的存放位置
+        try{
+            String exe="python";
+            String command="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/face_encoding.py";
+            String[] cmdArr = new String[] { exe, command };
+            Process process = Runtime.getRuntime().exec(cmdArr);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        //从文件中读取encoding
+        BufferedReader reader=null;
+        StringBuffer stringBuffer=new StringBuffer();
+        try{
+            reader=new BufferedReader(new FileReader(new File(encodingFilePath)));
+            String tempStr;
+            while((tempStr=reader.readLine())!=null){
+                stringBuffer.append(tempStr);
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        File image=new File(filePath);
+        if(image.exists()){//删除图片
+            image.delete();
+        }
+        Student student=studentRepository.findByStudentNo(studentNo);
+        student.setStudentEncoding(stringBuffer.toString());
+        studentRepository.save(student);//更新
+        return true;
     }
 }
