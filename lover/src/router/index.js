@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 
 import User from '../views/User/User.vue'
+import Course from '../views/Course/Course.vue'
+import StuAttendance from '../views/Course/StuAttendance.vue'
+import TeaAttendance from '../views/Course/TeaAttendance.vue'
 Vue.use(VueRouter)
 
 
@@ -10,17 +12,38 @@ const routes = [
   {
     path: '/',
     //路由重定向
-    redirect: '/home'
-  },
-  {
-    path: '/home',
-    name: 'Home',
-    component: Home,
+    redirect: '/user',
+    meta:{
+      ifShowTabbar: true
+    }
   },
   {
     path: '/user',
     name: 'User',
     component: User,
+    meta:{
+      ifShowTabbar: true
+    }
+  },
+  {
+    path: '/course',
+    name: 'Course',
+    component: Course,
+    children:[
+      {
+        path: 'stuAttendance',
+        name: 'StuAttendance',
+        component: StuAttendance,
+      },
+      {
+        path: 'teaAttendance',
+        name: 'TeaAttendance',
+        component: TeaAttendance,
+      },
+    ],
+    meta:{
+      ifShowTabbar: true
+    }
   },
 ]
 

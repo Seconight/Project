@@ -38,7 +38,9 @@
         />
       </div>
       <div class="center">
-        <van-button round type="info" @click="uploadface" size = "small">上传人脸</van-button>
+        <van-button round type="info" @click="uploadface" size="small"
+          >上传人脸</van-button
+        >
       </div>
     </div>
     <div class="login_modal" v-if="showLoginModal">
@@ -114,18 +116,28 @@ export default {
       this.password = values["密码"];
       //登录逻辑 从接口判断登录是否成功
 
-      //
-      if (this.username == "123" && this.password == "123") {
-        let userInfo = {
-          id: "012181088",
-          name: "田家兴",
-          class: null,
-          address: "111@163.com",
-          role: "老师",   //切换 老师/学生
-        };
+      //假数据
+      //if (this.username == "123" && this.password == "123") {
+      if (this.username != "" && this.password != "") {
+        let userInfo;
+        if (this.username == "123")
+          userInfo = {
+            id: "012181088",
+            name: "田家兴",
+            class: null,
+            address: "111@163.com",
+            role: "老师", //切换 老师/学生
+          };
+        else
+          userInfo = {
+            id: "012181088",
+            name: "田家兴",
+            class: "计算机1801",
+            address: "111@163.com",
+            role: "学生", //切换 老师/学生
+          };
         //通过接口获取人脸是否注册
         this.checkFace = true;
-
 
         let _userInfo = JSON.stringify(userInfo);
         localStorage.setItem("userInfo", _userInfo);
@@ -153,7 +165,7 @@ export default {
       }
       if (this.role == "学生") {
         this.avatarSrc = require("@/assets/student.jpg");
-        this.class_ = _userInfo.class_;
+        this.class_ = _userInfo.class;
         this.checkFace = localStorage.getItem("checkFace");
       }
     },
@@ -223,7 +235,7 @@ export default {
 .van-row {
   height: 100px;
   padding: 10px;
-  background: #333;
+  background: linear-gradient(to right, #ff0000, #000000);
   color: #fff;
   .van-col {
     height: 100px;
