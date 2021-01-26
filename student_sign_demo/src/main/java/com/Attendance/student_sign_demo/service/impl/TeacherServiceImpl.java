@@ -2,12 +2,11 @@ package com.Attendance.student_sign_demo.service.impl;
 
 import com.Attendance.student_sign_demo.entity.Attendance;
 import com.Attendance.student_sign_demo.entity.Course;
+import com.Attendance.student_sign_demo.entity.StartTime;
 import com.Attendance.student_sign_demo.entity.Student;
-import com.Attendance.student_sign_demo.repository.AttendanceRepository;
-import com.Attendance.student_sign_demo.repository.CourseRepository;
-import com.Attendance.student_sign_demo.repository.StudentRepository;
-import com.Attendance.student_sign_demo.repository.TeacherRepository;
+import com.Attendance.student_sign_demo.repository.*;
 import com.Attendance.student_sign_demo.service.TeacherService;
+import com.Attendance.student_sign_demo.util.TimeUtil;
 import com.Attendance.student_sign_demo.vo.AttendanceVO;
 import com.Attendance.student_sign_demo.vo.CourseStudentVO;
 import com.Attendance.student_sign_demo.vo.TeacherCourseVO;
@@ -20,7 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -34,6 +37,8 @@ public class TeacherServiceImpl implements TeacherService {
     private CourseRepository courseRepository;
     @Autowired
     private AttendanceRepository attendanceRepository;
+    @Autowired
+    private TimeRepository timeRepository;
     @Override
     public List<TeacherCourseVO> getCourses(String id) {
         String[] courses=teacherRepository.findByTeacherNo(id).getTeacherCourse();
@@ -268,11 +273,29 @@ public class TeacherServiceImpl implements TeacherService {
         attendanceId=attendanceId+number;
         attendance.setAttendanceNo(attendanceId);
         //设置周次几周
+        String attendanceTime="";
+        List<StartTime> startTimeList=timeRepository.findAll();
+        String startTimeUp=startTimeList.get(0).getUp();//下学期
+        String startTimeDown=startTimeList.get(0).getDown();//上学期
+        LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        //计算时间差
+        int Days=TimeUtil.caculateTotalTime(startTimeDown,date.format(formatter));
+        if(Days>0){
+            int weeks=Days/7;
+            attendanceTime=attendanceTime+String.valueOf(weeks+1)+"-"+String.valueOf(Days%7);
+        }
+        else{
+            Days=TimeUtil.caculateTotalTime(startTimeUp,date.format(formatter));
+            int weeks=Days/7;
+            attendanceTime=attendanceTime+String.valueOf(weeks+1)+"-"+String.valueOf(Days%7);
+        }
+        attendance.setAttendanceTime(attendanceTime);
 
-        attendance.setAttendanceTime("");
         //设置实到学生，缺席学生
         attendance.setAttendanceActualStudent(actualStudent);
         attendance.setAttendanceAbsentStudent(absentStudent);
         attendance.setAttendanceCourseNo(courseId);
+        attendanceRepository.save(attendance);
     }
 }
