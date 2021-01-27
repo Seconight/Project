@@ -4,6 +4,7 @@ import com.Attendance.student_sign_demo.entity.Attendance;
 import com.Attendance.student_sign_demo.entity.Course;
 import com.Attendance.student_sign_demo.entity.Student;
 import com.Attendance.student_sign_demo.entity.Teacher;
+import com.Attendance.student_sign_demo.form.LoginForm;
 import com.Attendance.student_sign_demo.repository.AttendanceRepository;
 import com.Attendance.student_sign_demo.repository.CourseRepository;
 import com.Attendance.student_sign_demo.repository.StudentRepository;
@@ -19,9 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
+//服务层：学生功能服务类
 @Service
 public class StudentServiceImpl implements StudentService {
+    //main idea:控制反转
+    //注入：对应的库操作
 
     @Autowired
     private StudentRepository studentRepository;
@@ -32,9 +35,12 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private AttendanceRepository attendanceRepository;
 
+    //学生登录函数(修改参数为表单类型)
     @Override
-    public LoginVO checkLogin(String id, String pwd) {
+    public LoginVO checkLogin(LoginForm loginForm) {
         LoginVO loginVO=new LoginVO();
+        String id = loginForm.getId();
+        String pwd = loginForm.getPassword();
         if(id.length()==9)
         {//老师登录
             Teacher teacher=teacherRepository.findByTeacherNo(id);
@@ -65,11 +71,13 @@ public class StudentServiceImpl implements StudentService {
     //人脸信息是否存在接口实现
     @Override
     public boolean checkFace(String id) {
-        if(studentRepository.faceInfoIsNull(id)==null)
-        return false;
+        if(studentRepository.findByStudentNo(id).getStudentEncoding()==null) {
+            return false;
+        }
         else return true;
     }
 
+    //学生获取课程信息
     @Override
     public List<CourseVO> getCourses(String id) {
         String[] courses=studentRepository.findByStudentNo(id).getStudentCourse();

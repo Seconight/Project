@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.util.List;
 
+//课程视图对象
 @Data
 public class CourseVO {
     @JsonProperty("id")
@@ -15,7 +16,6 @@ public class CourseVO {
     private Integer startTime;
     @JsonProperty("etime")
     private Integer endTime;
-
     @JsonProperty("days")
     private List<Integer> days;
     @JsonProperty("weeks")
@@ -44,7 +44,6 @@ public class CourseVO {
     public void setDays(List<Integer> courseDays) {
         this.days=courseDays;
     }
-
 
     public void setWeeks(List<Integer> courseWeeks) {
         this.weeks=courseWeeks;

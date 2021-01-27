@@ -28,6 +28,10 @@ public class Attendance {
     public String getAttendanceAbsentStudent(){
         return this.attendanceAbsentStudent;
     }
+    public String getAttendanceCourseNo() {
+        return attendanceCourseNo;
+    }
+
     public void setAttendanceActualStudent(String s){
         this.attendanceActualStudent=s;
     }

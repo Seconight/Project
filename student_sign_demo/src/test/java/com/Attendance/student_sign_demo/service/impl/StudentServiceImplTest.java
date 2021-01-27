@@ -1,5 +1,6 @@
 package com.Attendance.student_sign_demo.service.impl;
 
+import com.Attendance.student_sign_demo.form.LoginForm;
 import com.Attendance.student_sign_demo.service.StudentService;
 import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
@@ -19,12 +20,13 @@ class StudentServiceImplTest {
     private StudentService studentService;
     @Test
     void checkLogin() {
-        LoginVO loginVO=studentService.checkLogin("0121810880214","123456");
+        LoginForm loginForm = new LoginForm("0121810880214","123456");
+        LoginVO loginVO=studentService.checkLogin(loginForm);
         int a=0;
     }
     @Test
     void checkFaceInfo(){
-        boolean result = studentService.checkFace("0121810880207");
+        boolean result = studentService.checkFace("0121810880214");
         int a=0;
     }
     @Test

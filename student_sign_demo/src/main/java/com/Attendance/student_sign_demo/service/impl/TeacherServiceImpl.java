@@ -4,6 +4,7 @@ import com.Attendance.student_sign_demo.entity.Attendance;
 import com.Attendance.student_sign_demo.entity.Course;
 import com.Attendance.student_sign_demo.entity.StartTime;
 import com.Attendance.student_sign_demo.entity.Student;
+import com.Attendance.student_sign_demo.form.CourseForm;
 import com.Attendance.student_sign_demo.repository.*;
 import com.Attendance.student_sign_demo.service.TeacherService;
 import com.Attendance.student_sign_demo.util.TimeUtil;
@@ -153,8 +154,19 @@ public class TeacherServiceImpl implements TeacherService {
         return true;
     }
 
+    //老师新建课程
     @Override
-    public void newCourse(String courseName, Integer startTime, Integer endTime, String days, String weeks, String semester, String teacherId, MultipartFile studentsFile) {
+    public void newCourse(CourseForm courseForm) {
+
+        String courseName = courseForm.getName();
+        Integer startTime = courseForm.getsTime();
+        Integer endTime = courseForm.geteTime();
+        String days = courseForm.getDay();
+        String weeks = courseForm.getWeek();
+        String semester = courseForm.getSemester();
+        String teacherId = courseForm.getTeacherId();
+        MultipartFile studentsFile = courseForm.getStudents();
+
         Integer num=courseRepository.findAll().toArray().length+1;
         String number=String.valueOf(num);
         String courseId="";
