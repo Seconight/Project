@@ -2,7 +2,7 @@
   <div>
     <div v-if="$route.path == '/course'">
       <van-collapse v-model="activeNames">
-        <van-collapse-item v-for="course in courses" :key="course.id">
+        <van-collapse-item v-for="(course, index) in courses" :key="course.id">
           <template #title style="width: 200px">
             <div class="courseItem">{{ course.name }}</div>
           </template>
@@ -19,7 +19,7 @@
               type="primary"
               size="small"
               icon="eye-o"
-              @click="goToAttendance"
+              @click="goToAttendance(index)"
               >查看签到记录</van-button
             >
             <van-button
@@ -33,10 +33,10 @@
           </div>
         </van-collapse-item>
       </van-collapse>
+      <div style="height: 50px"></div>
     </div>
-
-    <transition name="van-fade">
-      <router-view></router-view>
+    <transition>
+      <router-view :course="courses[courseIndex]"></router-view>
     </transition>
   </div>
 </template>
@@ -48,6 +48,7 @@ export default {
       activeNames: [],
       role: "",
       courses: [],
+      courseIndex: 0,
     };
   },
   created() {
@@ -159,7 +160,8 @@ export default {
     }
   },
   methods: {
-    goToAttendance() {
+    goToAttendance(index) {
+      this.courseIndex = index;
       if (this.role == "老师") {
         this.$router.push("/Course/teaAttendance");
       } else if (this.role == "学生") {

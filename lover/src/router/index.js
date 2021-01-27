@@ -13,7 +13,7 @@ const routes = [
     path: '/',
     //路由重定向
     redirect: '/user',
-    meta:{
+    meta: {
       ifShowTabbar: true
     }
   },
@@ -21,7 +21,7 @@ const routes = [
     path: '/user',
     name: 'User',
     component: User,
-    meta:{
+    meta: {
       ifShowTabbar: true
     }
   },
@@ -29,7 +29,7 @@ const routes = [
     path: '/course',
     name: 'Course',
     component: Course,
-    children:[
+    children: [
       {
         path: 'stuAttendance',
         name: 'StuAttendance',
@@ -41,11 +41,12 @@ const routes = [
         component: TeaAttendance,
       },
     ],
-    meta:{
+    meta: {
       ifShowTabbar: true
     }
   },
 ]
+
 
 const router = new VueRouter({
   mode: 'history',
@@ -53,26 +54,31 @@ const router = new VueRouter({
   routes
 })
 
+
 //路由拦截
-//
-// router.beforeEach((to,from,next)=>{
-//   let token=localStorage.getItem('token')
-//   if(to.path='/')
-//   {
-//     if(token){
-//       next();
-//     }else{
-//     //alert("请先登录")
-//       Vue.prototype.$toast("请先登录");
-//       //定时器
-//         setTimeout(()=>{
-//           next("/user");
-//         },1000)
-//     }
-//     return;
-//   }
-//   //对所有路由适配
-//   next()
-// })
+
+// 解决Vue-Router升级导致的Uncaught(in promise) navigation guard问题
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+  return originalPush.call(this, location).catch(err => err)
+}
+
+router.beforeEach((to, from, next) => {
+  let token = localStorage.getItem('userInfo');
+  if (to.path == '/course') {
+    if (token) {
+      next();
+    } else {
+      //alert("请先登录")
+      Vue.prototype.$toast("请先登录");
+      //定时器
+      next("/user");
+    }
+    return;
+  }
+  //对所有路由适配
+  next()
+})
 
 export default router

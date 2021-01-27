@@ -1,10 +1,9 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view />
     <Tabbar v-if="$route.meta.ifShowTabbar"/>
   </div>  
 </template>
-
 
 <script>
 import Tabbar from '@/components/Tabbar.vue'
@@ -25,7 +24,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   color: #2c3e50;
 }
 
