@@ -47,6 +47,8 @@ public class TeacherServiceImpl implements TeacherService {
         {
             TeacherCourseVO teacherCourseVO=new TeacherCourseVO();
             Course course=courseRepository.findByCourseNo(courses[i]);
+            String []students=course.getCourseShouldStudent();
+            teacherCourseVO.setStudentNum(students.length);
             teacherCourseVO.setId(course.getCourseNo());
             teacherCourseVO.setName(course.getCourseName());
             teacherCourseVO.setStartTime(course.getCourseStartTime());
