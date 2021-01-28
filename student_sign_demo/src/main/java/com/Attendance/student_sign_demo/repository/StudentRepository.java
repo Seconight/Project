@@ -12,6 +12,6 @@ public interface StudentRepository extends JpaRepository<Student,String> {
     //根据班级获得该班所有学生
     public List<Student> findAllByStudentClass(String studentClass);
     //根据学生学号判断学生是否有特征向量
-    @Query("select t.studentEncoding from Student t where t.studentNo = ?1")
+    @Query("select studentEncoding from Student t where t.studentNo = ?1")
     public String faceInfoIsNull(String studentNo);
 }

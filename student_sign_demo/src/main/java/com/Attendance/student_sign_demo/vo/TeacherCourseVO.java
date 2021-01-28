@@ -15,6 +15,8 @@ public class TeacherCourseVO {
     private Integer startTime;
     @JsonProperty("etime")
     private Integer endTime;
+    @JsonProperty("studentNum")
+    private Integer studentNum;
     @JsonProperty("days")
     private List<Integer> days;
     @JsonProperty("weeks")
@@ -37,6 +39,10 @@ public class TeacherCourseVO {
         this.endTime=courseEndTime;
     }
 
+    public void setStudentNum(Integer studentNum){
+        this.studentNum=studentNum;
+    }
+
     public void setDays(List<Integer> courseDays) {
         this.days=courseDays;
     }
@@ -49,4 +55,6 @@ public class TeacherCourseVO {
         this.semester=courseSemester;
     }
 
+    public void setStudentNum(int length) {
+    }
 }

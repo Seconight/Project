@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.util.List;
 
+//课程视图对象
 @Data
 public class CourseVO {
     @JsonProperty("id")

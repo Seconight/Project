@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class TeacherServiceImplTest {
     @Autowired
-    TeacherService teacherService;
+    private TeacherService teacherService;
     @Test
     void getCourses() {
         List<TeacherCourseVO> teacherCourseVOList=teacherService.getCourses("000000001");
@@ -28,6 +28,7 @@ class TeacherServiceImplTest {
     @Test
     void getAttendanceInfo(){
         List<AttendanceVO> attendanceVOList=teacherService.getAttendanceInfo("0000000001");
+        System.out.println(attendanceVOList);
         int a=0;
     }
     @Test
