@@ -29,16 +29,18 @@
           :value="'checkFace' ? '人脸已上传' : '人脸未上传'"
         />
       </van-cell-group>
-      <div class="center">
+      <div style="text-align: center;padding:20px">
         <van-uploader
           :preview-options="preview_options"
           v-model="imgList"
           multiple
           accept="image/*"
+          preview-size="110px"
+          :max-count="3"
         />
       </div>
-      <div class="center">
-        <van-button round type="info" @click="uploadface" size="small"
+      <div style="text-align: center;">
+        <van-button round type="info" @click="uploadface" 
           >上传人脸</van-button
         >
       </div>
@@ -272,8 +274,5 @@ export default {
     box-sizing: border-box;
     background: #fff;
   }
-}
-.center {
-  text-align: center;
 }
 </style>

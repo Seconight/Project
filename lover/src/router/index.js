@@ -5,6 +5,7 @@ import User from '../views/User/User.vue'
 import Course from '../views/Course/Course.vue'
 import StuAttendance from '../views/Course/StuAttendance.vue'
 import TeaAttendance from '../views/Course/TeaAttendance.vue'
+import AddCourse from '../views/Course/AddCourse.vue'
 Vue.use(VueRouter)
 
 
@@ -39,6 +40,11 @@ const routes = [
         path: 'teaAttendance',
         name: 'TeaAttendance',
         component: TeaAttendance,
+      },
+      {
+        path: 'addCourse',
+        name: 'AddCourse',
+        component: AddCourse,
       },
     ],
     meta: {

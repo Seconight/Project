@@ -1,13 +1,18 @@
 <template>
   <div class="TeaAttendance">
     <van-nav-bar
-      title="签到记录"
       left-text="返回"
       right-text="课程信息"
       left-arrow
       @click-left="onClickLeft"
       @click-right="onClickRight"
-    />
+    >
+      <template #title>
+        <span> 签到记录</span>
+        <van-icon name="info-o" @click="showSupplyInfo" />
+      </template>
+    </van-nav-bar>
+
     <van-collapse v-model="activeNames">
       <van-collapse-item v-for="(record, index) in records" :key="record.id">
         <template #title>
@@ -41,9 +46,11 @@
           <van-tab title="缺勤学生" style="text-align: center; font-size: 16px">
             <TabHead v-if="records[index].abStudentNum != 0" />
             <van-row
-              v-for="(abStudent,abindex) in records[index].abStudent"
+              v-for="(abStudent, abindex) in records[index].abStudent"
               :key="abStudent.studentNo"
-              @click="supply(index,abindex,abStudent, records[index].attendanceId)"
+              @click="
+                supply(index, abindex, abStudent, records[index].attendanceId)
+              "
             >
               <van-col span="8">{{ abStudent.studentNo }}</van-col>
               <van-col span="8">{{ abStudent.studentName }}</van-col>
@@ -138,7 +145,7 @@ export default {
       },
     ];
     for (let i = 0; i < data.length; i++) {
-      this.recordActive.push(0);//添加与签到记录个数相同的导航栏的选择项
+      this.recordActive.push(0); //添加与签到记录个数相同的导航栏的选择项
     }
     this.loadRecord(data);
   },
@@ -187,8 +194,8 @@ export default {
         this.records.push(temp);
       }
     },
-    supply(index,abindex, abStudent, attendanId) {
-      let _this=this;
+    supply(index, abindex, abStudent, attendanId) {
+      let _this = this;
       this.$dialog
         .confirm({
           title: "补签",
@@ -201,7 +208,7 @@ export default {
         .then(() => {
           // on confirm
           //abStudent.studentNo和attendanId进行补签接口
-          let supStudent=_this.records[index].abStudent.splice(abindex,1);//在缺席学生删除该学生
+          let supStudent = _this.records[index].abStudent.splice(abindex, 1); //在缺席学生删除该学生
           _this.records[index].abStudentNum--;
           _this.records[index].acStudent.push(supStudent[0]);
           _this.records[index].acStudentNum++;
@@ -211,6 +218,9 @@ export default {
         .catch(() => {
           // on cancel
         });
+    },
+    showSupplyInfo() {
+      this.$toast({ message: "点击缺勤学生进行补签", position: "top" });
     },
   },
 };

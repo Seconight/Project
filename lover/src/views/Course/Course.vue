@@ -1,43 +1,87 @@
 <template>
   <div>
     <div v-if="$route.path == '/course'">
-      <van-collapse v-model="activeNames">
-        <van-collapse-item v-for="(course, index) in courses" :key="course.id">
-          <template #title style="width: 200px">
-            <div class="courseItem">{{ course.name }}</div>
-          </template>
-          <van-cell-group>
-            <van-cell title="课程号" :value="course.id" />
-            <van-cell title="任课老师" :value="course.teachername" />
-            <van-cell title="上课时间" :value="course.time" />
-            <van-cell title="周次" :value="course.week" />
-            <van-cell title="学期" :value="course.semester" />
-          </van-cell-group>
-          <div style="text-align: center">
-            <van-button
-              plain
-              type="primary"
-              size="small"
-              icon="eye-o"
-              @click="goToAttendance(index)"
-              >查看签到记录</van-button
-            >
-            <van-button
-              v-if="role == '老师'"
-              type="primary"
-              size="small"
-              icon="scan"
-              style="width: 108.4px; margin-left: 50px"
-              >拍照签到</van-button
-            >
-          </div>
-        </van-collapse-item>
-      </van-collapse>
+      <van-nav-bar title="课程" fixed placeholder>
+        <template #right>
+          <van-popover
+            v-model="showAddCoursePopover"
+            trigger="click"
+            :actions="addCoursePopoverActions"
+            @select="addCourse"
+            theme="dark"
+            placement="bottom-end"
+          >
+            <template #reference v-if="role == '老师'">
+              <van-icon name="add-o" size="20" color="black" />
+            </template>
+          </van-popover>
+        </template>
+      </van-nav-bar>
+      <div>
+        <van-collapse v-model="activeNames">
+          <van-collapse-item
+            v-for="(course, index) in courses"
+            :key="course.id"
+          >
+            <template #title style="width: 200px">
+              <div class="courseItem">{{ course.name }}</div>
+            </template>
+            <van-cell-group>
+              <van-cell title="课程号" :value="course.id" />
+              <van-cell title="任课老师" :value="course.teachername" />
+              <van-cell title="上课时间" :value="course.time" />
+              <van-cell title="周次" :value="course.week" />
+              <van-cell title="学期" :value="course.semester" />
+            </van-cell-group>
+            <div style="text-align: center">
+              <van-button
+                plain
+                type="primary"
+                size="small"
+                icon="eye-o"
+                @click="goToAttendance(index)"
+                >查看签到记录</van-button
+              >
+              <van-button
+                v-if="role == '老师'"
+                type="primary"
+                size="small"
+                icon="scan"
+                style="width: 108.4px; margin-left: 50px"
+                @click="photoSign(index)"
+                >拍照签到</van-button
+              >
+            </div>
+          </van-collapse-item>
+        </van-collapse>
+      </div>
       <div style="height: 50px"></div>
     </div>
     <transition>
       <router-view :course="courses[courseIndex]"></router-view>
     </transition>
+    <van-popup v-model="showPhotoSign">
+      <div class="photoSign">
+        <van-uploader
+          :preview-options="preview_options"
+          v-model="imgList"
+          multiple
+          accept="image/*"
+          style="padding: 18px"
+          :max-count="3"
+        />
+        <div
+          style="
+            position: fixed;
+            bottom: 0px;
+            left: 75px;
+            padding: 20px;
+          "
+        >
+          <van-button type="danger" @click="upLodaeSign" icon="upgrade">上传签到</van-button>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -45,10 +89,17 @@
 export default {
   data() {
     return {
+      showAddCoursePopover: false,
+      addCoursePopoverActions: [{ text: "新建课程" }],
       activeNames: [],
       role: "",
       courses: [],
       courseIndex: 0,
+      imgList: [],
+      showPhotoSign: false,
+      preview_options: {
+        closeable: true,
+      },
     };
   },
   created() {
@@ -168,6 +219,19 @@ export default {
         this.$router.push("/Course/stuAttendance");
       }
     },
+    photoSign(index) {
+      this.courseIndex = index;
+      this.showPhotoSign = true;
+    },
+    upLodaeSign() {
+      if (this.imgList.length == 0) {
+        this.$toast("请添加图片");
+      }
+      else{
+        this.$toast.success("上传成功");
+        this.showPhotoSign=false;
+      }
+    },
     dayChange(day) {
       switch (day) {
         case 1:
@@ -217,6 +281,9 @@ export default {
         this.courses.push(temp);
       }
     },
+    addCourse(action) {
+      this.$router.push("/Course/addCourse");
+    },
   },
 };
 </script>
@@ -226,5 +293,10 @@ export default {
   // background: rgb(117, 213, 236);
   background: linear-gradient(to right, #63d5f1, #5d87d4);
   border-radius: 10px;
+}
+.photoSign {
+  text-align: center;
+  width: 300px;
+  height: 200px;
 }
 </style>

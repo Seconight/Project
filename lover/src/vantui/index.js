@@ -3,8 +3,8 @@
 import Vue from 'vue'
 import {Button,Icon,Tabbar,TabbarItem,Form,Field,Row,Col,RadioGroup,
     Radio,Toast,CellGroup,Cell,SwipeCell,Card ,Uploader,Image,Popup,
-    Dialog,Collapse,CollapseItem,NavBar,ActionSheet,Tab, Tabs   } from 'vant'
-
+    Dialog,Collapse,CollapseItem,NavBar,ActionSheet,Tab,Tabs,Popover,
+    Picker,Checkbox, CheckboxGroup     } from 'vant'
 Vue.use(Button)
 Vue.use(Icon)
 Vue.use(Tabbar)
@@ -32,3 +32,9 @@ Vue.use(NavBar)
 Vue.use(ActionSheet)
 Vue.use(Tab)
 Vue.use(Tabs)
+Vue.use(Popover)
+Vue.use(Picker)
+
+
+Vue.use(Checkbox);
+Vue.use(CheckboxGroup);

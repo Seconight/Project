@@ -1,5 +1,5 @@
 <template>
-  <div class="TeaAttendance">
+  <div>
     <van-nav-bar
       title="签到记录"
       left-text="返回"
