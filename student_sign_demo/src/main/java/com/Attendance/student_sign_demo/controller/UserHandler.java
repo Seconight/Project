@@ -1,6 +1,7 @@
 package com.Attendance.student_sign_demo.controller;
 
 import com.Attendance.student_sign_demo.exception.StudentException;
+import com.Attendance.student_sign_demo.form.FaceForm;
 import com.Attendance.student_sign_demo.form.LoginForm;
 import com.Attendance.student_sign_demo.service.impl.StudentServiceImpl;
 import com.Attendance.student_sign_demo.vo.ResultVO;
@@ -36,6 +37,12 @@ public class UserHandler {
     @PutMapping("/register")
     public ResultVO register(){
         return null;
+    }
+
+    //更新学生人脸信息
+    @PostMapping(path = "faceInfo")
+    public ResultVO faceInfo(FaceForm faceForm){
+        return ResultUtil.success(studentService.updateFace(faceForm));
     }
 
     //检查学生是否存在人脸信息

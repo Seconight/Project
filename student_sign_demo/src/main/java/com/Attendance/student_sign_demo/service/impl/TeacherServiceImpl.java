@@ -4,6 +4,7 @@ import com.Attendance.student_sign_demo.entity.Attendance;
 import com.Attendance.student_sign_demo.entity.Course;
 import com.Attendance.student_sign_demo.entity.StartTime;
 import com.Attendance.student_sign_demo.entity.Student;
+import com.Attendance.student_sign_demo.form.AttendanceForm;
 import com.Attendance.student_sign_demo.form.CourseForm;
 import com.Attendance.student_sign_demo.repository.*;
 import com.Attendance.student_sign_demo.service.TeacherService;
@@ -15,6 +16,14 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -185,16 +194,17 @@ public class TeacherServiceImpl implements TeacherService {
         newCourse.setCourseTeacherNo(teacherId);
         String courseStudents="";
        try{
-           HSSFWorkbook workbook=new HSSFWorkbook(studentsFile.getInputStream());
-           HSSFSheet hssfSheet=workbook.getSheetAt(0);//获取表单
+           XSSFWorkbook workbook = new XSSFWorkbook(studentsFile.getInputStream());
+           //HSSFWorkbook workbook=new HSSFWorkbook(studentsFile.getInputStream());
+           XSSFSheet hssfSheet=workbook.getSheetAt(0);//获取表单
            int numOfRows=hssfSheet.getPhysicalNumberOfRows();//获取行数
            for(int i=1;i<numOfRows;i++)
            {
-               HSSFRow hssfRow=hssfSheet.getRow(i);//获取行
+               XSSFRow hssfRow=hssfSheet.getRow(i);//获取行
                if(hssfRow==null){
                    continue;//空行跳过
                }
-               HSSFCell hssfCell=hssfRow.getCell(0);//第二行一列数据
+               XSSFCell hssfCell=hssfRow.getCell(0);//第二行一列数据
                String studentNo=hssfCell.getStringCellValue();//获得学生学号
                courseStudents=courseStudents+studentNo+",";
            }
@@ -206,8 +216,11 @@ public class TeacherServiceImpl implements TeacherService {
        courseRepository.save(newCourse);
     }
 
+    //签到函数
     @Override
-    public void Sign(MultipartFile imageFile,String courseId) {
+    public boolean Sign(AttendanceForm attendanceForm) {
+        MultipartFile imageFile = attendanceForm.getImg();
+        String courseId = attendanceForm.getId();
         //先将文件存到本地
         String filePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/attendance.jpg"; //定义上传文件的存放位置
         //将传来的图片保存到本地
@@ -311,5 +324,6 @@ public class TeacherServiceImpl implements TeacherService {
         attendance.setAttendanceAbsentStudent(absentStudent);
         attendance.setAttendanceCourseNo(courseId);
         attendanceRepository.save(attendance);
+        return true;
     }
 }

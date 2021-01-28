@@ -1,6 +1,7 @@
 package com.Attendance.student_sign_demo.service;
 
 import com.Attendance.student_sign_demo.entity.Student;
+import com.Attendance.student_sign_demo.form.FaceForm;
 import com.Attendance.student_sign_demo.form.LoginForm;
 import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
@@ -16,5 +17,5 @@ public interface StudentService {
     public boolean checkFace(String id);
     public List<CourseVO> getCourses(String id);
     public List<StudentAttendanceVO> getStudentAttendance(String courseId, String studentId);
-    public Boolean updateFace(String studentNo, MultipartFile faceImage);
+    public Boolean updateFace(FaceForm faceForm);
 }

@@ -4,6 +4,7 @@ import com.Attendance.student_sign_demo.entity.Attendance;
 import com.Attendance.student_sign_demo.entity.Course;
 import com.Attendance.student_sign_demo.entity.Student;
 import com.Attendance.student_sign_demo.entity.Teacher;
+import com.Attendance.student_sign_demo.form.FaceForm;
 import com.Attendance.student_sign_demo.form.LoginForm;
 import com.Attendance.student_sign_demo.repository.AttendanceRepository;
 import com.Attendance.student_sign_demo.repository.CourseRepository;
@@ -16,7 +17,7 @@ import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.Attendance.student_sign_demo.util.PathUtil;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,11 +113,16 @@ public class StudentServiceImpl implements StudentService {
         return studentAttendanceVOList;
     }
 
+    //更新人脸信息
     @Override
-    public Boolean updateFace(String studentNo, MultipartFile faceImage) {
+    public Boolean updateFace(FaceForm faceForm) {
         //先将文件存到本地
-        String filePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/userFace/face.jpg"; //定义上传文件的存放位置
+        String studentNo = faceForm.getStudentId();
+        MultipartFile faceImage = faceForm.getFaceImage();
+
+        String filePath=PathUtil.demoPath+"/userFace/"+studentNo+".jpg"; //定义上传文件的存放位置
         try{
+            //进行文件写入
             faceImage.transferTo(new File(filePath));
         }catch (IllegalStateException e){
             e.printStackTrace();
@@ -124,13 +130,16 @@ public class StudentServiceImpl implements StudentService {
             e.printStackTrace();
         }
         //运行python程序获得人脸encoding并保存在文件中
-        String encodingFilePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/userFace/encoding.txt"; //定义encoding文件的存放位置
+        String encodingFilePath=PathUtil.demoPath+"/userFace/encoding"+studentNo+".txt"; //定义encoding文件的存放位置
         try{
-            String exe="python";
-            String command="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/face_encoding.py";
-            String[] cmdArr = new String[] { exe, command };
-            Process process = Runtime.getRuntime().exec(cmdArr);
-        }catch (IOException e){
+//            String exe="python";
+//            String command="cd "+PathUtil.demoPath+" ; python face_encoding.py "+studentNo;
+//            String[] cmdArr = new String[] { exe, command };
+//            Process process = Runtime.getRuntime().exec(cmdArr);
+            Process process = Runtime.getRuntime().exec(
+                    "cmd.exe /c start "+PathUtil.demoPath+"/runEncode.bat "+studentNo);
+            process.waitFor();
+        }catch (Exception e){
             e.printStackTrace();
         }
         //从文件中读取encoding
@@ -148,10 +157,10 @@ public class StudentServiceImpl implements StudentService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        File image=new File(filePath);
-        if(image.exists()){//删除图片
-            image.delete();
-        }
+//        File image=new File(filePath);
+//        if(image.exists()){//删除图片
+//            image.delete();
+//        }
         Student student=studentRepository.findByStudentNo(studentNo);
         student.setStudentEncoding(stringBuffer.toString());
         studentRepository.save(student);//更新

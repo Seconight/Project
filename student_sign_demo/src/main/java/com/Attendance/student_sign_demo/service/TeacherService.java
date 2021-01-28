@@ -1,5 +1,6 @@
 package com.Attendance.student_sign_demo.service;
 
+import com.Attendance.student_sign_demo.form.AttendanceForm;
 import com.Attendance.student_sign_demo.form.CourseForm;
 import com.Attendance.student_sign_demo.vo.AttendanceVO;
 import com.Attendance.student_sign_demo.vo.CourseStudentVO;
@@ -15,5 +16,5 @@ public interface TeacherService {
     public List<AttendanceVO> getAttendanceInfo(String courseId);
     public boolean supplyAttendance(String studentId,String attendanceId);
     public void newCourse(CourseForm courseForm);
-    public void Sign(MultipartFile imageFile,String courseId);
+    public boolean Sign(AttendanceForm attendanceForm);
 }
