@@ -8,6 +8,7 @@ import com.Attendance.student_sign_demo.form.AttendanceForm;
 import com.Attendance.student_sign_demo.form.CourseForm;
 import com.Attendance.student_sign_demo.repository.*;
 import com.Attendance.student_sign_demo.service.TeacherService;
+import com.Attendance.student_sign_demo.util.PathUtil;
 import com.Attendance.student_sign_demo.util.TimeUtil;
 import com.Attendance.student_sign_demo.vo.AttendanceVO;
 import com.Attendance.student_sign_demo.vo.CourseStudentVO;
@@ -222,7 +223,7 @@ public class TeacherServiceImpl implements TeacherService {
         MultipartFile imageFile = attendanceForm.getImg();
         String courseId = attendanceForm.getId();
         //先将文件存到本地
-        String filePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/attendance.jpg"; //定义上传文件的存放位置
+        String filePath=PathUtil.demoPath+"/attendance.jpg"; //定义上传文件的存放位置
         //将传来的图片保存到本地
         try{
             imageFile.transferTo(new File(filePath));
@@ -241,21 +242,24 @@ public class TeacherServiceImpl implements TeacherService {
         Student student=studentRepository.findByStudentNo(studentsId[studentsId.length-1]);
         studentAndEncoding=studentAndEncoding+studentsId[studentsId.length-1]+":"+student.getStudentEncoding();
         try{
-            BufferedWriter bufferedWriter=new BufferedWriter(new FileWriter(new File("E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/shouldStudents.txt")));
+            BufferedWriter bufferedWriter=new BufferedWriter(new FileWriter(new File(PathUtil.demoPath+"/shouldStudents.txt")));
             bufferedWriter.write(studentAndEncoding);
             bufferedWriter.close();
         }catch (IOException e){
             e.printStackTrace();
         }
         //进行人脸识别将识别出的人脸保存到文件里
-        String actualStudentFilePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/actualStudent.txt"; //定义学生文件的存放位置
-        String absentStudentFilePath="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/absentStudent.txt";
+        String actualStudentFilePath=PathUtil.demoPath+"/actualStudent.txt"; //定义学生文件的存放位置
+        String absentStudentFilePath=PathUtil.demoPath+"/absentStudent.txt";
         try{
-            String exe="python";
-            String command="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/face_recognize.py";
-            String[] cmdArr = new String[] { exe, command };
-            Process process = Runtime.getRuntime().exec(cmdArr);
-        }catch (IOException e){
+//            String exe="python";
+//            String command="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/face_recognize.py";
+//            String[] cmdArr = new String[] { exe, command };
+//            Process process = Runtime.getRuntime().exec(cmdArr);
+            Process process = Runtime.getRuntime().exec(
+                    "cmd.exe /k start "+ PathUtil.demoPath+"/runRecognize.bat ");
+            process.waitFor();
+        }catch (Exception e){
             e.printStackTrace();
         }
         BufferedReader reader=null;
