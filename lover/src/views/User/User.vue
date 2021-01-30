@@ -142,6 +142,7 @@ export default {
         axios(config)
         .then(function (response) {
           let info = JSON.stringify(response.data);
+          console.log(JSON.stringify(response.code));
           console.log(JSON.stringify(response.data));
           //localStorage.setItem("userInfo",JSON.stringify(response.data));
           userInfo = JSON.stringify(response.data);

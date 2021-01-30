@@ -257,8 +257,14 @@ public class TeacherServiceImpl implements TeacherService {
 //            String[] cmdArr = new String[] { exe, command };
 //            Process process = Runtime.getRuntime().exec(cmdArr);
             Process process = Runtime.getRuntime().exec(
-                    "cmd.exe /k start "+ PathUtil.demoPath+"/runRecognize.bat ");
+                    "cmd.exe /c start "+ PathUtil.demoPath+"/runRecognize.bat ");
             process.waitFor();
+//            InputStream in = process.getInputStream();
+//            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+//            String tmp = null;
+//            while ((tmp = br.readLine()) != null) {
+//                // do nothing
+//            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -309,7 +315,8 @@ public class TeacherServiceImpl implements TeacherService {
         String startTimeUp=startTimeList.get(0).getUp();//下学期
         String startTimeDown=startTimeList.get(0).getDown();//上学期
         LocalDate date = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         //计算时间差
         int Days=TimeUtil.caculateTotalTime(startTimeDown,date.format(formatter));
         if(Days>0){
