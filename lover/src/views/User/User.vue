@@ -118,26 +118,55 @@ export default {
       this.password = values["密码"];
       //登录逻辑 从接口判断登录是否成功
 
+
+
       //假数据
       //if (this.username == "123" && this.password == "123") {
       if (this.username != "" && this.password != "") {
+        //定义userInfo
         let userInfo;
-        if (this.username == "123")
-          userInfo = {
-            id: "012181088",
-            name: "田家兴",
-            class: null,
-            address: "111@163.com",
-            role: "老师", //切换 老师/学生
-          };
-        else
-          userInfo = {
-            id: "012181088",
-            name: "田家兴",
-            class: "计算机1801",
-            address: "111@163.com",
-            role: "学生", //切换 老师/学生
-          };
+        console.log("this is password:"+this.password);
+        //调用接口，返回查询数据
+        var axios = require('axios');
+        var data = JSON.stringify({"id":this.username,"pwd":this.password});
+        
+        var config = {
+        method: 'post',
+        url: 'http://localhost:8081/user/login',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+          data : data
+        };
+
+        axios(config)
+        .then(function (response) {
+          let info = JSON.stringify(response.data);
+          console.log(JSON.stringify(response.data));
+          //localStorage.setItem("userInfo",JSON.stringify(response.data));
+          userInfo = JSON.stringify(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+        // let userInfo;
+        // if (this.username == "123")
+        //   userInfo = {
+        //     id: "012181088",
+        //     name: "田家兴",
+        //     class: null,
+        //     address: "111@163.com",
+        //     role: "老师", //切换 老师/学生
+        //   };
+        // else
+        //   userInfo = {
+        //     id: "012181088",
+        //     name: "田家兴",
+        //     class: "计算机1801",
+        //     address: "111@163.com",
+        //     role: "学生", //切换 老师/学生
+        //   };
         //通过接口获取人脸是否注册
         this.checkFace = true;
 
