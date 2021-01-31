@@ -36,25 +36,25 @@
             <TabHead v-if="records[index].acStudentNum != 0" />
             <van-row
               v-for="acStudent in records[index].acStudent"
-              :key="acStudent.studentNo"
+              :key="acStudent.id"
             >
-              <van-col span="8">{{ acStudent.studentNo }}</van-col>
-              <van-col span="8">{{ acStudent.studentName }}</van-col>
-              <van-col span="8">{{ acStudent.studentClass }}</van-col>
+              <van-col span="8">{{ acStudent.id }}</van-col>
+              <van-col span="8">{{ acStudent.name }}</van-col>
+              <van-col span="8">{{ acStudent.class }}</van-col>
             </van-row>
           </van-tab>
           <van-tab title="缺勤学生" style="text-align: center; font-size: 16px">
             <TabHead v-if="records[index].abStudentNum != 0" />
             <van-row
               v-for="(abStudent, abindex) in records[index].abStudent"
-              :key="abStudent.studentNo"
+              :key="abStudent.id"
               @click="
                 supply(index, abindex, abStudent, records[index].attendanceId)
               "
             >
-              <van-col span="8">{{ abStudent.studentNo }}</van-col>
-              <van-col span="8">{{ abStudent.studentName }}</van-col>
-              <van-col span="8">{{ abStudent.studentClass }}</van-col>
+              <van-col span="8">{{ abStudent.id }}</van-col>
+              <van-col span="8">{{ abStudent.name }}</van-col>
+              <van-col span="8">{{ abStudent.class }}</van-col>
             </van-row>
           </van-tab>
         </van-tabs>
@@ -93,61 +93,25 @@ export default {
   created() {
     let courseID = this.course.id;
     //根据courseID和获得课程所有签到记录
-    let data = [
-      {
-        attendanceId: "0000000001",
-        time: "1-1",
-        acStudentNum: 3,
-        acStudent: [
-          {
-            studentNo: "0121810880214",
-            studentName: "王宇",
-            studentClass: "计算机1801",
-          },
-          {
-            studentNo: "0121810880204",
-            studentName: "田家兴",
-            studentClass: "计算机1801",
-          },
-          {
-            studentNo: "0121810880120",
-            studentName: "徐凯",
-            studentClass: "计算机1801",
-          },
-        ],
-        abStudentNum: 0,
-        abStudent: [],
-      },
-      {
-        attendanceId: "0000000002",
-        time: "2-3",
-        acStudentNum: 1,
-        acStudent: [
-          {
-            studentNo: "0121810880204",
-            studentName: "田家兴",
-            studentClass: "计算机1801",
-          },
-        ],
-        abStudentNum: 2,
-        abStudent: [
-          {
-            studentNo: "0121810880214",
-            studentName: "王宇",
-            studentClass: "计算机1801",
-          },
-          {
-            studentNo: "0121810880120",
-            studentName: "徐凯",
-            studentClass: "计算机1801",
-          },
-        ],
-      },
-    ];
-    for (let i = 0; i < data.length; i++) {
-      this.recordActive.push(0); //添加与签到记录个数相同的导航栏的选择项
-    }
-    this.loadRecord(data);
+    var axios = require("axios");
+
+    var config = {
+      method: "get",
+      url: this.GLOBAL.port + "/teacher/checkAttendanceInfo?id=" + courseID,
+      headers: {},
+    };
+    let _this = this;
+    axios(config)
+      .then(function (response) {
+        let data = response.data.data;
+        for (let i = 0; i < data.length; i++) {
+          _this.recordActive.push(0); //添加与签到记录个数相同的导航栏的选择项
+        }
+        _this.loadRecord(data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   },
   methods: {
     onClickLeft() {
@@ -195,25 +159,45 @@ export default {
       }
     },
     supply(index, abindex, abStudent, attendanId) {
+      console.log(abStudent.id+"   "+attendanId);
       let _this = this;
       this.$dialog
         .confirm({
           title: "补签",
-          message:
-            "姓名:" +
-            abStudent.studentName +
-            "      班级:" +
-            abStudent.studentClass,
+          message: "姓名:" + abStudent.name + "      班级:" + abStudent.class,
         })
         .then(() => {
           // on confirm
           //abStudent.studentNo和attendanId进行补签接口
-          let supStudent = _this.records[index].abStudent.splice(abindex, 1); //在缺席学生删除该学生
-          _this.records[index].abStudentNum--;
-          _this.records[index].acStudent.push(supStudent[0]);
-          _this.records[index].acStudentNum++;
-          console.log(_this.records);
-          _this.$toast("补签成功");
+          var axios = require("axios");
+          var config = {
+            method: "post",
+            url:
+              _this.GLOBAL.port +
+              "/teacher/supply?studentId=" +
+              abStudent.id +
+              "&attendanceId=" +
+              attendanId,
+            headers: {},
+          };
+          axios(config)
+            .then(function (response) {
+              if (response.data.code==1) {
+                let supStudent = _this.records[index].abStudent.splice(
+                  abindex,
+                  1
+                ); //在缺席学生删除该学生
+                _this.records[index].abStudentNum--;
+                _this.records[index].acStudent.push(supStudent[0]);
+                _this.records[index].acStudentNum++;
+                _this.$toast("补签成功");
+              }else{
+                _this.$toast.fail("补签失败");
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         })
         .catch(() => {
           // on cancel

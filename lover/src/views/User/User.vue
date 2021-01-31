@@ -123,7 +123,7 @@ export default {
 
         var config = {
           method: "post",
-          url: this.GLOBAL.port+"/user/login",
+          url: this.GLOBAL.port + "/user/login",
           headers: {
             "Content-Type": "application/json",
           },
@@ -164,7 +164,7 @@ export default {
 
       var config = {
         method: "get",
-        url: this.GLOBAL.port+"/user/checkFace/" + userID,
+        url: this.GLOBAL.port + "/user/checkFace/" + userID,
         headers: {},
       };
 
@@ -212,9 +212,33 @@ export default {
         .then(() => {
           // on confirm
           //上传人脸数据
-          console.log(this.imgList);
-          this.$toast.success("上传成功");
-          this.imgList = [];
+
+          // this.$toast.success("上传成功");
+          // console.log(this.imgList[0].getOriginalFilename() + "123");
+          // this.imgList = [];
+          var axios = require("axios");
+          var FormData = require("form-data");
+          var fs = require("fs");
+          var data = new FormData();
+          data.append("faceImage", fs.createReadStream("2.jpg"));
+          console.log(123);
+          data.append("studentId", "0121810880204");
+          console.log(JSON.stringify(data));
+          var config = {
+            method: "post",
+            url: "http://localhost:8080/user/faceInfo",
+            headers: {
+              ...data.getHeaders(),
+            },
+            data: data,
+          };
+          axios(config)
+            .then(function (response) {
+              console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         })
         .catch(() => {
           // on cancel

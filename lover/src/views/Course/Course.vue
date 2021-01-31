@@ -105,6 +105,7 @@ export default {
       //获取登录身份
       let _userInfo = JSON.parse(userInfo);
       this.role = _userInfo.role;
+      let _this = this;
       //通过_userInfo.id获得Courses
       //假数据
       if (this.role == "学生") {
@@ -113,10 +114,10 @@ export default {
         var config = {
           method: "get",
           //这里用户信息就直接在url里了
-          url: this.GLOBAL.port+"/course/info?id=" + _userInfo.id,
+          url: this.GLOBAL.port + "/course/info?id=" + _userInfo.id,
           headers: {},
         };
-        let _this = this;
+
         axios(config)
           .then(function (response) {
             _this.loadCourse(response.data.data);
@@ -125,49 +126,19 @@ export default {
             console.log(error);
           });
       } else if (this.role == "老师") {
-        // let Courses = [
-        //   {
-        //     id: "0000000001",
-        //     name: "C语言",
-        //     stime: 1,
-        //     etime: 2,
-        //     days: [1, 2],
-        //     weeks: [1, 2, 3, 4, 5, 6, 7, 8],
-        //     semester: "2020-2021-1",
-        //   },
-        //   {
-        //     id: "0000000002",
-        //     name: "高等数学",
-        //     stime: 3,
-        //     etime: 5,
-        //     days: [1, 4],
-        //     weeks: [1, 2, 3, 4, 5, 6, 7, 8],
-        //     semester: "2020-2021-1",
-        //   },
-        //   {
-        //     id: "0000000003",
-        //     name: "A语言",
-        //     stime: 7,
-        //     etime: 8,
-        //     days: [1, 2, 3],
-        //     weeks: [1, 2, 3, 4, 5, 6, 7, 8],
-        //     semester: "2020-2021-1",
-        //   },
-        // ];
         var axios = require("axios");
         var config = {
           method: "get",
-          url: this.GLOBAL.port+"/teacher/getCourseInfo?id="+_userInfo.id,
+          url: this.GLOBAL.port + "/teacher/getCourseInfo?id=" + _userInfo.id,
           headers: {},
         };
         axios(config)
           .then(function (response) {
-            console.log(JSON.stringify(response.data));
+            _this.loadCourse(response.data.data);
           })
           .catch(function (error) {
             console.log(error);
           });
-        //this.loadCourse(Courses);
       }
     }
   },
