@@ -8,7 +8,6 @@ import javax.persistence.Id;
 @Entity
 public class Attendance {
     @Id
-    @GeneratedValue
     private String attendanceNo;
     private String attendanceTime;
     private String attendanceActualStudent;

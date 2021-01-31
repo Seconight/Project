@@ -28,7 +28,8 @@ public class UserHandler {
             @Valid @RequestBody LoginForm loginForm, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             System.out.println("【学生登录】参数错误");
-            throw new StudentException(bindingResult.getFieldError().getDefaultMessage());
+            return ResultUtil.failed("学生账号和密码错误");
+            //throw new StudentException(bindingResult.getFieldError().getDefaultMessage());
         }
         return ResultUtil.success(studentService.checkLogin(loginForm));
     }
@@ -41,20 +42,28 @@ public class UserHandler {
 
     //更新学生人脸信息
     @PostMapping(path = "faceInfo")
-    public ResultVO faceInfo(FaceForm faceForm){
+    public ResultVO faceInfo(FaceForm faceForm,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            //System.out.println("【学生登录】参数错误");
+            return ResultUtil.failed("学生账号和密码错误");
+            //throw new StudentException(bindingResult.getFieldError().getDefaultMessage());
+        }
         return ResultUtil.success(studentService.updateFace(faceForm));
     }
 
     //检查学生是否存在人脸信息
     @GetMapping("/checkFace/{id}")
     public ResultVO checkFace(@PathVariable("id") String id){
-
+        if(id.length()!=13){
+            return ResultUtil.failed("学生id不合法");
+        }
         return ResultUtil.success(studentService.checkFace(id));
     }
 
     //测试类，检测get的多参数传值
     @GetMapping(path = "test")
     public ResultVO test(String a, Integer b){
+
         return ResultUtil.success(b);
     }
 }

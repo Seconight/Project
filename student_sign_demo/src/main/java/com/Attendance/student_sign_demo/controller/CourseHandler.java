@@ -20,12 +20,21 @@ public class CourseHandler {
     //学生获取课程
     @GetMapping(path = "info")
     public ResultVO info(String id){
+        if(id.length()!=13){
+            return ResultUtil.failed("课程id不合法");
+        }
         return ResultUtil.success(studentService.getCourses(id));
     }
 
     //学生查看课程签到信息
     @GetMapping(path = "attendanceInfo")
     public ResultVO attendanceInfo(String courseId, String studentId){
+        if(courseId.length()!=10){
+            return ResultUtil.failed("课程id不合法");
+        }
+        if(studentId.length()!=13){
+            return ResultUtil.failed("学生id不合法");
+        }
         return ResultUtil.success(studentService.getStudentAttendance(courseId,studentId));
     }
 }

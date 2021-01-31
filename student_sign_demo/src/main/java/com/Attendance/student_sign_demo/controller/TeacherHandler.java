@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/teacher")
+
+//TODO:提高健壮性
 
 public class TeacherHandler {
 
@@ -25,35 +28,63 @@ public class TeacherHandler {
     //老师新建课程
     @PutMapping("/createCourse")
     public ResultVO createCourse(
-           CourseForm courseForm){
-//        if(bindingResult.hasErrors()){
-//            return ResultUtil.failed(bindingResult.getFieldError().getDefaultMessage());
-//        }
+           CourseForm courseForm,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return ResultUtil.failed(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        }
         teacherService.newCourse(courseForm);
         return ResultUtil.success(null);
+    }
+
+    //老师获取课程信息
+    @GetMapping(path = "/getCourseInfo")
+    public ResultVO getCourseInfo(String id){
+        if(id.length() != 9){
+            return ResultUtil.failed("老师id不合法");
+        }
+        else {
+            return ResultUtil.success(teacherService.getCourses(id));
+        }
     }
 
     //老师查看对应课程学生
     @GetMapping(path = "/getCourseStudent")
     public ResultVO getCourseStudent(String id){
-        return ResultUtil.success(teacherService.getCourseStudent(id));
+        if(id.length() != 10){
+            return ResultUtil.failed("课程id不合法");
+        }
+        else {
+            return ResultUtil.success(teacherService.getCourseStudent(id));
+        }
     }
 
-    //老师拍照签到，face项目待完善
+    //老师拍照签到
     @PostMapping(path = "/attendance")
-    public ResultVO attendance(AttendanceForm attendanceForm){
+    public ResultVO attendance(AttendanceForm attendanceForm,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return ResultUtil.failed(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        }
         return ResultUtil.success(teacherService.Sign(attendanceForm));
     }
 
     //老师获取签到信息
     @GetMapping(path = "/checkAttendanceInfo")
     public ResultVO checkAttendanceInfo(String id){
+        if(id.length() != 10){
+            return ResultUtil.failed("签到信息id不合法");
+        }
         return ResultUtil.success(teacherService.getAttendanceInfo(id));
     }
 
     //老师补签
     @PostMapping(path = "/supply")
     public ResultVO supply(String studentId, String attendanceId){
+        if(studentId.length()!=13){
+            return ResultUtil.failed("学生id不合法");
+        }
+        if(attendanceId.length()!=10){
+            return ResultUtil.failed("学生id不合法");
+        }
         return ResultUtil.success(teacherService.supplyAttendance(studentId,attendanceId));
     }
 }
