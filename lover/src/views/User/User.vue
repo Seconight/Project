@@ -5,6 +5,7 @@
         <img :src="avatarSrc" alt="" />
       </van-col>
       <van-col span="10" @click="openLoginModal">{{ name }}</van-col>
+      <!-- <van-col span='10' @submit="uploadface"> -->
       <van-col span="8" @click="logout">
         <van-icon name="cross" />
       </van-col>
@@ -82,6 +83,7 @@
 </template>
 
 <script>
+//var axios = require('axios');
 export default {
   data() {
     return {
@@ -143,6 +145,7 @@ export default {
               //获取人脸是否注册
               _this.checkFace = _this.axiosCheckFace(response.data.data.id);
               localStorage.setItem("checkFace", _this.checkFace);
+              //console.log("this is "+_this.checkFace);
               _this.$toast.success("登录成功");
               _this.showinfor(); //更新组件信息显示
               _this.closeLoginModal();
@@ -170,7 +173,8 @@ export default {
 
       axios(config)
         .then(function (response) {
-          return response.data.data;
+          console.log(response.data.data)
+          return response.data[data];
         })
         .catch(function (error) {
           console.log(error);
@@ -206,15 +210,44 @@ export default {
     //上传人脸
     uploadface() {
       this.$dialog
+        this.$dialog
         .confirm({
           title: "确定上传人脸数据",
         })
         .then(() => {
           // on confirm
           //上传人脸数据
-          console.log(this.imgList);
-          this.$toast.success("上传成功");
-          this.imgList = [];
+
+          // this.$toast.success("上传成功");
+          // console.log(this.imgList[0].getOriginalFilename() + "123");
+          // this.imgList = [];
+          var axios = require("axios");
+          var FormData = require("form-data");
+          var fs = require("fs");
+          var data = new FormData();
+          
+          console.log(123);
+          
+          data.append("faceImage", this.$fs.createReadStream("D:\\Documents\\2.jpg"));
+          console.log(data);
+          console.log(123);
+          data.append("studentId", "0121810880204");
+          console.log(JSON.stringify(data));
+          var config = {
+            method: "post",
+            url: "http://localhost:8081/user/faceInfo",
+            headers: {
+              ...data.getHeaders(),
+            },
+            data: data,
+          };
+          axios(config)
+            .then(function (response) {
+              console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         })
         .catch(() => {
           // on cancel
