@@ -29,7 +29,7 @@
           :value="'checkFace' ? '人脸已上传' : '人脸未上传'"
         />
       </van-cell-group>
-      <div style="text-align: center;padding:20px">
+      <div style="text-align: center; padding: 20px">
         <van-uploader
           :preview-options="preview_options"
           v-model="imgList"
@@ -39,10 +39,8 @@
           :max-count="3"
         />
       </div>
-      <div style="text-align: center;">
-        <van-button round type="info" @click="uploadface" 
-          >上传人脸</van-button
-        >
+      <div style="text-align: center">
+        <van-button round type="info" @click="uploadface">上传人脸</van-button>
       </div>
     </div>
     <div class="login_modal" v-if="showLoginModal">
@@ -117,71 +115,66 @@ export default {
       this.username = values["用户名"];
       this.password = values["密码"];
       //登录逻辑 从接口判断登录是否成功
-
-
-
       //假数据
       //if (this.username == "123" && this.password == "123") {
       if (this.username != "" && this.password != "") {
-        //定义userInfo
-        let userInfo;
-        console.log("this is password:"+this.password);
-        //调用接口，返回查询数据
-        var axios = require('axios');
-        var data = JSON.stringify({"id":this.username,"pwd":this.password});
-        
-        var config = {
-        method: 'post',
-        url: 'http://localhost:8081/user/login',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-          data : data
-        };
+        var axios = require("axios");
+        var data = JSON.stringify({ id: this.username, pwd: this.password });
 
+        var config = {
+          method: "post",
+          url: this.GLOBAL.port+"/user/login",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: data,
+        };
+        let _this = this;
         axios(config)
+          .then(function (response) {
+            console.log(response.data.code);
+            console.log(response.data.data);
+            if (response.data.code == 1) {
+              //添加用户信息到localStorage
+              localStorage.setItem(
+                "userInfo",
+                JSON.stringify(response.data.data)
+              );
+              //获取人脸是否注册
+              _this.checkFace = _this.axiosCheckFace(response.data.data.id);
+              localStorage.setItem("checkFace", _this.checkFace);
+              _this.$toast.success("登录成功");
+              _this.showinfor(); //更新组件信息显示
+              _this.closeLoginModal();
+            } else {
+              //账户密码错误
+              _this.$toast.fail("账号密码错误");
+              _this.username = "";
+              _this.password = "";
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        //登录成功
+      }
+    },
+    axiosCheckFace(userID) {
+      var axios = require("axios");
+
+      var config = {
+        method: "get",
+        url: this.GLOBAL.port+"/user/checkFace/" + userID,
+        headers: {},
+      };
+
+      axios(config)
         .then(function (response) {
-          let info = JSON.stringify(response.data);
-          console.log(JSON.stringify(response.data));
-          //localStorage.setItem("userInfo",JSON.stringify(response.data));
-          userInfo = JSON.stringify(response.data);
+          return response.data.data;
         })
         .catch(function (error) {
           console.log(error);
         });
-
-        // let userInfo;
-        // if (this.username == "123")
-        //   userInfo = {
-        //     id: "012181088",
-        //     name: "田家兴",
-        //     class: null,
-        //     address: "111@163.com",
-        //     role: "老师", //切换 老师/学生
-        //   };
-        // else
-        //   userInfo = {
-        //     id: "012181088",
-        //     name: "田家兴",
-        //     class: "计算机1801",
-        //     address: "111@163.com",
-        //     role: "学生", //切换 老师/学生
-        //   };
-        //通过接口获取人脸是否注册
-        this.checkFace = true;
-
-        let _userInfo = JSON.stringify(userInfo);
-        localStorage.setItem("userInfo", _userInfo);
-        localStorage.setItem("checkFace", this.checkFace);
-        this.$toast.success("登陆成功");
-        this.showinfor(); //更新组件信息显示
-        this.closeLoginModal();
-      } else {
-        //账户密码错误
-        this.$toast.fail("账号密码错误");
-        this.username = "";
-        this.password = "";
-      }
     },
     //组件个人信息显示
     showinfor() {

@@ -8,8 +8,13 @@
       @click-left="onClickLeft"
       @click-right="onClickRight"
     />
+
     <van-cell-group>
-      <van-cell v-for="(record, index) in records" :key="record.time" :title="records[index].time">
+      <van-cell
+        v-for="(record, index) in records"
+        :key="record.time"
+        :title="records[index].time"
+      >
         <template #default>
           <div v-if="records[index].success">
             <span style="color: #2cc20e">已签到</span>
@@ -31,7 +36,7 @@
       </van-cell>
     </van-cell-group>
 
-    <van-action-sheet v-model="showCourseInfo" title="课程信息"  position="top">
+    <van-action-sheet v-model="showCourseInfo" title="课程信息" position="top">
       <div class="content">
         <van-cell-group>
           <van-cell title="课程号" :value="course.id" />
@@ -58,42 +63,24 @@ export default {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     let courseID = this.course.id;
     //根据courseID和userInfo.id获得学生改课程所有签到记录
-    let result = [
-      {
-        time: "1-1",
-        success: true,
-      },
-      {
-        time: "1-3",
-        success: false,
-      },
-            {
-        time: "2-1",
-        success: false,
-      },
-            {
-        time: "2-3",
-        success: true,
-      },
-            {
-        time: "3-1",
-        success: true,
-      },
-            {
-        time: "3-3",
-        success: false,
-      },
-            {
-        time: "4-1",
-        success: true,
-      },
-            {
-        time: "4-3",
-        success: true,
-      },
-
-    ];
-    this.loadRecord(result);
+    var axios = require("axios");
+    var config = {
+      method: "get",
+      url:
+        this.GLOBAL.port+"/course/attendanceInfo?courseId=" +
+        courseID +
+        "&studentId=" +
+        userInfo.id,
+      headers: {},
+    };
+    let _this = this;
+    axios(config)
+      .then(function (response) {
+        _this.loadRecord(response.data.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   },
   methods: {
     onClickLeft() {
@@ -128,6 +115,9 @@ export default {
       return fir + " " + sec;
     },
     loadRecord(result) {
+      if(result.length==0){
+        this.$toast("该课程无签到记录");
+      }
       for (let i = 0; i < result.length; i++) {
         let temp = {
           time: this.timeChange(result[i].time),

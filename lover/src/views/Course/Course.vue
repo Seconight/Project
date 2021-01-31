@@ -70,15 +70,10 @@
           style="padding: 18px"
           :max-count="3"
         />
-        <div
-          style="
-            position: fixed;
-            bottom: 0px;
-            left: 75px;
-            padding: 20px;
-          "
-        >
-          <van-button type="danger" @click="upLodaeSign" icon="upgrade">上传签到</van-button>
+        <div style="position: fixed; bottom: 0px; left: 75px; padding: 20px">
+          <van-button type="danger" @click="upLodaeSign" icon="upgrade"
+            >上传签到</van-button
+          >
         </div>
       </div>
     </van-popup>
@@ -113,100 +108,66 @@ export default {
       //通过_userInfo.id获得Courses
       //假数据
       if (this.role == "学生") {
-        let Courses = [
-          {
-            id: "0000000001",
-            name: "C语言",
-            stime: 1,
-            etime: 2,
-            days: [1, 2],
-            week: [1, 2, 3, 4, 5, 6, 7, 8],
-            semester: "2020-2021-1",
-            teachername: "张1 ",
-          },
-          {
-            id: "0000000002",
-            name: "高等数学",
-            stime: 3,
-            etime: 5,
-            days: [1, 4],
-            week: [1, 2, 3, 4, 5, 6, 7, 8],
-            semester: "2020-2021-1",
-            teachername: "张2 ",
-          },
-          {
-            id: "0000000003",
-            name: "A语言",
-            stime: 7,
-            etime: 8,
-            days: [1, 2, 3],
-            week: [1, 2, 3, 4, 5, 6, 7, 8],
-            semester: "2020-2021-1",
-            teachername: "张3 ",
-          },
-          {
-            id: "0000000004",
-            name: "B语言",
-            stime: 9,
-            etime: 10,
-            days: [2, 4],
-            week: [1, 2, 3, 4, 5, 6, 7, 8],
-            semester: "2020-2021-1",
-            teachername: "张4 ",
-          },
-          {
-            id: "0000000005",
-            name: "C语言",
-            stime: 6,
-            etime: 8,
-            days: [5],
-            week: [1, 2, 3, 4, 5, 6, 7, 8],
-            semester: "2020-2021-1",
-            teachername: "张5 ",
-          },
-          {
-            id: "0000000006",
-            name: "D语言",
-            stime: 1,
-            etime: 2,
-            days: [4, 5],
-            week: [10, 11, 12, 13, 14, 15, 16, 17],
-            semester: "2020-2021-1",
-            teachername: "张6 ",
-          },
-        ];
-        this.loadCourse(Courses);
+        var axios = require("axios");
+
+        var config = {
+          method: "get",
+          //这里用户信息就直接在url里了
+          url: this.GLOBAL.port+"/course/info?id=" + _userInfo.id,
+          headers: {},
+        };
+        let _this = this;
+        axios(config)
+          .then(function (response) {
+            _this.loadCourse(response.data.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       } else if (this.role == "老师") {
-        let Courses = [
-          {
-            id: "0000000001",
-            name: "C语言",
-            stime: 1,
-            etime: 2,
-            days: [1, 2],
-            week: [1, 2, 3, 4, 5, 6, 7, 8],
-            semester: "2020-2021-1",
-          },
-          {
-            id: "0000000002",
-            name: "高等数学",
-            stime: 3,
-            etime: 5,
-            days: [1, 4],
-            week: [1, 2, 3, 4, 5, 6, 7, 8],
-            semester: "2020-2021-1",
-          },
-          {
-            id: "0000000003",
-            name: "A语言",
-            stime: 7,
-            etime: 8,
-            days: [1, 2, 3],
-            week: [1, 2, 3, 4, 5, 6, 7, 8],
-            semester: "2020-2021-1",
-          },
-        ];
-        this.loadCourse(Courses);
+        // let Courses = [
+        //   {
+        //     id: "0000000001",
+        //     name: "C语言",
+        //     stime: 1,
+        //     etime: 2,
+        //     days: [1, 2],
+        //     weeks: [1, 2, 3, 4, 5, 6, 7, 8],
+        //     semester: "2020-2021-1",
+        //   },
+        //   {
+        //     id: "0000000002",
+        //     name: "高等数学",
+        //     stime: 3,
+        //     etime: 5,
+        //     days: [1, 4],
+        //     weeks: [1, 2, 3, 4, 5, 6, 7, 8],
+        //     semester: "2020-2021-1",
+        //   },
+        //   {
+        //     id: "0000000003",
+        //     name: "A语言",
+        //     stime: 7,
+        //     etime: 8,
+        //     days: [1, 2, 3],
+        //     weeks: [1, 2, 3, 4, 5, 6, 7, 8],
+        //     semester: "2020-2021-1",
+        //   },
+        // ];
+        var axios = require("axios");
+        var config = {
+          method: "get",
+          url: this.GLOBAL.port+"/teacher/getCourseInfo?id="+_userInfo.id,
+          headers: {},
+        };
+        axios(config)
+          .then(function (response) {
+            console.log(JSON.stringify(response.data));
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        //this.loadCourse(Courses);
       }
     }
   },
@@ -226,10 +187,9 @@ export default {
     upLodaeSign() {
       if (this.imgList.length == 0) {
         this.$toast("请添加图片");
-      }
-      else{
+      } else {
         this.$toast.success("上传成功");
-        this.showPhotoSign=false;
+        this.showPhotoSign = false;
       }
     },
     dayChange(day) {
@@ -268,9 +228,9 @@ export default {
             Courses[i].etime
           ),
           week:
-            Courses[i].week[0] +
+            Courses[i].weeks[0] +
             "-" +
-            Courses[i].week[Courses[i].week.length - 1] +
+            Courses[i].weeks[Courses[i].weeks.length - 1] +
             "周",
           semester: Courses[i].semester,
           teachername:
