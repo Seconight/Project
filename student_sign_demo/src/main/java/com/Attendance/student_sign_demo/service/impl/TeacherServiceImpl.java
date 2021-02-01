@@ -28,9 +28,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
 
 @Service
@@ -231,6 +229,7 @@ public class TeacherServiceImpl implements TeacherService {
        }
        courseStudents=courseStudents.substring(0,courseStudents.length()-1);
        newCourse.setCourseShouldStudent(courseStudents);
+
        courseRepository.save(newCourse);
     }
 
@@ -410,20 +409,21 @@ public class TeacherServiceImpl implements TeacherService {
                 e.printStackTrace();
             }
             actualStudent=actualStudent+stringBuffer.toString();
-            stringBuffer=new StringBuffer();
-            try{
-                reader=new BufferedReader(new FileReader(new File(absentStudentFilePath)));
-                String tempStr;
-                while((tempStr=reader.readLine())!=null){
-                    stringBuffer.append(tempStr);
-                }
-                reader.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            absentStudent=absentStudent+stringBuffer.toString();
+            //缺席学生没必要
+//            stringBuffer=new StringBuffer();
+//            try{
+//                reader=new BufferedReader(new FileReader(new File(absentStudentFilePath)));
+//                String tempStr;
+//                while((tempStr=reader.readLine())!=null){
+//                    stringBuffer.append(tempStr);
+//                }
+//                reader.close();
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            absentStudent=absentStudent+stringBuffer.toString();
         }
         //新建签到对象
         Attendance attendance=new Attendance();
@@ -459,7 +459,23 @@ public class TeacherServiceImpl implements TeacherService {
         attendance.setAttendanceTime(attendanceTime);
 
         //设置实到学生，缺席学生
-        attendance.setAttendanceActualStudent(actualStudent.substring(0,actualStudent.length()-1));
+        String [] actualStudentString=actualStudent.substring(0,actualStudent.length()-1).split(",");
+        Set set = new HashSet();
+        for (int i = 0; i < actualStudentString.length; i++) {
+            set.add(actualStudentString[i]);
+        }
+        actualStudentString = (String[]) set.toArray(new String[0]);
+        String totalActualStudent="";
+        for(int i=0;i<actualStudentString.length;i++){
+            totalActualStudent=totalActualStudent+actualStudentString[i]+",";
+        }
+        //求缺席学生
+        for(int i=0;i<studentsId.length;i++){
+            if(!set.contains(studentsId[i])){
+                absentStudent=absentStudent+studentsId[i]+",";
+            }
+        }
+        attendance.setAttendanceActualStudent(totalActualStudent.substring(0,totalActualStudent.length()-1));
         attendance.setAttendanceAbsentStudent(absentStudent.substring(0,absentStudent.length()-1));
         attendance.setAttendanceCourseNo(courseId);
         attendanceRepository.save(attendance);
