@@ -195,7 +195,7 @@ public class StudentServiceImpl implements StudentService {
     public Boolean addFace(String id, MultipartFile[] faceList) {
         String studentNo=id;
         Student student=studentRepository.findByStudentNo(studentNo);
-        String studentEncoding="";
+        String studentEncoding=student.getStudentEncoding()+";";
         String filePath=PathUtil.demoPath+"/userFace/"+studentNo+".jpg"; //定义上传文件的存放位置
         for(int i=0;i<faceList.length;i++)//依次创建人脸图
         {
