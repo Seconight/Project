@@ -18,6 +18,7 @@ public interface StudentService {
     public List<CourseVO> getCourses(String id);
     public List<StudentAttendanceVO> getStudentAttendance(String courseId, String studentId);
     public Boolean updateFace(FaceForm faceForm);
+    public Boolean addFace(String id,MultipartFile[] faceList);//上个函数的更改
     public boolean register(String userId,String password,String userClass,String address,String name);
     public CourseVO searchByCourseId(String id);
     public List<CourseVO> searchByCourseName(String courseName);

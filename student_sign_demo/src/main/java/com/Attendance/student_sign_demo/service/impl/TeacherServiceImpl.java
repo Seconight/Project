@@ -354,4 +354,115 @@ public class TeacherServiceImpl implements TeacherService {
         attendanceRepository.save(attendance);
         return true;
     }
+    @Override
+    public boolean Sign(String courseId,MultipartFile[] imageList){
+        //根据课程号把学生名单以及对应的人脸encoding保存到文件中
+        String [] studentsId=courseRepository.findByCourseNo(courseId).getCourseShouldStudent();
+        String studentAndEncoding="";
+        for(int i=0;i<studentsId.length;i++){
+            Student student=studentRepository.findByStudentNo(studentsId[i]);
+            String[] encodings=student.getStudentEncoding().split(";");
+            for(int j=0;j<encodings.length;j++)
+                studentAndEncoding=studentAndEncoding+studentsId[i]+":"+encodings[j]+";";
+        }
+        studentAndEncoding=studentAndEncoding.substring(0,studentAndEncoding.length()-1);
+        try{
+            BufferedWriter bufferedWriter=new BufferedWriter(new FileWriter(new File(PathUtil.demoPath+"/shouldStudents.txt")));
+            bufferedWriter.write(studentAndEncoding);
+            bufferedWriter.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        String actualStudentFilePath=PathUtil.demoPath+"/actualStudent.txt"; //定义学生文件的存放位置
+        String absentStudentFilePath=PathUtil.demoPath+"/absentStudent.txt";
+        String filePath=PathUtil.demoPath+"/attendance.jpg"; //定义上传文件的存放位置
+        String actualStudent="";
+        String absentStudent="";
+        for(int i=0;i<imageList.length;i++){
+            //将传来的图片保存到本地
+            try{
+                imageList[i].transferTo(new File(filePath));
+            }catch (IllegalStateException e){
+                e.printStackTrace();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            //进行人脸识别将识别出的人脸保存到文件里
+            try{
+                Process process = Runtime.getRuntime().exec(
+                        "cmd.exe /c start "+ PathUtil.demoPath+"/runRecognize.bat ");
+                process.waitFor();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            BufferedReader reader=null;
+            StringBuffer stringBuffer=new StringBuffer();
+            try{
+                reader=new BufferedReader(new FileReader(new File(actualStudentFilePath)));
+                String tempStr;
+                while((tempStr=reader.readLine())!=null){
+                    stringBuffer.append(tempStr);
+                }
+                reader.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            actualStudent=actualStudent+stringBuffer.toString();
+            stringBuffer=new StringBuffer();
+            try{
+                reader=new BufferedReader(new FileReader(new File(absentStudentFilePath)));
+                String tempStr;
+                while((tempStr=reader.readLine())!=null){
+                    stringBuffer.append(tempStr);
+                }
+                reader.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            absentStudent=absentStudent+stringBuffer.toString();
+        }
+        //新建签到对象
+        Attendance attendance=new Attendance();
+        //设置签到号
+        List<Attendance> attendanceList=attendanceRepository.findAll();
+        Integer newAttendanceNum=attendanceList.toArray().length+1;
+        String number=String.valueOf(newAttendanceNum);
+        String attendanceId="";
+        for(int i=0;i<10-number.length();i++){
+            attendanceId=attendanceId+"0";
+        }
+        attendanceId=attendanceId+number;
+        attendance.setAttendanceNo(attendanceId);
+        //设置周次几周
+        String attendanceTime="";
+        List<StartTime> startTimeList=timeRepository.findAll();
+        String startTimeUp=startTimeList.get(0).getUp();//下学期
+        String startTimeDown=startTimeList.get(0).getDown();//上学期
+        LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        //计算时间差
+        int Days=TimeUtil.caculateTotalTime(startTimeDown,date.format(formatter));
+        if(Days>0){
+            int weeks=Days/7;
+            attendanceTime=attendanceTime+String.valueOf(weeks+1)+"-"+String.valueOf(Days%7);
+        }
+        else{
+            Days=TimeUtil.caculateTotalTime(startTimeUp,date.format(formatter));
+            int weeks=Days/7;
+            attendanceTime=attendanceTime+String.valueOf(weeks+1)+"-"+String.valueOf(Days%7);
+        }
+        attendance.setAttendanceTime(attendanceTime);
+
+        //设置实到学生，缺席学生
+        attendance.setAttendanceActualStudent(actualStudent.substring(0,actualStudent.length()-1));
+        attendance.setAttendanceAbsentStudent(absentStudent.substring(0,absentStudent.length()-1));
+        attendance.setAttendanceCourseNo(courseId);
+        attendanceRepository.save(attendance);
+        return true;
+    }
 }

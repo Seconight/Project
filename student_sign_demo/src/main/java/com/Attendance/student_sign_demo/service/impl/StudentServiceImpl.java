@@ -192,6 +192,52 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public Boolean addFace(String id, MultipartFile[] faceList) {
+        String studentNo=id;
+        Student student=studentRepository.findByStudentNo(studentNo);
+        String studentEncoding="";
+        String filePath=PathUtil.demoPath+"/userFace/"+studentNo+".jpg"; //定义上传文件的存放位置
+        for(int i=0;i<faceList.length;i++)//依次创建人脸图
+        {
+            try{
+                //进行文件写入
+                faceList[i].transferTo(new File(filePath));
+            }catch (IllegalStateException e){
+                e.printStackTrace();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            String encodingFilePath=PathUtil.demoPath+"/userFace/encoding"+studentNo+".txt"; //定义encoding文件的存放位置
+            try{
+                Process process = Runtime.getRuntime().exec(
+                        "cmd.exe /c start "+PathUtil.demoPath+"/runEncode.bat "+studentNo);
+                process.waitFor();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            //从文件中读取encoding
+            BufferedReader reader=null;
+            StringBuffer stringBuffer=new StringBuffer();
+            try{
+                reader=new BufferedReader(new FileReader(new File(encodingFilePath)));
+                String tempStr;
+                while((tempStr=reader.readLine())!=null){
+                    stringBuffer.append(tempStr);
+                }
+                reader.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            studentEncoding=studentEncoding+stringBuffer.toString()+";";
+        }
+        student.setStudentEncoding(studentEncoding.substring(0,studentEncoding.length()-1));
+        studentRepository.save(student);//更新
+        return true;
+    }
+
+    @Override
     public boolean register(String userId, String password, String userClass, String address, String name) {
         if(userId.length()==13){
             Student student=new Student();

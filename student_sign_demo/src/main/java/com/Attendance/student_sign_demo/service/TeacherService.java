@@ -17,4 +17,5 @@ public interface TeacherService {
     public boolean supplyAttendance(String studentId,String attendanceId);
     public void newCourse(CourseForm courseForm);
     public boolean Sign(AttendanceForm attendanceForm);
+    public boolean Sign(String courseId,MultipartFile[] imageList);//上一个方法的改正
 }
