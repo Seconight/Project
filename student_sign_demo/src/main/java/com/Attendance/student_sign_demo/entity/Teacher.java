@@ -10,7 +10,6 @@ import javax.persistence.Id;
 @Entity
 public class Teacher {
     @Id
-    @GeneratedValue
     private String teacherNo;
     private String teacherName;
     private String teacherAddress;
@@ -39,5 +38,20 @@ public class Teacher {
             courses=this.teacherCourse.split(",");
         }
         return courses;
+    }
+    public void setTeacherNo(String teacherNo){
+        this.teacherNo=teacherNo;
+    }
+    public void setTeacherName(String teacherName){
+        this.teacherName=teacherName;
+    }
+    public void setTeacherAddress(String teacherAddress){
+        this.teacherAddress=teacherAddress;
+    }
+    public void setTeacherPassword(String password){
+        this.teacherPassword=password;
+    }
+    public void setTeacherCourse(String course){
+        this.teacherCourse=course;
     }
 }

@@ -18,4 +18,7 @@ public interface StudentService {
     public List<CourseVO> getCourses(String id);
     public List<StudentAttendanceVO> getStudentAttendance(String courseId, String studentId);
     public Boolean updateFace(FaceForm faceForm);
+    public boolean register(String userId,String password,String userClass,String address,String name);
+    public CourseVO searchByCourseId(String id);
+    public List<CourseVO> searchByCourseName(String courseName);
 }

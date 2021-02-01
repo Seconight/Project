@@ -23,7 +23,7 @@ public class CourseHandler {
         if(id.length()!=13){
             return ResultUtil.failed("课程id不合法");
         }
-        return ResultUtil.success(studentService.getCourses(id));
+        return ResultUtil.success(studentService.getCourses(id));//这楼里差学期参数
     }
 
     //学生查看课程签到信息

@@ -11,9 +11,11 @@ import com.Attendance.student_sign_demo.repository.CourseRepository;
 import com.Attendance.student_sign_demo.repository.StudentRepository;
 import com.Attendance.student_sign_demo.repository.TeacherRepository;
 import com.Attendance.student_sign_demo.service.StudentService;
+import com.Attendance.student_sign_demo.vo.Course1VO;
 import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
 import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,18 +85,40 @@ public class StudentServiceImpl implements StudentService {
     public List<CourseVO> getCourses(String id) {
         String[] courses=studentRepository.findByStudentNo(id).getStudentCourse();
         List<CourseVO> courseVOList=new ArrayList<>();
+        List<Course> courseList=new ArrayList<>();
+        List<String> semesterList=new ArrayList<>();//新建学期列表
         for(int i=0;i<courses.length;i++)
         {
-            CourseVO courseVO=new CourseVO();
             Course course=courseRepository.findByCourseNo(courses[i]);
-            courseVO.setId(course.getCourseNo());
-            courseVO.setName(course.getCourseName());
-            courseVO.setStartTime(course.getCourseStartTime());
-            courseVO.setEndTime(course.getCourseEndTime());
-            courseVO.setDays(course.getCourseDays());
-            courseVO.setWeeks(course.getCourseWeeks());
-            courseVO.setSemester(course.getCourseSemester());
-            courseVO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
+            if(semesterList.toArray().length==0){//列表为空直接添加
+                semesterList.add(course.getCourseSemester());
+            }
+            else{
+                if(!semesterList.contains(course.getCourseSemester())){
+                    semesterList.add(course.getCourseSemester());//列表不为空比较后添加
+                }
+            }
+            courseList.add(course);
+        }
+        for(int i=0;i<semesterList.toArray().length;i++){//遍历学期列表创建courseVO对象
+            CourseVO courseVO=new CourseVO();
+            courseVO.setSemester(semesterList.get(i));
+            List<Course1VO> course1VOList=new ArrayList<>();
+            for(int j=0;j<courseList.toArray().length;j++){//取出合适学期的课程
+                if(courseList.get(j).getCourseSemester().equals(semesterList.get(i))){
+                    Course course=courseList.get(j);
+                    Course1VO course1VO=new Course1VO();
+                    course1VO.setId(course.getCourseNo());
+                    course1VO.setDays(course.getCourseDays());
+                    course1VO.setEndTime(course.getCourseEndTime());
+                    course1VO.setName(course.getCourseName());
+                    course1VO.setWeeks(course.getCourseWeeks());
+                    course1VO.setStartTime(course.getCourseStartTime());
+                    course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
+                    course1VOList.add(course1VO);
+                }
+            }
+            courseVO.setCourse1VOList(course1VOList);
             courseVOList.add(courseVO);
         }
         return courseVOList;
@@ -165,5 +189,96 @@ public class StudentServiceImpl implements StudentService {
         student.setStudentEncoding(stringBuffer.toString());
         studentRepository.save(student);//更新
         return true;
+    }
+
+    @Override
+    public boolean register(String userId, String password, String userClass, String address, String name) {
+        if(userId.length()==13){
+            Student student=new Student();
+            student.setStudentNo(userId);
+            student.setStudentClass(userClass);
+            student.setStudentName(name);
+            student.setStudentAddress(address);
+            student.setStudentPassword(password);
+            studentRepository.save(student);
+        }
+        else{
+            Teacher teacher=new Teacher();
+            teacher.setTeacherNo(userId);
+            teacher.setTeacherAddress(address);
+            teacher.setTeacherName(name);
+            teacher.setTeacherPassword(password);
+            teacherRepository.save(teacher);
+        }
+        return true;
+    }
+
+    @Override
+    public CourseVO searchByCourseId(String id) {
+        Course course=courseRepository.findByCourseNo(id);
+        Course1VO course1VO=new Course1VO();
+        course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
+        course1VO.setWeeks(course.getCourseWeeks());
+        course1VO.setName(course.getCourseName());
+        course1VO.setDays(course.getCourseDays());
+        course1VO.setId(course.getCourseNo());
+        course1VO.setStartTime(course.getCourseStartTime());
+        course1VO.setEndTime(course.getCourseEndTime());
+        List<Course1VO> course1VOList=new ArrayList<>();
+        course1VOList.add(course1VO);
+        CourseVO courseVO=new CourseVO();
+        courseVO.setCourse1VOList(course1VOList);
+        courseVO.setSemester(course.getCourseSemester());
+        return courseVO;
+    }
+
+    @Override
+    public List<CourseVO> searchByCourseName(String courseName) {
+        List<Course> courseList=courseRepository.findAll();
+        List<String> semesterList=new ArrayList<>();//新建学期列表
+        int k=courseList.toArray().length;
+        for(int i=0;i<k;i++)
+        {
+            Course course= courseList.get(i);
+            if(course.getCourseName().contains(courseName)){//符合条件判断学期
+                if(semesterList.toArray().length==0){//列表为空直接添加
+                    semesterList.add(course.getCourseSemester());
+                }
+                else{
+                    if(!semesterList.contains(course.getCourseSemester())){
+                        semesterList.add(course.getCourseSemester());//列表不为空比较后添加
+                    }
+                }
+            }
+            //不符合删除
+            else{
+                courseList.remove(i);
+                k=courseList.toArray().length;
+            }
+
+        }
+        List<CourseVO> courseVOList=new ArrayList<>();
+        for(int i = 0; i<semesterList.toArray().length; i++){//遍历学期列表创建courseVO对象
+            CourseVO courseVO=new CourseVO();
+            courseVO.setSemester(semesterList.get(i));
+            List<Course1VO> course1VOList=new ArrayList<>();
+            for(int j=0;j<courseList.toArray().length;j++){//取出合适学期的课程
+                if(courseList.get(j).getCourseSemester().equals(semesterList.get(i))){
+                    Course course=courseList.get(j);
+                    Course1VO course1VO=new Course1VO();
+                    course1VO.setId(course.getCourseNo());
+                    course1VO.setDays(course.getCourseDays());
+                    course1VO.setEndTime(course.getCourseEndTime());
+                    course1VO.setName(course.getCourseName());
+                    course1VO.setWeeks(course.getCourseWeeks());
+                    course1VO.setStartTime(course.getCourseStartTime());
+                    course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
+                    course1VOList.add(course1VO);
+                }
+            }
+            courseVO.setCourse1VOList(course1VOList);
+            courseVOList.add(courseVO);
+        }
+        return courseVOList;
     }
 }

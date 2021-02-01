@@ -25,5 +25,14 @@ class TeacherRepositoryTest {
         Teacher teacher=repository.findByTeacherNo("000000001");
         System.out.println(teacher);
     }
+    @Test
+    void save(){
+        Teacher teacher=new Teacher();
+        teacher.setTeacherNo("000000004");
+        teacher.setTeacherAddress(null);
+        teacher.setTeacherName("亮亮");
+        teacher.setTeacherPassword("123456");
+        repository.save(teacher);
+    }
 
 }

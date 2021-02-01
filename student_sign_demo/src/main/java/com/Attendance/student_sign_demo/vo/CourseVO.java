@@ -8,52 +8,16 @@ import java.util.List;
 //课程视图对象
 @Data
 public class CourseVO {
-    @JsonProperty("id")
-    private String id;
-    @JsonProperty("name")
-    private String name;
-    @JsonProperty("stime")
-    private Integer startTime;
-    @JsonProperty("etime")
-    private Integer endTime;
-    @JsonProperty("days")
-    private List<Integer> days;
-    @JsonProperty("weeks")
-    private List<Integer> weeks;
     @JsonProperty("semester")
     private String semester;
-    @JsonProperty("teachername")
-    private String teacherName;
+    @JsonProperty("course")
+    private List<Course1VO> course1VOList;
 
-    public void setId(String courseNo) {
-        this.id=courseNo;
-    }
-
-    public void setName(String courseName) {
-        this.name=courseName;
-    }
-
-    public void setStartTime(Integer courseStartTime) {
-        this.startTime=courseStartTime;
-    }
-
-    public void setEndTime(Integer courseEndTime) {
-        this.endTime=courseEndTime;
-    }
-
-    public void setDays(List<Integer> courseDays) {
-        this.days=courseDays;
-    }
-
-    public void setWeeks(List<Integer> courseWeeks) {
-        this.weeks=courseWeeks;
-    }
 
     public void setSemester(String courseSemester) {
-        this.semester=courseSemester;
+        this.semester = courseSemester;
     }
-
-    public void setCourseTeacher(String teacherName) {
-        this.teacherName=teacherName;
+    public void setCourse1VOList(List<Course1VO> course1VOList){
+        this.course1VOList=course1VOList;
     }
 }

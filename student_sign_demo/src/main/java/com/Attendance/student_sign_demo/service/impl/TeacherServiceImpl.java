@@ -1,18 +1,13 @@
 package com.Attendance.student_sign_demo.service.impl;
 
-import com.Attendance.student_sign_demo.entity.Attendance;
-import com.Attendance.student_sign_demo.entity.Course;
-import com.Attendance.student_sign_demo.entity.StartTime;
-import com.Attendance.student_sign_demo.entity.Student;
+import com.Attendance.student_sign_demo.entity.*;
 import com.Attendance.student_sign_demo.form.AttendanceForm;
 import com.Attendance.student_sign_demo.form.CourseForm;
 import com.Attendance.student_sign_demo.repository.*;
 import com.Attendance.student_sign_demo.service.TeacherService;
 import com.Attendance.student_sign_demo.util.PathUtil;
 import com.Attendance.student_sign_demo.util.TimeUtil;
-import com.Attendance.student_sign_demo.vo.AttendanceVO;
-import com.Attendance.student_sign_demo.vo.CourseStudentVO;
-import com.Attendance.student_sign_demo.vo.TeacherCourseVO;
+import com.Attendance.student_sign_demo.vo.*;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -52,21 +47,43 @@ public class TeacherServiceImpl implements TeacherService {
     private TimeRepository timeRepository;
     @Override
     public List<TeacherCourseVO> getCourses(String id) {
-        String[] courses=teacherRepository.findByTeacherNo(id).getTeacherCourse();
+        String[] courseNo=teacherRepository.findByTeacherNo(id).getTeacherCourse();
         List<TeacherCourseVO> teacherCourseVOList=new ArrayList<>();
-        for(int i=0;i<courses.length;i++)
+        List<Course> courseList=new ArrayList<>();
+        List<String> semesterList=new ArrayList<>();//新建学期列表
+        for(int i=0;i<courseNo.length;i++)
         {
+            Course course=courseRepository.findByCourseNo(courseNo[i]);
+            if(semesterList.toArray().length==0){//列表为空直接添加
+                semesterList.add(course.getCourseSemester());
+            }
+            else{
+                if(!semesterList.contains(course.getCourseSemester())){
+                    semesterList.add(course.getCourseSemester());//列表不为空比较后添加
+                }
+            }
+            courseList.add(course);
+        }
+        for(int i=0;i<semesterList.toArray().length;i++){//遍历学期列表创建courseVO对象
             TeacherCourseVO teacherCourseVO=new TeacherCourseVO();
-            Course course=courseRepository.findByCourseNo(courses[i]);
-            String []students=course.getCourseShouldStudent();
-            teacherCourseVO.setStudentNum(students.length);
-            teacherCourseVO.setId(course.getCourseNo());
-            teacherCourseVO.setName(course.getCourseName());
-            teacherCourseVO.setStartTime(course.getCourseStartTime());
-            teacherCourseVO.setEndTime(course.getCourseEndTime());
-            teacherCourseVO.setDays(course.getCourseDays());
-            teacherCourseVO.setWeeks(course.getCourseWeeks());
-            teacherCourseVO.setSemester(course.getCourseSemester());
+            teacherCourseVO.setSemester(semesterList.get(i));
+            List<TeacherCourse1VO> course1VOList=new ArrayList<>();
+            for(int j=0;j<courseList.toArray().length;j++){//取出合适学期的课程
+                if(courseList.get(j).getCourseSemester().equals(semesterList.get(i))){
+                    Course course=courseList.get(j);
+                    TeacherCourse1VO course1VO=new TeacherCourse1VO();
+                    String[] students=course.getCourseShouldStudent();
+                    course1VO.setId(course.getCourseNo());
+                    course1VO.setDays(course.getCourseDays());
+                    course1VO.setEndTime(course.getCourseEndTime());
+                    course1VO.setName(course.getCourseName());
+                    course1VO.setWeeks(course.getCourseWeeks());
+                    course1VO.setStartTime(course.getCourseStartTime());
+                    course1VO.setStudentNum(students.length);
+                    course1VOList.add(course1VO);
+                }
+            }
+            teacherCourseVO.setTeacherCourse1VOList(course1VOList);
             teacherCourseVOList.add(teacherCourseVO);
         }
         return teacherCourseVOList;
