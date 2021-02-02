@@ -30,7 +30,7 @@
         methods: {
             onSave(item) {
                 const _this = this
-                axios.put('http://localhost:8181/address/update',item).then(function (resp) {
+                axios.put('http://localhost:8081/address/update',item).then(function (resp) {
                     if(resp.data.code == 0){
                         let instance = Toast('修改成功');
                         setTimeout(() => {

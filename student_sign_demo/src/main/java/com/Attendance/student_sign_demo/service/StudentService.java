@@ -3,6 +3,7 @@ package com.Attendance.student_sign_demo.service;
 import com.Attendance.student_sign_demo.entity.Student;
 import com.Attendance.student_sign_demo.form.FaceForm;
 import com.Attendance.student_sign_demo.form.LoginForm;
+import com.Attendance.student_sign_demo.form.RegisterForm;
 import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
 import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
@@ -19,7 +20,8 @@ public interface StudentService {
     public List<StudentAttendanceVO> getStudentAttendance(String courseId, String studentId);
     public Boolean updateFace(FaceForm faceForm);
     public Boolean addFace(String id,MultipartFile[] faceList);//上个函数的更改
-    public boolean register(String userId,String password,String userClass,String address,String name);
+//    public boolean register(String userId,String password,String userClass,String address,String name);
+    public boolean register(RegisterForm registerForm);
     public CourseVO searchByCourseId(String id);
-    public List<CourseVO> searchByCourseName(String courseName);
+    public CourseVO searchByCourseName(String courseName);
 }

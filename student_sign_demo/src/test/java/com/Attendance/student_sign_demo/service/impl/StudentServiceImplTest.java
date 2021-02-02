@@ -44,7 +44,7 @@ class StudentServiceImplTest {
     }
     @Test
     void register(){
-        studentService.register("000000004","123456",null,null,"亮亮");
+        //studentService.register("000000004","123456",null,null,"亮亮");
     }
     @Test
     void searchByCourseId(){
@@ -53,7 +53,7 @@ class StudentServiceImplTest {
     }
     @Test
     void searchByCourseName(){
-        List<CourseVO> courseVOList=studentService.searchByCourseName("C");
+        //List<CourseVO> courseVOList=studentService.searchByCourseName("C");
         int a=0;
     }
 }
