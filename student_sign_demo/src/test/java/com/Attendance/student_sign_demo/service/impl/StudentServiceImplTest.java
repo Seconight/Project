@@ -1,100 +1,59 @@
 package com.Attendance.student_sign_demo.service.impl;
 
+import com.Attendance.student_sign_demo.entity.Course;
 import com.Attendance.student_sign_demo.form.LoginForm;
 import com.Attendance.student_sign_demo.service.StudentService;
 import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
 import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
 
-@RunWith(SpringRunner.class)
+import javax.persistence.Access;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class StudentServiceImplTest {
     @Autowired
     private StudentService studentService;
     @Test
-    void checkLogin() throws Exception {
+    void checkLogin() {
         LoginForm loginForm = new LoginForm("0121810880214","123456");
-        Future<LoginVO> loginVOFuture=studentService.checkLogin(loginForm);
-        LoginVO loginVO=new LoginVO();
-        while(true){
-            if(loginVOFuture.isDone()){
-                loginVO=loginVOFuture.get();
-                break;
-            }
-        }
+        LoginVO loginVO=studentService.checkLogin(loginForm);
         int a=0;
     }
     @Test
-    void checkFaceInfo() throws Exception {
-        Future<Boolean> booleanFuture=studentService.checkFace("0121810880214");
-        Boolean result =false;
-        while(true){
-            if(booleanFuture.isDone()){
-                result=booleanFuture.get();
-                break;
-            }
-        }
+    void checkFaceInfo(){
+        boolean result = studentService.checkFace("0121810880214");
         int a=0;
     }
     @Test
-    void getCourses() throws Exception {
-        Future<List<CourseVO>> courseVOFuture=studentService.getCourses("0121810880214");
-        List<CourseVO> courseVOList=new ArrayList<>();
-        while(true){
-            if(courseVOFuture.isDone()){
-                courseVOList=courseVOFuture.get();
-                break;
-            }
-        }
+    void getCourses()
+    {
+        List<CourseVO> courseVOList=studentService.getCourses("0121810880214");
         int a=0;
     }
     @Test
-    void getStudentAttendance() throws Exception {
-        Future<List<StudentAttendanceVO>> studentAttendanceVOFuture=studentService.getStudentAttendance("0000000001","0121810880214");
-        List<StudentAttendanceVO> studentAttendanceVOList=new ArrayList<>();
-        while(true){
-            if(studentAttendanceVOFuture.isDone()){
-                studentAttendanceVOList=studentAttendanceVOFuture.get();
-                break;
-            }
-        }
+    void getStudentAttendance()
+    {
+        List<StudentAttendanceVO> studentAttendanceVOList=studentService.getStudentAttendance("0000000001","0121810880214");
         int a=0;
     }
     @Test
-    void register() throws Exception {
-        studentService.register("000000004","123456",null,null,"亮亮");
+    void register(){
+        //studentService.register("000000004","123456",null,null,"亮亮");
     }
     @Test
-    void searchByCourseId() throws Exception {
-        Future<CourseVO> courseVOFuture=studentService.searchByCourseId("0000000001");
-        CourseVO courseVO=new CourseVO();
-        while(true){
-            if(courseVOFuture.isDone())
-            {
-                courseVO=courseVOFuture.get();
-                break;
-            }
-        }
+    void searchByCourseId(){
+        CourseVO courseVO=studentService.searchByCourseId("0000000001");
         int a=0;
     }
     @Test
-    void searchByCourseName() throws Exception {
-        Future<List<CourseVO>> courseVOFuture=studentService.searchByCourseName("C");
-        List<CourseVO> courseVOList=new ArrayList<>();
-        while(true){
-            if(courseVOFuture.isDone()){
-                courseVOList=courseVOFuture.get();
-                break;
-            }
-        }
+    void searchByCourseName(){
+        //List<CourseVO> courseVOList=studentService.searchByCourseName("C");
         int a=0;
     }
 }

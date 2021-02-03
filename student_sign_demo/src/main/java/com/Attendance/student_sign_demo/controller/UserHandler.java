@@ -3,6 +3,7 @@ package com.Attendance.student_sign_demo.controller;
 import com.Attendance.student_sign_demo.exception.StudentException;
 import com.Attendance.student_sign_demo.form.FaceForm;
 import com.Attendance.student_sign_demo.form.LoginForm;
+import com.Attendance.student_sign_demo.form.RegisterForm;
 import com.Attendance.student_sign_demo.service.impl.StudentServiceImpl;
 import com.Attendance.student_sign_demo.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
@@ -41,10 +42,18 @@ public class UserHandler {
         }
     }
 
-    //注册：待完善
+    //学生注册
     @PutMapping("/register")
-    public ResultVO register(){
-        return null;
+    public ResultVO register(RegisterForm registerForm,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return ResultUtil.failed("错误！出现了空信息！");
+        }
+        if(registerForm.getId().length()==13){
+            if(registerForm.getStudentClass()==null){
+                return ResultUtil.failed("学生信息不能为空");
+            }
+        }
+        return ResultUtil.success(studentService.register(registerForm));
     }
 
     //更新学生人脸信息
@@ -80,6 +89,26 @@ public class UserHandler {
             return null;
         }
     }
+
+    //根据课程号获取课程信息
+    @GetMapping("/searchByCourseId")
+    public ResultVO searchByCourseId(String courseId){
+        if(courseId.length()!=10){
+            return ResultUtil.failed("课程id不合法");
+        }
+        return ResultUtil.success(studentService.searchByCourseId(courseId));
+    }
+
+    //根据课程号获取课程信息
+    @GetMapping("/searchByCourseName")
+    public ResultVO searchByCourseName(String courseName){
+        if(courseName==null){
+            return ResultUtil.failed("课程名为空！");
+        }
+        return ResultUtil.success(studentService.searchByCourseName(courseName));
+    }
+
+    //根据课程名获取课程信息
 
     //测试类，检测get的多参数传值
     @GetMapping(path = "test")
