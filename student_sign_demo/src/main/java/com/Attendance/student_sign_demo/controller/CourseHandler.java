@@ -25,7 +25,7 @@ public class CourseHandler {
         }
         else {
             try {
-                return ResultUtil.success(studentService.getCourses(id));//这里差学期参数
+                return ResultUtil.success(studentService.getCourses(id).get());//这里差学期参数
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -44,7 +44,7 @@ public class CourseHandler {
         }
         else {
             try {
-                return ResultUtil.success(studentService.getStudentAttendance(courseId,studentId));
+                return ResultUtil.success(studentService.getStudentAttendance(courseId,studentId).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }

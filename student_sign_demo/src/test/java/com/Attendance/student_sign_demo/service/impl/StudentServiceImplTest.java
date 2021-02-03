@@ -14,11 +14,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.persistence.Access;
 
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+//@EnableTransactionManagement(proxyTargetClass = true)
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class StudentServiceImplTest {

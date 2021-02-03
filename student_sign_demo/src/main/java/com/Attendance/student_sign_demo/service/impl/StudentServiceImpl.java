@@ -138,6 +138,7 @@ public class StudentServiceImpl implements StudentService {
             studentAttendanceVO.setSuccess(attendance.getAttendanceActualStudent().contains(studentId));
             studentAttendanceVOList.add(studentAttendanceVO);
         }
+
         return new AsyncResult<>(studentAttendanceVOList);
     }
 

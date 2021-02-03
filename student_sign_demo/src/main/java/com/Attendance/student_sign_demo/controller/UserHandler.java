@@ -34,7 +34,7 @@ public class UserHandler {
         }
         else{
             try {
-                return ResultUtil.success(studentService.checkLogin(loginForm));
+                return ResultUtil.success(studentService.checkLogin(loginForm).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -54,7 +54,7 @@ public class UserHandler {
             }
         }
         try {
-            return ResultUtil.success(studentService.register(registerForm));
+            return ResultUtil.success(studentService.register(registerForm).get());
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -71,7 +71,7 @@ public class UserHandler {
         }
         else{
             try {
-                return ResultUtil.success(studentService.updateFace(faceForm));
+                return ResultUtil.success(studentService.updateFace(faceForm).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -87,7 +87,7 @@ public class UserHandler {
         }
         else {
             try {
-                return ResultUtil.success(studentService.checkFace(id));
+                return ResultUtil.success(studentService.checkFace(id).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -103,7 +103,7 @@ public class UserHandler {
         }
         else{
             try {
-                return ResultUtil.success(studentService.searchByCourseId(courseId));
+                return ResultUtil.success(studentService.searchByCourseId(courseId).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -119,7 +119,7 @@ public class UserHandler {
         }
         else{
             try {
-                return ResultUtil.success(studentService.searchByCourseName(courseName));
+                return ResultUtil.success(studentService.searchByCourseName(courseName).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }

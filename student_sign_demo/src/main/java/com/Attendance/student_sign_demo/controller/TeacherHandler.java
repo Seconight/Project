@@ -23,6 +23,7 @@ import java.util.Objects;
 public class TeacherHandler {
 
     @Autowired
+    private
     TeacherServiceImpl teacherService;
 
     //老师新建课程
@@ -44,7 +45,7 @@ public class TeacherHandler {
         }
         else {
             try {
-                return ResultUtil.success(teacherService.getCourses(id));
+                return ResultUtil.success(teacherService.getCourses(id).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -60,7 +61,7 @@ public class TeacherHandler {
         }
         else {
             try {
-                return ResultUtil.success(teacherService.getCourseStudent(id));
+                return ResultUtil.success(teacherService.getCourseStudent(id).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -76,7 +77,7 @@ public class TeacherHandler {
         }
         else{
             try {
-                return ResultUtil.success(teacherService.Sign(attendanceForm));
+                return ResultUtil.success(teacherService.Sign(attendanceForm).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -92,7 +93,7 @@ public class TeacherHandler {
         }
         else{
             try {
-                return ResultUtil.success(teacherService.getAttendanceInfo(id));
+                return ResultUtil.success(teacherService.getAttendanceInfo(id).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -111,7 +112,7 @@ public class TeacherHandler {
         }
         else{
             try {
-                return ResultUtil.success(teacherService.supplyAttendance(studentId,attendanceId));
+                return ResultUtil.success(teacherService.supplyAttendance(studentId,attendanceId).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -37,7 +37,8 @@
           multiple
           accept="image/*"
           preview-size="110px"
-          :max-count="3"
+          :max-count="1"
+          :after-read="onRead"
         />
       </div>
       <div style="text-align: center">
@@ -112,7 +113,38 @@ export default {
       this.showinfor(); //更新组件信息显示
     }
   },
+
   methods: {
+
+    onRead(file){
+      let content = file.file;
+      var axios = require("axios");
+          var FormData = require("form-data");
+          //var fs = require("fs");
+          var data = new FormData();
+          
+          
+          data.append("faceImage", content);
+          console.log(123);
+          data.append("studentId", "0121810880204");
+          console.log(JSON.stringify(data));
+          var config = {
+            method: "post",
+            url: "http://localhost:8080/user/faceInfo",
+            headers: {
+              ...data.getHeaders(),
+            },
+            data: data,
+          };
+          axios(config)
+            .then(function (response) {
+              console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+    },
+
     onSubmit(values) {
       this.username = values["用户名"];
       this.password = values["密码"];
@@ -221,33 +253,7 @@ export default {
           // this.$toast.success("上传成功");
           // console.log(this.imgList[0].getOriginalFilename() + "123");
           // this.imgList = [];
-          var axios = require("axios");
-          var FormData = require("form-data");
-          var fs = require("fs");
-          var data = new FormData();
           
-          console.log(123);
-          
-          data.append("faceImage", this.$fs.createReadStream("D:\\Documents\\2.jpg"));
-          console.log(data);
-          console.log(123);
-          data.append("studentId", "0121810880204");
-          console.log(JSON.stringify(data));
-          var config = {
-            method: "post",
-            url: "http://localhost:8080/user/faceInfo",
-            headers: {
-              ...data.getHeaders(),
-            },
-            data: data,
-          };
-          axios(config)
-            .then(function (response) {
-              console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
         })
         .catch(() => {
           // on cancel
