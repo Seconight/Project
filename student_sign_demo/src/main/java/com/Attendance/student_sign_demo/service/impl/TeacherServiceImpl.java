@@ -21,6 +21,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 @Service
@@ -44,7 +47,8 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private TimeRepository timeRepository;
     @Override
-    public List<TeacherCourseVO> getCourses(String id) {
+    @Async("asyncServiceExecutor")
+    public Future<List<TeacherCourseVO>> getCourses(String id)throws Exception {
         String[] courseNo=teacherRepository.findByTeacherNo(id).getTeacherCourse();
         List<TeacherCourseVO> teacherCourseVOList=new ArrayList<>();
         List<Course> courseList=new ArrayList<>();
@@ -84,11 +88,12 @@ public class TeacherServiceImpl implements TeacherService {
             teacherCourseVO.setTeacherCourse1VOList(course1VOList);
             teacherCourseVOList.add(teacherCourseVO);
         }
-        return teacherCourseVOList;
+        return new AsyncResult<>(teacherCourseVOList);
     }
 
     @Override
-    public List<CourseStudentVO> getCourseStudent(String courseId) {
+    @Async("asyncServiceExecutor")
+    public Future<List<CourseStudentVO>> getCourseStudent(String courseId)throws Exception {
         List<CourseStudentVO> courseStudentVOList=new ArrayList<>();
         String[] studentId=courseRepository.findByCourseNo(courseId).getCourseShouldStudent();
         for(int i=0;i<studentId.length;i++)
@@ -100,11 +105,12 @@ public class TeacherServiceImpl implements TeacherService {
             courseStudentVO.setStudentName(student.getStudentName());
             courseStudentVOList.add(courseStudentVO);
         }
-        return courseStudentVOList;
+        return new AsyncResult<>(courseStudentVOList);
     }
 
     @Override
-    public List<AttendanceVO> getAttendanceInfo(String courseId) {
+    @Async("asyncServiceExecutor")
+    public Future<List<AttendanceVO>> getAttendanceInfo(String courseId)throws Exception {
         List<AttendanceVO> attendanceVOList=new ArrayList<>();
         List<Attendance> attendanceList=attendanceRepository.findByAttendanceCourseNo(courseId);
         for(Attendance attendance:attendanceList){
@@ -154,11 +160,12 @@ public class TeacherServiceImpl implements TeacherService {
             attendanceVO.setAbStudent(courseStudentVOList);
             attendanceVOList.add(attendanceVO);
         }
-        return attendanceVOList;
+        return new AsyncResult<>(attendanceVOList);
     }
 
     @Override
-    public boolean supplyAttendance(String studentId,String attendanceId) {
+    @Async("asyncServiceExecutor")
+    public Future<Boolean> supplyAttendance(String studentId,String attendanceId) throws Exception{
         Attendance attendance=attendanceRepository.findByAttendanceNo(attendanceId);
         String actualStudent=attendance.getAttendanceActualStudent();
         if(actualStudent!=null&&actualStudent.length()!=0){
@@ -176,11 +183,12 @@ public class TeacherServiceImpl implements TeacherService {
             attendance.setAttendanceAbsentStudent(absentStudent.replace(","+studentId,""));
         }
         attendanceRepository.save(attendance);
-        return true;
+        return new AsyncResult<>(true);
     }
 
     //老师新建课程
     @Override
+    @Async("asyncServiceExecutor")
     public void newCourse(CourseForm courseForm) {
 
         String courseName = courseForm.getName();
@@ -235,7 +243,8 @@ public class TeacherServiceImpl implements TeacherService {
 
     //签到函数
     @Override
-    public boolean Sign(AttendanceForm attendanceForm) {
+    @Async("asyncServiceExecutor")
+    public Future<Boolean> Sign(AttendanceForm attendanceForm)throws Exception {
         MultipartFile imageFile = attendanceForm.getImg();
         String courseId = attendanceForm.getId();
         //先将文件存到本地
@@ -351,10 +360,12 @@ public class TeacherServiceImpl implements TeacherService {
         attendance.setAttendanceAbsentStudent(absentStudent);
         attendance.setAttendanceCourseNo(courseId);
         attendanceRepository.save(attendance);
-        return true;
+        return new AsyncResult<>(true);
     }
+
     @Override
-    public boolean Sign(String courseId,MultipartFile[] imageList){
+    @Async("asyncServiceExecutor")
+    public Future<Boolean> Sign(String courseId, MultipartFile[] imageList)throws Exception{
         //根据课程号把学生名单以及对应的人脸encoding保存到文件中
         String [] studentsId=courseRepository.findByCourseNo(courseId).getCourseShouldStudent();
         String studentAndEncoding="";
@@ -479,6 +490,6 @@ public class TeacherServiceImpl implements TeacherService {
         attendance.setAttendanceAbsentStudent(absentStudent.substring(0,absentStudent.length()-1));
         attendance.setAttendanceCourseNo(courseId);
         attendanceRepository.save(attendance);
-        return true;
+        return new AsyncResult<>(true);
     }
 }

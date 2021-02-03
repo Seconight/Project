@@ -43,7 +43,12 @@ public class TeacherHandler {
             return ResultUtil.failed("老师id不合法");
         }
         else {
-            return ResultUtil.success(teacherService.getCourses(id));
+            try {
+                return ResultUtil.success(teacherService.getCourses(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 
@@ -54,7 +59,12 @@ public class TeacherHandler {
             return ResultUtil.failed("课程id不合法");
         }
         else {
-            return ResultUtil.success(teacherService.getCourseStudent(id));
+            try {
+                return ResultUtil.success(teacherService.getCourseStudent(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 
@@ -64,7 +74,14 @@ public class TeacherHandler {
         if(bindingResult.hasErrors()){
             return ResultUtil.failed(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
-        return ResultUtil.success(teacherService.Sign(attendanceForm));
+        else{
+            try {
+                return ResultUtil.success(teacherService.Sign(attendanceForm));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     //老师获取签到信息
@@ -73,7 +90,14 @@ public class TeacherHandler {
         if(id.length() != 10){
             return ResultUtil.failed("签到信息id不合法");
         }
-        return ResultUtil.success(teacherService.getAttendanceInfo(id));
+        else{
+            try {
+                return ResultUtil.success(teacherService.getAttendanceInfo(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     //老师补签
@@ -82,9 +106,16 @@ public class TeacherHandler {
         if(studentId.length()!=13){
             return ResultUtil.failed("学生id不合法");
         }
-        if(attendanceId.length()!=10){
+        else if(attendanceId.length()!=10){
             return ResultUtil.failed("学生id不合法");
         }
-        return ResultUtil.success(teacherService.supplyAttendance(studentId,attendanceId));
+        else{
+            try {
+                return ResultUtil.success(teacherService.supplyAttendance(studentId,attendanceId));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

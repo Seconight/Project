@@ -23,7 +23,14 @@ public class CourseHandler {
         if(id.length()!=13){
             return ResultUtil.failed("课程id不合法");
         }
-        return ResultUtil.success(studentService.getCourses(id));//这楼里差学期参数
+        else {
+            try {
+                return ResultUtil.success(studentService.getCourses(id));//这里差学期参数
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     //学生查看课程签到信息
@@ -32,9 +39,16 @@ public class CourseHandler {
         if(courseId.length()!=10){
             return ResultUtil.failed("课程id不合法");
         }
-        if(studentId.length()!=13){
+        else if(studentId.length()!=13){
             return ResultUtil.failed("学生id不合法");
         }
-        return ResultUtil.success(studentService.getStudentAttendance(courseId,studentId));
+        else {
+            try {
+                return ResultUtil.success(studentService.getStudentAttendance(courseId,studentId));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

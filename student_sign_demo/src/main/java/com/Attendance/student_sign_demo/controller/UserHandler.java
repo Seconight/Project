@@ -31,7 +31,14 @@ public class UserHandler {
             return ResultUtil.failed("学生账号和密码错误");
             //throw new StudentException(bindingResult.getFieldError().getDefaultMessage());
         }
-        return ResultUtil.success(studentService.checkLogin(loginForm));
+        else{
+            try {
+                return ResultUtil.success(studentService.checkLogin(loginForm));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     //注册：待完善
@@ -48,7 +55,14 @@ public class UserHandler {
             return ResultUtil.failed("学生账号和密码错误");
             //throw new StudentException(bindingResult.getFieldError().getDefaultMessage());
         }
-        return ResultUtil.success(studentService.updateFace(faceForm));
+        else{
+            try {
+                return ResultUtil.success(studentService.updateFace(faceForm));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     //检查学生是否存在人脸信息
@@ -57,7 +71,14 @@ public class UserHandler {
         if(id.length()!=13){
             return ResultUtil.failed("学生id不合法");
         }
-        return ResultUtil.success(studentService.checkFace(id));
+        else {
+            try {
+                return ResultUtil.success(studentService.checkFace(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     //测试类，检测get的多参数传值

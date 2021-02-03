@@ -9,17 +9,18 @@ import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 public interface StudentService {
     //用户（老师/学生）登录接口
-    public LoginVO checkLogin(LoginForm loginForm);
+    public Future<LoginVO> checkLogin(LoginForm loginForm) throws Exception;
     //检测是否有人脸信息
-    public boolean checkFace(String id);
-    public List<CourseVO> getCourses(String id);
-    public List<StudentAttendanceVO> getStudentAttendance(String courseId, String studentId);
-    public Boolean updateFace(FaceForm faceForm);
-    public Boolean addFace(String id,MultipartFile[] faceList);//上个函数的更改
-    public boolean register(String userId,String password,String userClass,String address,String name);
-    public CourseVO searchByCourseId(String id);
-    public List<CourseVO> searchByCourseName(String courseName);
+    public Future<Boolean> checkFace(String id)throws Exception;
+    public Future<List<CourseVO>> getCourses(String id)throws Exception;
+    public Future<List<StudentAttendanceVO>> getStudentAttendance(String courseId, String studentId)throws Exception;
+    public Future<Boolean> updateFace(FaceForm faceForm)throws Exception;
+    public Future<Boolean> addFace(String id,MultipartFile[] faceList)throws Exception;//上个函数的更改
+    public Future<Boolean> register(String userId,String password,String userClass,String address,String name)throws Exception;
+    public Future<CourseVO> searchByCourseId(String id)throws Exception;
+    public Future<List<CourseVO>> searchByCourseName(String courseName)throws Exception;
 }
