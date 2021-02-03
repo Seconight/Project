@@ -53,7 +53,12 @@ public class UserHandler {
                 return ResultUtil.failed("学生信息不能为空");
             }
         }
-        return ResultUtil.success(studentService.register(registerForm));
+        try {
+            return ResultUtil.success(studentService.register(registerForm));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     //更新学生人脸信息
@@ -96,7 +101,14 @@ public class UserHandler {
         if(courseId.length()!=10){
             return ResultUtil.failed("课程id不合法");
         }
-        return ResultUtil.success(studentService.searchByCourseId(courseId));
+        else{
+            try {
+                return ResultUtil.success(studentService.searchByCourseId(courseId));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     //根据课程号获取课程信息
@@ -105,7 +117,14 @@ public class UserHandler {
         if(courseName==null){
             return ResultUtil.failed("课程名为空！");
         }
-        return ResultUtil.success(studentService.searchByCourseName(courseName));
+        else{
+            try {
+                return ResultUtil.success(studentService.searchByCourseName(courseName));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     //根据课程名获取课程信息

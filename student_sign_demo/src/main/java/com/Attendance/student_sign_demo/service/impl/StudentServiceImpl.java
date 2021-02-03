@@ -17,19 +17,22 @@ import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
 import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
 import org.apache.poi.ss.formula.functions.T;
+import org.hibernate.persister.walking.spi.WalkingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.Attendance.student_sign_demo.util.PathUtil;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
+
 //服务层：学生功能服务类
 @Service
 public class StudentServiceImpl implements StudentService {
     //main idea:控制反转
     //注入：对应的库操作
-
     @Autowired
     private StudentRepository studentRepository;
     @Autowired
@@ -41,7 +44,7 @@ public class StudentServiceImpl implements StudentService {
 
     //学生登录函数(修改参数为表单类型)
     @Override
-    public LoginVO checkLogin(LoginForm loginForm) {
+    public Future<LoginVO> checkLogin(LoginForm loginForm) throws Exception{
         LoginVO loginVO=new LoginVO();
         String id = loginForm.getId();
         String pwd = loginForm.getPassword();
@@ -69,21 +72,21 @@ public class StudentServiceImpl implements StudentService {
                 loginVO.setRole("学生");
             }
         }
-        return loginVO;
+        return new AsyncResult<>(loginVO);
     }
 
     //人脸信息是否存在接口实现
     @Override
-    public boolean checkFace(String id) {
+    public Future<Boolean> checkFace(String id) throws Exception{
         if(studentRepository.findByStudentNo(id).getStudentEncoding()==null) {
-            return false;
+            return new AsyncResult<>(false);
         }
-        else return true;
+        else return new AsyncResult<>(true);
     }
 
     //学生获取课程信息
     @Override
-    public List<CourseVO> getCourses(String id) {
+    public Future<List<CourseVO>> getCourses(String id)throws Exception {
         String[] courses=studentRepository.findByStudentNo(id).getStudentCourse();
         List<CourseVO> courseVOList=new ArrayList<>();
         List<Course> courseList=new ArrayList<>();
@@ -122,11 +125,11 @@ public class StudentServiceImpl implements StudentService {
             courseVO.setCourse1VOList(course1VOList);
             courseVOList.add(courseVO);
         }
-        return courseVOList;
+        return new AsyncResult<>(courseVOList);
     }
 
     @Override
-    public List<StudentAttendanceVO> getStudentAttendance(String courseId, String studentId) {
+    public Future<List<StudentAttendanceVO>> getStudentAttendance(String courseId, String studentId) throws Exception{
         List<StudentAttendanceVO> studentAttendanceVOList=new ArrayList<>();
         List<Attendance> attendanceList=attendanceRepository.findByAttendanceCourseNo(courseId);
         for(Attendance attendance:attendanceList){
@@ -135,12 +138,12 @@ public class StudentServiceImpl implements StudentService {
             studentAttendanceVO.setSuccess(attendance.getAttendanceActualStudent().contains(studentId));
             studentAttendanceVOList.add(studentAttendanceVO);
         }
-        return studentAttendanceVOList;
+        return new AsyncResult<>(studentAttendanceVOList);
     }
 
     //更新人脸信息
     @Override
-    public Boolean updateFace(FaceForm faceForm) {
+    public Future<Boolean> updateFace(FaceForm faceForm) throws Exception {
         //先将文件存到本地
         String studentNo = faceForm.getStudentId();
         MultipartFile faceImage = faceForm.getFaceImage();
@@ -189,11 +192,11 @@ public class StudentServiceImpl implements StudentService {
         Student student=studentRepository.findByStudentNo(studentNo);
         student.setStudentEncoding(stringBuffer.toString());
         studentRepository.save(student);//更新
-        return true;
+        return new AsyncResult<>(true);
     }
 
     @Override
-    public Boolean addFace(String id, MultipartFile[] faceList) {
+    public Future<Boolean> addFace(String id, MultipartFile[] faceList)throws Exception {
         String studentNo=id;
         Student student=studentRepository.findByStudentNo(studentNo);
         String studentEncoding=student.getStudentEncoding()+";";
@@ -235,12 +238,12 @@ public class StudentServiceImpl implements StudentService {
         }
         student.setStudentEncoding(studentEncoding.substring(0,studentEncoding.length()-1));
         studentRepository.save(student);//更新
-        return true;
+        return new AsyncResult<>(true);
     }
 
     @Override
 //    public boolean register(String userId, String password, String userClass, String address, String name) {
-    public boolean register(RegisterForm registerForm) {
+    public Future<Boolean> register(RegisterForm registerForm)throws Exception {
         String userId = registerForm.getId();
         String userClass = registerForm.getStudentClass();
         String name = registerForm.getName();
@@ -263,11 +266,11 @@ public class StudentServiceImpl implements StudentService {
             teacher.setTeacherPassword(password);
             teacherRepository.save(teacher);
         }
-        return true;
+        return new AsyncResult<>(true);
     }
 
     @Override
-    public CourseVO searchByCourseId(String id) {
+    public Future<CourseVO> searchByCourseId(String id)throws Exception {
         Course course=courseRepository.findByCourseNo(id);
         Course1VO course1VO=new Course1VO();
         course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
@@ -282,79 +285,57 @@ public class StudentServiceImpl implements StudentService {
         CourseVO courseVO=new CourseVO();
         courseVO.setCourse1VOList(course1VOList);
         courseVO.setSemester(course.getCourseSemester());
-        return courseVO;
+        return new AsyncResult<>(courseVO);
     }
 
     @Override
-    public CourseVO searchByCourseName(String courseName) {
-
+    public Future<List<CourseVO>> searchByCourseName(String courseName)throws Exception {
         List<Course> courseList=courseRepository.findAll();
-        Course1VO course1VO = new Course1VO();
-        String semester = null;
-        List<Course1VO> course1VOList = null;
-        for(Course current : courseList){
-            if(courseName.equals(current.getCourseName())){
-                course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(current.getCourseTeacherNo()).getTeacherName());
-                course1VO.setWeeks(current.getCourseWeeks());
-                course1VO.setName(current.getCourseName());
-                course1VO.setDays(current.getCourseDays());
-                course1VO.setId(current.getCourseNo());
-                course1VO.setStartTime(current.getCourseStartTime());
-                course1VO.setEndTime(current.getCourseEndTime());
-                course1VOList=new ArrayList<>();
-                course1VOList.add(course1VO);
-                semester = current.getCourseSemester();
+        List<String> semesterList=new ArrayList<>();//新建学期列表
+        int k=courseList.toArray().length;
+        for(int i=0;i<k;i++)
+        {
+            Course course= courseList.get(i);
+            if(course.getCourseName().contains(courseName)){//符合条件判断学期
+                if(semesterList.toArray().length==0){//列表为空直接添加
+                    semesterList.add(course.getCourseSemester());
+                }
+                else{
+                    if(!semesterList.contains(course.getCourseSemester())){
+                        semesterList.add(course.getCourseSemester());//列表不为空比较后添加
+                    }
+                }
             }
+            //不符合删除
+            else{
+                courseList.remove(i);
+                k=courseList.toArray().length;
+            }
+
         }
-        CourseVO courseVO = new CourseVO();
-        courseVO.setSemester(semester);
-        courseVO.setCourse1VOList(course1VOList);
-        return courseVO;
-//        List<String> semesterList=new ArrayList<>();//新建学期列表
-//        int k=courseList.toArray().length;
-//        for(int i=0;i<k;i++)
-//        {
-//            Course course= courseList.get(i);
-//            if(course.getCourseName().contains(courseName)){//符合条件判断学期
-//                if(semesterList.toArray().length==0){//列表为空直接添加
-//                    semesterList.add(course.getCourseSemester());
-//                }
-//                else{
-//                    if(!semesterList.contains(course.getCourseSemester())){
-//                        semesterList.add(course.getCourseSemester());//列表不为空比较后添加
-//                    }
-//                }
-//            }
-//            //不符合删除
-//            else{
-//                courseList.remove(i);
-//                k=courseList.toArray().length;
-//            }
-//
-//        }
-//        List<CourseVO> courseVOList=new ArrayList<>();
-//        for(int i = 0; i<semesterList.toArray().length; i++){//遍历学期列表创建courseVO对象
-//            CourseVO courseVO=new CourseVO();
-//            courseVO.setSemester(semesterList.get(i));
-//            List<Course1VO> course1VOList=new ArrayList<>();
-//            for(int j=0;j<courseList.toArray().length;j++){//取出合适学期的课程
-//                if(courseList.get(j).getCourseSemester().equals(semesterList.get(i))){
-//                    Course course=courseList.get(j);
-//                    Course1VO course1VO=new Course1VO();
-//                    course1VO.setId(course.getCourseNo());
-//                    course1VO.setDays(course.getCourseDays());
-//                    course1VO.setEndTime(course.getCourseEndTime());
-//                    course1VO.setName(course.getCourseName());
-//                    course1VO.setWeeks(course.getCourseWeeks());
-//                    course1VO.setStartTime(course.getCourseStartTime());
-//                    course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
-//                    course1VOList.add(course1VO);
-//                }
-//            }
-//            courseVO.setCourse1VOList(course1VOList);
-//            courseVOList.add(courseVO);
-//        }
-//        return courseVOList;
-//    }
+        List<CourseVO> courseVOList=new ArrayList<>();
+        for(int i = 0; i<semesterList.toArray().length; i++){//遍历学期列表创建courseVO对象
+            CourseVO courseVO=new CourseVO();
+            courseVO.setSemester(semesterList.get(i));
+            List<Course1VO> course1VOList=new ArrayList<>();
+            for(int j=0;j<courseList.toArray().length;j++){//取出合适学期的课程
+                if(courseList.get(j).getCourseSemester().equals(semesterList.get(i))){
+                    Course course=courseList.get(j);
+                    Course1VO course1VO=new Course1VO();
+                    course1VO.setId(course.getCourseNo());
+                    course1VO.setDays(course.getCourseDays());
+                    course1VO.setEndTime(course.getCourseEndTime());
+                    course1VO.setName(course.getCourseName());
+                    course1VO.setWeeks(course.getCourseWeeks());
+                    course1VO.setStartTime(course.getCourseStartTime());
+                    course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
+                    course1VOList.add(course1VO);
+                }
+            }
+            courseVO.setCourse1VOList(course1VOList);
+            courseVOList.add(courseVO);
+        }
+        return new AsyncResult<>(courseVOList);
     }
+
 }
