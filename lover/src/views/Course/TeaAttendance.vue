@@ -36,11 +36,8 @@
             <TabHead v-if="records[index].abStudentNum != 0" />
             <div style="width: 100%; height: 100px; overflow-y: scroll">
               <van-row
-                v-for="(acStudent, acindex) in records[index].acStudent"
+                v-for="acStudent in records[index].acStudent"
                 :key="acStudent.id"
-                @click="
-                  supply(index, acindex, acStudent, records[index].attendanceId)
-                "
               >
                 <van-col span="8">{{ acStudent.id }}</van-col>
                 <van-col span="8">{{ acStudent.name }}</van-col>

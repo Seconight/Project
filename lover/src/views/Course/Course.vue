@@ -37,15 +37,12 @@
         </van-search>
       </form>
       <van-dropdown-menu active-color="#1989fa">
-        <van-dropdown-item
-          v-model="semesterItem"
-          :options="semesterOptions"
-        />
+        <van-dropdown-item v-model="semesterItem" :options="semesterOptions" @change="semesterChange"/>
       </van-dropdown-menu>
       <div>
-        <van-collapse v-model="activeNames">
+        <van-collapse v-model="activeCourse">
           <van-collapse-item
-            v-for="(course, index) in courses"
+            v-for="(course, index) in allCourses[semesterItem]"
             :key="course.id"
           >
             <template #title style="width: 200px">
@@ -83,7 +80,9 @@
       <div style="height: 50px"></div>
     </div>
     <transition>
-      <router-view :course="courses[courseIndex]"></router-view>
+      <router-view
+        :course="allCourses[semesterItem][courseIndex]"
+      ></router-view>
     </transition>
     <van-popup v-model="showPhotoSign" round>
       <div class="photoSign">
@@ -112,19 +111,17 @@ export default {
       showAddCoursePopover: false,
       addCoursePopoverActions: [{ text: "新建课程" }],
       searchValue: "",
-      activeNames: [],
+      activeCourse: [],
       role: "",
-      courses: [],
+      allCourses: [[]],
       courseIndex: 0,
       imgList: [],
       showPhotoSign: false,
       preview_options: {
         closeable: true,
       },
-      semesterItem: "0",
-      semesterOptions: [
-        { text: "全部课程", value: "0" },
-      ],
+      semesterItem: 0,
+      semesterOptions: [],
     };
   },
   created() {
@@ -150,6 +147,7 @@ export default {
 
         axios(config)
           .then(function (response) {
+            console.log(response.data.data);
             _this.loadCourse(response.data.data);
           })
           .catch(function (error) {
@@ -189,6 +187,7 @@ export default {
       if (this.imgList.length == 0) {
         this.$toast("请添加图片");
       } else {
+        //接口
         this.$toast.success("上传成功");
         this.showPhotoSign = false;
       }
@@ -218,28 +217,44 @@ export default {
       }
       return time + stime + "-" + etime + "节 ";
     },
-    loadCourse(Courses) {
-      for (let i = 0; i < Courses.length; i++) {
-        let temp = {
-          id: Courses[i].id,
-          name: Courses[i].name,
-          time: this.getTime(
-            Courses[i].days,
-            Courses[i].stime,
-            Courses[i].etime
-          ),
-          week:
-            Courses[i].weeks[0] +
-            "-" +
-            Courses[i].weeks[Courses[i].weeks.length - 1] +
-            "周",
-          semester: Courses[i].semester,
-          teachername:
-            this.role == "老师"
-              ? JSON.parse(localStorage.getItem("userInfo")).name
-              : Courses[i].teachername, //如果是老师，则为老师自己的名字
-        };
-        this.courses.push(temp);
+    loadCourse(data) {
+      this.allCourses = [[]];
+      this.semesterOptions = [];
+      this.semesterOptions.push({ text: "全部课程", value: 0 }); //全部课程选项
+      //遍历每个学期
+
+      for (let i = 0; i < data.length; i++) {
+        let semester = []; //semester存储该学期的课程
+        this.semesterOptions.push({
+          text: data[i].semester,
+          value: i + 1,
+        }); //全部课程选项
+
+        let Courses = data[i].course;
+        for (let j = 0; j < Courses.length; j++) {
+          let temp = {
+            id: Courses[j].id,
+            name: Courses[j].name,
+            time: this.getTime(
+              Courses[j].days,
+              Courses[j].stime,
+              Courses[j].etime
+            ),
+            week:
+              Courses[j].weeks[0] +
+              "-" +
+              Courses[j].weeks[Courses[j].weeks.length - 1] +
+              "周",
+            semester: data[i].semester,
+            teachername:
+              this.role == "老师"
+                ? JSON.parse(localStorage.getItem("userInfo")).name
+                : Courses[j].teachername, //如果是老师，则为老师自己的名字
+          };
+          semester.push(temp);
+          this.allCourses[0].push(temp); //添加到全部课程中
+        }
+        this.allCourses.push(semester);
       }
     },
     addCourse(action) {
@@ -248,6 +263,9 @@ export default {
     onSearch() {
       //调用接口
     },
+    semesterChange(){
+      this.activeCourse=[];//保持所有课程缩放状态
+    }
   },
 };
 </script>

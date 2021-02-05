@@ -40,6 +40,7 @@
       <div class="content">
         <van-cell-group>
           <van-cell title="课程号" :value="course.id" />
+          <van-cell title="课程名" :value="course.name" />
           <van-cell title="任课老师" :value="course.teachername" />
           <van-cell title="上课时间" :value="course.time" />
           <van-cell title="周次" :value="course.week" />
