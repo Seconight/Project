@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.context.Theme;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -49,6 +50,8 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Async("asyncServiceExecutor")
     public Future<List<TeacherCourseVO>> getCourses(String id)throws Exception {
+        System.out.println("线程"+Thread.currentThread().getName()+"在执行任务");
+        Thread.sleep(2000);
         String[] courseNo=teacherRepository.findByTeacherNo(id).getTeacherCourse();
         List<TeacherCourseVO> teacherCourseVOList=new ArrayList<>();
         List<Course> courseList=new ArrayList<>();

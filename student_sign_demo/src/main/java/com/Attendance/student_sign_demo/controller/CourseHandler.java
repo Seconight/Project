@@ -20,12 +20,12 @@ public class CourseHandler {
     //学生获取课程
     @GetMapping(path = "info")
     public ResultVO info(String id){
-        if(id.length()!=13){
-            return ResultUtil.failed("课程id不合法");
+        if(id==null || id.length()!=13){
+            return ResultUtil.failed("学生id不合法");
         }
         else {
             try {
-                return ResultUtil.success(studentService.getCourses(id).get());//这里差学期参数
+                return ResultUtil.success(studentService.getCourses(id).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }

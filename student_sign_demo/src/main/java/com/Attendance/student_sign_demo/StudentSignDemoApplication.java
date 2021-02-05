@@ -9,13 +9,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication
-//@
 //@ComponentScan(basePackages = "com.Attendance.student_sign_demo.service.impl")
 public class StudentSignDemoApplication {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context=SpringApplication.run(StudentSignDemoApplication.class, args);
-//		StudentServiceImpl studentService=context.getBean(StudentServiceImpl.class);
-//		TeacherServiceImpl teacherService=context.getBean(TeacherServiceImpl.class);
 	}
-
 }

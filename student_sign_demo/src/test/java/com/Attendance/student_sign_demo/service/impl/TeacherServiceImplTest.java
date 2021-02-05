@@ -21,16 +21,18 @@ class TeacherServiceImplTest {
     private TeacherService teacherService;
     @Test
     void getCourses() throws Exception {
-        Future<List<TeacherCourseVO>> listFuture=teacherService.getCourses("000000001");
-        List<TeacherCourseVO> teacherCourseVOList=new ArrayList<>();
-        while(true){
-            if(listFuture.isDone()){
-                teacherCourseVOList=listFuture.get();
-                break;
-            }
+    Future<List<TeacherCourseVO>> listFuture=teacherService.getCourses("000000001");
+    List<TeacherCourseVO> teacherCourseVOList=new ArrayList<>();
+    while(true){
+        if(listFuture.isDone()){
+            teacherCourseVOList=listFuture.get();
+            break;
         }
-        int a=0;
     }
+    for(TeacherCourseVO teacherCourseVO:teacherCourseVOList){
+        System.out.println(teacherCourseVO);
+    }
+}
     @Test
     void getCourseStudent() throws Exception {
         Future<List<CourseStudentVO>> courseStudentVOFuture=teacherService.getCourseStudent("0000000001");
