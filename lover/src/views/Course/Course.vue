@@ -37,7 +37,11 @@
         </van-search>
       </form>
       <van-dropdown-menu active-color="#1989fa">
-        <van-dropdown-item v-model="semesterItem" :options="semesterOptions" @change="semesterChange"/>
+        <van-dropdown-item
+          v-model="semesterItem"
+          :options="semesterOptions"
+          @change="semesterChange"
+        />
       </van-dropdown-menu>
       <div>
         <van-collapse v-model="activeCourse">
@@ -92,6 +96,7 @@
           multiple
           accept="image/*"
           style="padding: 18px"
+          :after-read="onRead"
           :max-count="3"
         />
         <div style="position: fixed; bottom: 0px; left: 75px; padding: 20px">
@@ -162,7 +167,7 @@ export default {
         };
         axios(config)
           .then(function (response) {
-            console.log(JSON.stringify(response.data.data))
+            console.log(JSON.stringify(response.data.data));
             _this.loadCourse(response.data.data);
           })
           .catch(function (error) {
@@ -172,6 +177,9 @@ export default {
     }
   },
   methods: {
+    onRead(file) {
+      this.GLOBAL.signFiles.push(file.file);
+    },
     goToAttendance(index) {
       this.courseIndex = index;
       if (this.role == "老师") {
@@ -181,7 +189,10 @@ export default {
       }
     },
     photoSign(index) {
+      //console.log(JSON.stringify(this.allCourses));
+      this.GLOBAL.signFiles = [];
       this.courseIndex = index;
+      console.log("this index is "+index);
       this.showPhotoSign = true;
     },
     upLodaeSign() {
@@ -189,6 +200,33 @@ export default {
         this.$toast("请添加图片");
       } else {
         //接口
+        console.log(this.allCourses[0][this.courseIndex].id+" add attendance");
+        
+        var axios = require("axios");
+        var FormData = require("form-data");
+        var data = new FormData();
+        for(var i=0;i<this.GLOBAL.signFiles.length;i++){
+          data.append("img",this.GLOBAL.signFiles[i]);
+        }
+        data.append("id", this.allCourses[0][this.courseIndex].id);
+
+        var config = {
+          method: "post",
+          url: this.GLOBAL.port+"/teacher/attendance",
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          data: data,
+        };
+
+        axios(config)
+          .then(function (response) {
+            console.log(JSON.stringify(response.data));
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
         this.$toast.success("上传成功");
         this.showPhotoSign = false;
       }
@@ -264,9 +302,9 @@ export default {
     onSearch() {
       //调用接口
     },
-    semesterChange(){
-      this.activeCourse=[];//保持所有课程缩放状态
-    }
+    semesterChange() {
+      this.activeCourse = []; //保持所有课程缩放状态
+    },
   },
 };
 </script>

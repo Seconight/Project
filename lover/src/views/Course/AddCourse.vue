@@ -355,7 +355,7 @@ export default {
 
       var config = {
         method: "put",
-        url: "http://localhost:8081/teacher/createCourse",
+        url: this.GLOBAL.port+"/teacher/createCourse",
         headers: {
           'Content-Type': 'multipart/form-data',
           

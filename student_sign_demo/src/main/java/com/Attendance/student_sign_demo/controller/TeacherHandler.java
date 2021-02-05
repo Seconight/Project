@@ -92,14 +92,16 @@ public class TeacherHandler {
         else{
             try {
                 return ResultUtil.success(teacherService.Sign(attendanceForm).get());
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 return ResultUtil.failed("服务器数据库异常，请稍后重试!");//出现异常返回错误信息
             }catch (InterruptedException e){
                 Thread.currentThread().interrupt();
                 return ResultUtil.failed("线程被中断，请稍后重试!");
             }catch (ExecutionException e){
                 return ResultUtil.failed("线程I/O异常，请稍后重试!");
-            }catch (Exception e){
+            }
+            catch (Exception e){
                 return ResultUtil.failed(e.getMessage()+"\n"+"请稍后重试!");
             }
         }
