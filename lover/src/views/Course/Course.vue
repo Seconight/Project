@@ -164,6 +164,7 @@ export default {
         };
         axios(config)
           .then(function (response) {
+            console.log(JSON.stringify(response.data.data))
             _this.loadCourse(response.data.data);
           })
           .catch(function (error) {
