@@ -72,9 +72,10 @@
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
         />
+      <router-link to="/register">注册</router-link>
         <div style="margin: 16px">
           <van-button round block type="info" native-type="submit"
-            >提交</van-button
+            >登录</van-button
           >
         </div>
       </van-form>
@@ -173,7 +174,7 @@ export default {
 
       axios(config)
         .then(function (response) {
-          console.log(response.data.data)
+          console.log(response.data.data);
           return response.data[data];
         })
         .catch(function (error) {
@@ -209,8 +210,8 @@ export default {
     },
     //上传人脸
     uploadface() {
+      let _this = this;
       this.$dialog
-        this.$dialog
         .confirm({
           title: "确定上传人脸数据",
         })
@@ -218,21 +219,19 @@ export default {
           // on confirm
           //上传人脸数据
 
-          // this.$toast.success("上传成功");
-          // console.log(this.imgList[0].getOriginalFilename() + "123");
-          // this.imgList = [];
+          //_this.$toast.success("上传成功");
+          //_this.imgList = [];
           var axios = require("axios");
           var FormData = require("form-data");
-          var fs = require("fs");
+          //var fs = require("fs");
           var data = new FormData();
-          
+
           console.log(123);
-          
-          data.append("faceImage", this.$fs.createReadStream("D:\\Documents\\2.jpg"));
-          console.log(data);
-          console.log(123);
+
+          //data.append("faceImage", this.$fs.createReadStream("D:\\Documents\\2.jpg"));
+          //data.append("faceImage", _this.imgList[0].row);
           data.append("studentId", "0121810880204");
-          console.log(JSON.stringify(data));
+          console.log(data);
           var config = {
             method: "post",
             url: "http://localhost:8080/user/faceInfo",

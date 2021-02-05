@@ -2,10 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import User from '../views/User/User.vue'
+import Register from '../views/User/Register.vue'
 import Course from '../views/Course/Course.vue'
 import StuAttendance from '../views/Course/StuAttendance.vue'
 import TeaAttendance from '../views/Course/TeaAttendance.vue'
 import AddCourse from '../views/Course/AddCourse.vue'
+
 Vue.use(VueRouter)
 
 
@@ -25,6 +27,11 @@ const routes = [
     meta: {
       ifShowTabbar: true
     }
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
   },
   {
     path: '/course',

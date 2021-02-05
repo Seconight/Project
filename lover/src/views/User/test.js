@@ -7,7 +7,7 @@ data.append('studentId', '0121810880204');
 
 var config = {
   method: 'post',
-  url: 'http://localhost:8081/user/faceInfo',
+  url: 'http://localhost:8080/user/faceInfo',
   headers: { 
     ...data.getHeaders()
   },

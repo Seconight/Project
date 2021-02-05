@@ -17,6 +17,31 @@
           </van-popover>
         </template>
       </van-nav-bar>
+      <form action="/">
+        <van-search
+          v-model="searchValue"
+          show-action
+          left-icon=""
+          placeholder="请输入课程名搜索关键词或课程号"
+          @search="onSearch"
+        >
+          <template #action>
+            <van-icon
+              name="search"
+              @click="onSearch"
+              color="#1989fa"
+              size="20"
+              style="padding: 10px"
+            />
+          </template>
+        </van-search>
+      </form>
+      <van-dropdown-menu active-color="#1989fa">
+        <van-dropdown-item
+          v-model="semesterItem"
+          :options="semesterOptions"
+        />
+      </van-dropdown-menu>
       <div>
         <van-collapse v-model="activeNames">
           <van-collapse-item
@@ -60,7 +85,7 @@
     <transition>
       <router-view :course="courses[courseIndex]"></router-view>
     </transition>
-    <van-popup v-model="showPhotoSign">
+    <van-popup v-model="showPhotoSign" round>
       <div class="photoSign">
         <van-uploader
           :preview-options="preview_options"
@@ -86,6 +111,7 @@ export default {
     return {
       showAddCoursePopover: false,
       addCoursePopoverActions: [{ text: "新建课程" }],
+      searchValue: "",
       activeNames: [],
       role: "",
       courses: [],
@@ -95,6 +121,10 @@ export default {
       preview_options: {
         closeable: true,
       },
+      semesterItem: "0",
+      semesterOptions: [
+        { text: "全部课程", value: "0" },
+      ],
     };
   },
   created() {
@@ -215,6 +245,9 @@ export default {
     addCourse(action) {
       this.$router.push("/Course/addCourse");
     },
+    onSearch() {
+      //调用接口
+    },
   },
 };
 </script>
@@ -224,6 +257,7 @@ export default {
   // background: rgb(117, 213, 236);
   background: linear-gradient(to right, #63d5f1, #5d87d4);
   border-radius: 10px;
+  font-size: medium;
 }
 .photoSign {
   text-align: center;
