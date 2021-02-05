@@ -31,7 +31,7 @@ public class TeacherHandler {
     //老师新建课程
     @PutMapping("/createCourse")
     public ResultVO createCourse(
-           CourseForm courseForm,String id,BindingResult bindingResult){
+           CourseForm courseForm,BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return ResultUtil.failed(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }

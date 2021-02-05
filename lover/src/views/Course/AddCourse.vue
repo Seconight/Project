@@ -90,7 +90,9 @@
         />
       </van-popup>
       <div style="text-align: center; padding: 20px">
-        <van-uploader accept="application/vnd.ms-excel" v-model="excelfile">
+        <van-uploader accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+        v-model="excelfile" 
+        :after-read="onRead">
           <van-button icon="plus" type="primary">导入学生名单</van-button>
         </van-uploader>
       </div>
@@ -241,6 +243,9 @@ export default {
     },
   },
   methods: {
+    onRead(file){
+      this.GLOBAL.studentFile = file.file;
+    },
     onTimePickerConfirm(value, index) {
       this.showCourseTimePicker = false;
       this.timeText = value[0] + "-" + value[1];
@@ -334,6 +339,38 @@ export default {
       console.log(this.semesterText);
       console.log(JSON.parse(localStorage.getItem("userInfo")).id);
       console.log(this.excelfile);
+
+      var axios = require("axios");
+      var FormData = require("form-data");
+      var data = new FormData();
+      data.append("name", this.className);
+      data.append("sTime", this.stime);
+      data.append("eTime", this.etime);
+      data.append("day", newday);
+      data.append("week", this.week);
+      data.append("semester", this.semesterText);
+      data.append("teacherId", JSON.parse(localStorage.getItem("userInfo")).id);
+      //此处文件在根目录，其他情况可能要加路径
+      data.append("students", this.GLOBAL.studentFile);
+
+      var config = {
+        method: "put",
+        url: "http://localhost:8081/teacher/createCourse",
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          
+        },
+        data: data,
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
       this.$toast.success("新建课程成功 课程号:");
       this.$router.go(-1);
     },

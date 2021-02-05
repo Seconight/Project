@@ -12,6 +12,7 @@ import com.Attendance.student_sign_demo.repository.CourseRepository;
 import com.Attendance.student_sign_demo.repository.StudentRepository;
 import com.Attendance.student_sign_demo.repository.TeacherRepository;
 import com.Attendance.student_sign_demo.service.StudentService;
+import com.Attendance.student_sign_demo.util.CommandUtil;
 import com.Attendance.student_sign_demo.vo.Course1VO;
 import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
@@ -171,15 +172,17 @@ public class StudentServiceImpl implements StudentService {
         //运行python程序获得人脸encoding并保存在文件中
         String encodingFilePath=PathUtil.demoPath+"/userFace/encoding"+studentNo+".txt"; //定义encoding文件的存放位置
         try{
-//            String exe="python";
-//            String command="cd "+PathUtil.demoPath+" ; python face_encoding.py "+studentNo;
-//            String[] cmdArr = new String[] { exe, command };
-//            Process process = Runtime.getRuntime().exec(cmdArr);
-            Process process = Runtime.getRuntime().exec(
-                    "cmd.exe /c start "+PathUtil.demoPath+"/runEncode.bat "+studentNo);
-            process.waitFor();
+
+            CommandUtil commandUtil = new CommandUtil();
+            commandUtil.executeCommand("cmd.exe /c start "+PathUtil.demoPath+"/runEncode.bat "+studentNo);
+
         }catch (Exception e){
             e.printStackTrace();
+        }
+        File code = new File(encodingFilePath);
+        while(!code.exists()){
+            //do nothing
+            //&wait for getting the code
         }
         //从文件中读取encoding
         BufferedReader reader=null;

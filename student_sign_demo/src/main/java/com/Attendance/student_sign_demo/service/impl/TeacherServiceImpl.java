@@ -200,6 +200,15 @@ public class TeacherServiceImpl implements TeacherService {
         String semester = courseForm.getSemester();
         String teacherId = courseForm.getTeacherId();
         MultipartFile studentsFile = courseForm.getStudents();
+        if(courseForm.getStudents()==null){
+            System.out.println("the file is null！");
+        }
+        String filePath=PathUtil.demoPath+"/students/"+courseName+".xlsx";
+        try {
+            studentsFile.transferTo(new File(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Integer num=courseRepository.findAll().toArray().length+1;
         String number=String.valueOf(num);
@@ -219,7 +228,8 @@ public class TeacherServiceImpl implements TeacherService {
         newCourse.setCourseTeacherNo(teacherId);
         String courseStudents="";
        try{
-           XSSFWorkbook workbook = new XSSFWorkbook(studentsFile.getInputStream());
+           //XSSFWorkbook workbook = new XSSFWorkbook(studentsFile.getInputStream());
+           XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(filePath));
            //HSSFWorkbook workbook=new HSSFWorkbook(studentsFile.getInputStream());
            XSSFSheet hssfSheet=workbook.getSheetAt(0);//获取表单
            int numOfRows=hssfSheet.getPhysicalNumberOfRows();//获取行数
@@ -294,6 +304,11 @@ public class TeacherServiceImpl implements TeacherService {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        //File actualStudentFile = new File(actualStudentFilePath)
+
+
+
         BufferedReader reader=null;
         StringBuffer stringBuffer=new StringBuffer();
         try{
@@ -303,8 +318,6 @@ public class TeacherServiceImpl implements TeacherService {
                 stringBuffer.append(tempStr);
             }
             reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

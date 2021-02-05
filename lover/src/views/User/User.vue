@@ -115,34 +115,9 @@ export default {
   },
 
   methods: {
-
-    onRead(file){
+    onRead(file) {
       let content = file.file;
-      var axios = require("axios");
-          var FormData = require("form-data");
-          //var fs = require("fs");
-          var data = new FormData();
-          
-          
-          data.append("faceImage", content);
-          console.log(123);
-          data.append("studentId", "0121810880204");
-          console.log(JSON.stringify(data));
-          var config = {
-            method: "post",
-            url: "http://localhost:8080/user/faceInfo",
-            headers: {
-              ...data.getHeaders(),
-            },
-            data: data,
-          };
-          axios(config)
-            .then(function (response) {
-              console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+      this.GLOBAL.faceFile = content;
     },
 
     onSubmit(values) {
@@ -205,8 +180,8 @@ export default {
 
       axios(config)
         .then(function (response) {
-          console.log(response.data.data)
-          return response.data[data];
+          console.log(response.data.data);
+          return response.data.data;
         })
         .catch(function (error) {
           console.log(error);
@@ -241,19 +216,41 @@ export default {
     },
     //上传人脸
     uploadface() {
+      this.$dialog;
       this.$dialog
-        this.$dialog
         .confirm({
           title: "确定上传人脸数据",
         })
         .then(() => {
           // on confirm
-          //上传人脸数据
+          //上传人脸数据,只能上传一张照片
+          var axios = require("axios");
+          var FormData = require("form-data");
+          var data = new FormData();
+          data.append("faceImage", this.GLOBAL.faceFile);
+          //console.log("this is "+this.GLOBAL.faceFile);
+          data.append("studentId", this.id);
 
-          // this.$toast.success("上传成功");
-          // console.log(this.imgList[0].getOriginalFilename() + "123");
-          // this.imgList = [];
+          var config = {
+            method: "post",
+            url: this.GLOBAL.port + "/user/faceInfo",
+            headers: {
+              //...data.getHeaders(),
+              //设置请求头
+              'Content-Type' : 'multipart/form-data'
+            },
+            data: data,
+          };
           
+          axios(config)
+            .then(function (response) {
+              console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+          this.$toast.success("上传成功");
         })
         .catch(() => {
           // on cancel
