@@ -256,13 +256,16 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Async("asyncServiceExecutor")
     public Future<Boolean> Sign(AttendanceForm attendanceForm)throws Exception {
-        MultipartFile imageFile = attendanceForm.getImg();
+        //MultipartFile imageFile = attendanceForm.getImg();
         String courseId = attendanceForm.getId();
         //先将文件存到本地
-        String filePath=PathUtil.demoPath+"/attendance.jpg"; //定义上传文件的存放位置
+        String filePath=PathUtil.demoPath+"/attendance/attendance"; //定义上传文件的存放位置
         //将传来的图片保存到本地
         try{
-            imageFile.transferTo(new File(filePath));
+            for(int i=0; i < attendanceForm.getNumber();i++) {
+                //imageFile.transferTo(new File(filePath));
+                attendanceForm.getImg(i).transferTo(new File(filePath+String.valueOf(i)+".jpg"));
+            }
         }catch (IllegalStateException e){
             e.printStackTrace();
         }catch (IOException e){
@@ -287,13 +290,15 @@ public class TeacherServiceImpl implements TeacherService {
         //进行人脸识别将识别出的人脸保存到文件里
         String actualStudentFilePath=PathUtil.demoPath+"/actualStudent.txt"; //定义学生文件的存放位置
         String absentStudentFilePath=PathUtil.demoPath+"/absentStudent.txt";
+        String signFilePath = PathUtil.demoPath+"/isFinished.txt";
         try{
 //            String exe="python";
 //            String command="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/face_recognize.py";
 //            String[] cmdArr = new String[] { exe, command };
 //            Process process = Runtime.getRuntime().exec(cmdArr);
+
             Process process = Runtime.getRuntime().exec(
-                    "cmd.exe /c start "+ PathUtil.demoPath+"/runRecognize.bat ");
+                    "cmd.exe /c start "+ PathUtil.demoPath+"/runRecognize.bat "+attendanceForm.getNumber());
             process.waitFor();
 //            InputStream in = process.getInputStream();
 //            BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -301,13 +306,15 @@ public class TeacherServiceImpl implements TeacherService {
 //            while ((tmp = br.readLine()) != null) {
 //                // do nothing
 //            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
-
-        //File actualStudentFile = new File(actualStudentFilePath)
-
-
+        //检验是否生成完毕
+        File finishedSign = new File(signFilePath);
+        while(!finishedSign.exists()){
+            //do nothing and wait
+        }
 
         BufferedReader reader=null;
         StringBuffer stringBuffer=new StringBuffer();
@@ -374,6 +381,19 @@ public class TeacherServiceImpl implements TeacherService {
         attendance.setAttendanceAbsentStudent(absentStudent);
         attendance.setAttendanceCourseNo(courseId);
         attendanceRepository.save(attendance);
+
+        //删除文件
+        File actualFile = new File(actualStudentFilePath);
+        File absentFile = new File(absentStudentFilePath);
+
+        if(finishedSign.exists()){
+            finishedSign.delete();
+        }
+        if(actualFile.exists()){
+            actualFile.delete();
+        }
+        if(absentFile.exists())
+            absentFile.delete();
         return new AsyncResult<>(true);
     }
 
