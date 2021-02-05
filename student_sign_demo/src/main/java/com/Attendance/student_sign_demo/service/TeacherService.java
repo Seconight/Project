@@ -6,15 +6,15 @@ import com.Attendance.student_sign_demo.vo.AttendanceVO;
 import com.Attendance.student_sign_demo.vo.CourseStudentVO;
 import com.Attendance.student_sign_demo.vo.TeacherCourseVO;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 import java.util.List;
+import java.util.concurrent.Future;
 
 public interface TeacherService {
-    public List<TeacherCourseVO> getCourses(String teacherId);
-    public List<CourseStudentVO> getCourseStudent(String courseId);
-    public List<AttendanceVO> getAttendanceInfo(String courseId);
-    public boolean supplyAttendance(String studentId,String attendanceId);
-    public void newCourse(CourseForm courseForm);
-    public boolean Sign(AttendanceForm attendanceForm);
+    public Future<List<TeacherCourseVO>> getCourses(String teacherId)throws Exception;
+    public Future<List<CourseStudentVO>> getCourseStudent(String courseId)throws Exception;
+    public Future<List<AttendanceVO>> getAttendanceInfo(String courseId)throws Exception;
+    public Future<Boolean> supplyAttendance(String studentId,String attendanceId)throws Exception;
+    public void newCourse(CourseForm courseForm)throws Exception;
+    public Future<Boolean> Sign(AttendanceForm attendanceForm)throws Exception;
+    public Future<Boolean> Sign(String courseId,MultipartFile[] imageList)throws Exception;//上一个方法的改正
 }

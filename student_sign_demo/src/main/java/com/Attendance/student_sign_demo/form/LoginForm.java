@@ -1,8 +1,8 @@
 package com.Attendance.student_sign_demo.form;
 
 import lombok.Data;
-
 import javax.validation.constraints.NotEmpty;
+
 
 //注意！此处参数输入格式为JSON，且JSON中的字段必须与类中的名称相同
 @Data

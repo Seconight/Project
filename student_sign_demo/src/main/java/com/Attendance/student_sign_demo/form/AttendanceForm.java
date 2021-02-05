@@ -1,9 +1,11 @@
 package com.Attendance.student_sign_demo.form;
 
 import lombok.Data;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
+
 
 @Data
 public class AttendanceForm {
@@ -15,6 +17,7 @@ public class AttendanceForm {
     public String getId() {
         return id;
     }
+
 
     public MultipartFile getImg() {
         return img;

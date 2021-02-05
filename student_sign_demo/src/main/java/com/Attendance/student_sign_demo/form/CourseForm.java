@@ -1,9 +1,10 @@
 package com.Attendance.student_sign_demo.form;
 
 import lombok.Data;
+import javax.validation.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotEmpty;
+
 
 @Data
 public class CourseForm {
@@ -33,7 +34,7 @@ public class CourseForm {
         this.day = day;
     }
 
-    public void seteTime(Integer eTime) {
+    public void setTime(Integer eTime) {
         this.eTime = eTime;
     }
 

@@ -37,7 +37,8 @@
           multiple
           accept="image/*"
           preview-size="110px"
-          :max-count="3"
+          :max-count="1"
+          :after-read="onRead"
         />
       </div>
       <div style="text-align: center">
@@ -113,7 +114,13 @@ export default {
       this.showinfor(); //更新组件信息显示
     }
   },
+
   methods: {
+    onRead(file) {
+      let content = file.file;
+      this.GLOBAL.faceFile = content;
+    },
+
     onSubmit(values) {
       this.username = values["用户名"];
       this.password = values["密码"];
@@ -175,7 +182,7 @@ export default {
       axios(config)
         .then(function (response) {
           console.log(response.data.data);
-          return response.data[data];
+          return response.data.data;
         })
         .catch(function (error) {
           console.log(error);
@@ -210,36 +217,32 @@ export default {
     },
     //上传人脸
     uploadface() {
-      let _this = this;
+      this.$dialog;
       this.$dialog
         .confirm({
           title: "确定上传人脸数据",
         })
         .then(() => {
           // on confirm
-          //上传人脸数据
-
-          //_this.$toast.success("上传成功");
-          //_this.imgList = [];
+          //上传人脸数据,只能上传一张照片
           var axios = require("axios");
           var FormData = require("form-data");
-          //var fs = require("fs");
           var data = new FormData();
+          data.append("faceImage", this.GLOBAL.faceFile);
+          //console.log("this is "+this.GLOBAL.faceFile);
+          data.append("studentId", this.id);
 
-          console.log(123);
-
-          //data.append("faceImage", this.$fs.createReadStream("D:\\Documents\\2.jpg"));
-          //data.append("faceImage", _this.imgList[0].row);
-          data.append("studentId", "0121810880204");
-          console.log(data);
           var config = {
             method: "post",
-            url: "http://localhost:8080/user/faceInfo",
+            url: this.GLOBAL.port + "/user/faceInfo",
             headers: {
-              ...data.getHeaders(),
+              //...data.getHeaders(),
+              //设置请求头
+              'Content-Type' : 'multipart/form-data'
             },
             data: data,
           };
+          
           axios(config)
             .then(function (response) {
               console.log(JSON.stringify(response.data));
@@ -247,6 +250,8 @@ export default {
             .catch(function (error) {
               console.log(error);
             });
+
+          this.$toast.success("上传成功");
         })
         .catch(() => {
           // on cancel
