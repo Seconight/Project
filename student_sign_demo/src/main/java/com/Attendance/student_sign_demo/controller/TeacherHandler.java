@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/teacher")
@@ -40,32 +42,44 @@ public class TeacherHandler {
     //老师获取课程信息
     @GetMapping(path = "/getCourseInfo")
     public ResultVO getCourseInfo(String id){
-        if(id.length() != 9){
-            return ResultUtil.failed("老师id不合法");
+        if(id==null||id.length() != 9){
+            return ResultUtil.failed("老师id出错，请稍后重试!");
         }
         else {
             try {
                 return ResultUtil.success(teacherService.getCourses(id).get());
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SQLException e) {
+                return ResultUtil.failed("服务器数据库异常，请稍后重试!");//出现异常返回错误信息
+            }catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+                return ResultUtil.failed("线程被中断，请稍后重试!");
+            }catch (ExecutionException e){
+                return ResultUtil.failed("线程I/O异常，请稍后重试!");
+            }catch (Exception e){
+                return ResultUtil.failed(e.getMessage()+"\n"+"请稍后重试!");
             }
-            return null;
         }
     }
 
     //老师查看对应课程学生
     @GetMapping(path = "/getCourseStudent")
     public ResultVO getCourseStudent(String id){
-        if(id.length() != 10){
-            return ResultUtil.failed("课程id不合法");
+        if(id==null||id.length() != 10){
+            return ResultUtil.failed("课程id出错，请稍后重试!");
         }
         else {
             try {
                 return ResultUtil.success(teacherService.getCourseStudent(id).get());
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SQLException e) {
+                return ResultUtil.failed("服务器数据库异常，请稍后重试!");//出现异常返回错误信息
+            }catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+                return ResultUtil.failed("线程被中断，请稍后重试!");
+            }catch (ExecutionException e){
+                return ResultUtil.failed("线程I/O异常，请稍后重试!");
+            }catch (Exception e){
+                return ResultUtil.failed(e.getMessage()+"\n"+"请稍后重试!");
             }
-            return null;
         }
     }
 
@@ -78,45 +92,63 @@ public class TeacherHandler {
         else{
             try {
                 return ResultUtil.success(teacherService.Sign(attendanceForm).get());
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SQLException e) {
+                return ResultUtil.failed("服务器数据库异常，请稍后重试!");//出现异常返回错误信息
+            }catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+                return ResultUtil.failed("线程被中断，请稍后重试!");
+            }catch (ExecutionException e){
+                return ResultUtil.failed("线程I/O异常，请稍后重试!");
+            }catch (Exception e){
+                return ResultUtil.failed(e.getMessage()+"\n"+"请稍后重试!");
             }
-            return null;
         }
     }
 
     //老师获取签到信息
     @GetMapping(path = "/checkAttendanceInfo")
     public ResultVO checkAttendanceInfo(String id){
-        if(id.length() != 10){
-            return ResultUtil.failed("签到信息id不合法");
+        if(id==null||id.length() != 10){
+            return ResultUtil.failed("签到id出错，请稍后重试!");
         }
         else{
             try {
                 return ResultUtil.success(teacherService.getAttendanceInfo(id).get());
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SQLException e) {
+                return ResultUtil.failed("服务器数据库异常，请稍后重试!");//出现异常返回错误信息
+            }catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+                return ResultUtil.failed("线程被中断，请稍后重试!");
+            }catch (ExecutionException e){
+                return ResultUtil.failed("线程I/O异常，请稍后重试!");
+            }catch (Exception e){
+                return ResultUtil.failed(e.getMessage()+"\n"+"请稍后重试!");
             }
-            return null;
         }
     }
 
     //老师补签
     @PostMapping(path = "/supply")
     public ResultVO supply(String studentId, String attendanceId){
-        if(studentId.length()!=13){
-            return ResultUtil.failed("学生id不合法");
+        if(studentId==null||studentId.length()!=13){
+            return ResultUtil.failed("学生id出错，请稍后重试!");
         }
-        else if(attendanceId.length()!=10){
-            return ResultUtil.failed("学生id不合法");
+        else if(attendanceId==null||attendanceId.length()!=10){
+            return ResultUtil.failed("学生id出错，，请稍后重试!");
         }
         else{
             try {
                 return ResultUtil.success(teacherService.supplyAttendance(studentId,attendanceId).get());
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SQLException e) {
+                return ResultUtil.failed("服务器数据库异常，请稍后重试!");//出现异常返回错误信息
+            }catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+                return ResultUtil.failed("线程被中断，请稍后重试!");
+            }catch (ExecutionException e){
+                return ResultUtil.failed("线程I/O异常，请稍后重试!");
+            }catch (Exception e){
+                return ResultUtil.failed(e.getMessage()+"\n"+"请稍后重试!");
             }
-            return null;
         }
     }
 }

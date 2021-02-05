@@ -53,8 +53,9 @@ public class StudentServiceImpl implements StudentService {
         if(id.length()==9)
         {//老师登录
             Teacher teacher=teacherRepository.findByTeacherNo(id);
-            if(pwd.equals(teacher.getTeacherPassword()))
-            {
+            //当数据库异常的时候上一句会直接产生异常，不会往下执行，这时候如果想报错给前端该怎么做
+            if(teacher.getTeacherPassword()!=null&&!teacher.getTeacherPassword().equals("")&&pwd.equals(teacher.getTeacherPassword()))
+            {//密码不为空，不为空字符串
                 loginVO.setUserNO(teacher.getTeacherNo());
                 loginVO.setUserName(teacher.getTeacherName());
                 loginVO.setUserClass(null);
@@ -65,7 +66,7 @@ public class StudentServiceImpl implements StudentService {
         else
         {//学生登录
             Student student=studentRepository.findByStudentNo(id);
-            if(pwd.equals(student.getStudentPassword()))
+            if(student.getStudentPassword()!=null&&!student.getStudentPassword().equals("")&&pwd.equals(student.getStudentPassword()))
             {
                 loginVO.setUserNO(student.getStudentNo());
                 loginVO.setUserName(student.getStudentName());
@@ -81,7 +82,8 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Async("asyncServiceExecutor")
     public Future<Boolean> checkFace(String id) throws Exception{
-        if(studentRepository.findByStudentNo(id).getStudentEncoding()==null) {
+        String encoding=studentRepository.findByStudentNo(id).getStudentEncoding();
+        if(encoding==null||encoding.equals("")){
             return new AsyncResult<>(false);
         }
         else return new AsyncResult<>(true);
@@ -110,11 +112,11 @@ public class StudentServiceImpl implements StudentService {
                 }
                 courseList.add(course);
             }
-            for (int i = 0; i < semesterList.toArray().length; i++) {//遍历学期列表和课程列表创建courseVO对象
+            for (int i = 0; i < semesterList.toArray().length;i++) {//遍历学期列表和课程列表创建courseVO对象
                 CourseVO courseVO = new CourseVO();
                 courseVO.setSemester(semesterList.get(i));
                 List<Course1VO> course1VOList = new ArrayList<>();
-                for (int j = 0; j < courseList.toArray().length; j++) {//取出合适学期的课程
+                for (int j = 0; j <courseList.toArray().length;j++ ) {//取出合适学期的课程
                     if (courseList.get(j).getCourseSemester().equals(semesterList.get(i))) {
                         Course course = courseList.get(j);
                         Course1VO course1VO = new Course1VO();
@@ -146,7 +148,6 @@ public class StudentServiceImpl implements StudentService {
             studentAttendanceVO.setSuccess(attendance.getAttendanceActualStudent().contains(studentId));
             studentAttendanceVOList.add(studentAttendanceVO);
         }
-
         return new AsyncResult<>(studentAttendanceVOList);
     }
 
@@ -305,8 +306,7 @@ public class StudentServiceImpl implements StudentService {
     public Future<List<CourseVO>> searchByCourseName(String courseName)throws Exception {
         List<Course> courseList=courseRepository.findAll();
         List<String> semesterList=new ArrayList<>();//新建学期列表
-        int k=courseList.toArray().length;
-        for(int i=0;i<k;i++)
+        for(int i=0;i<courseList.toArray().length;i++)
         {
             Course course= courseList.get(i);
             if(course.getCourseName().contains(courseName)){//符合条件判断学期
@@ -319,12 +319,6 @@ public class StudentServiceImpl implements StudentService {
                     }
                 }
             }
-            //不符合删除
-            else{
-                courseList.remove(i);
-                k=courseList.toArray().length;
-            }
-
         }
         List<CourseVO> courseVOList=new ArrayList<>();
         for(int i = 0; i<semesterList.toArray().length; i++){//遍历学期列表创建courseVO对象

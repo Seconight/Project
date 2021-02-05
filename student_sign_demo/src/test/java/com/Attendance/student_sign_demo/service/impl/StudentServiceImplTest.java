@@ -55,7 +55,7 @@ class StudentServiceImplTest {
     }
     @Test
     void getCourses() throws Exception {
-    Future<List<CourseVO>> courseVOFuture=studentService.getCourses("0121810880214");
+    Future<List<CourseVO>> courseVOFuture=studentService.getCourses("0121810880207");
     List<CourseVO> courseVOList=new ArrayList<>();
     while(true){
         if(courseVOFuture.isDone()){
@@ -63,7 +63,9 @@ class StudentServiceImplTest {
             break;
         }
     }
-    int a=0;
+    for(CourseVO courseVO:courseVOList){
+        System.out.println(courseVO);
+    }
      }
     @Test
     void getStudentAttendance() throws Exception {
