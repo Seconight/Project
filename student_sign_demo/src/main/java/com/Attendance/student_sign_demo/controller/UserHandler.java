@@ -111,7 +111,7 @@ public class UserHandler {
         }
     }
 
-    //根据课程号获取课程信息
+    //根据课程名获取课程信息
     @GetMapping("/searchByCourseName")
     public ResultVO searchByCourseName(String courseName){
         if(courseName==null){

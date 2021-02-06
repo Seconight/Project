@@ -33,29 +33,33 @@
           sticky
         >
           <van-tab title="实到学生" style="text-align: center; font-size: 16px">
-            <TabHead v-if="records[index].acStudentNum != 0" />
-            <van-row
-              v-for="acStudent in records[index].acStudent"
-              :key="acStudent.id"
-            >
-              <van-col span="8">{{ acStudent.id }}</van-col>
-              <van-col span="8">{{ acStudent.name }}</van-col>
-              <van-col span="8">{{ acStudent.class }}</van-col>
-            </van-row>
+            <TabHead v-if="records[index].abStudentNum != 0" />
+            <div style="width: 100%; height: 100px; overflow-y: scroll">
+              <van-row
+                v-for="acStudent in records[index].acStudent"
+                :key="acStudent.id"
+              >
+                <van-col span="8">{{ acStudent.id }}</van-col>
+                <van-col span="8">{{ acStudent.name }}</van-col>
+                <van-col span="8">{{ acStudent.class }}</van-col>
+              </van-row>
+            </div>
           </van-tab>
           <van-tab title="缺勤学生" style="text-align: center; font-size: 16px">
             <TabHead v-if="records[index].abStudentNum != 0" />
-            <van-row
-              v-for="(abStudent, abindex) in records[index].abStudent"
-              :key="abStudent.id"
-              @click="
-                supply(index, abindex, abStudent, records[index].attendanceId)
-              "
-            >
-              <van-col span="8">{{ abStudent.id }}</van-col>
-              <van-col span="8">{{ abStudent.name }}</van-col>
-              <van-col span="8">{{ abStudent.class }}</van-col>
-            </van-row>
+            <div style="width: 100%; height: 100px; overflow-y: scroll">
+              <van-row
+                v-for="(abStudent, abindex) in records[index].abStudent"
+                :key="abStudent.id"
+                @click="
+                  supply(index, abindex, abStudent, records[index].attendanceId)
+                "
+              >
+                <van-col span="8">{{ abStudent.id }}</van-col>
+                <van-col span="8">{{ abStudent.name }}</van-col>
+                <van-col span="8">{{ abStudent.class }}</van-col>
+              </van-row>
+            </div>
           </van-tab>
         </van-tabs>
       </van-collapse-item>
@@ -159,7 +163,7 @@ export default {
       }
     },
     supply(index, abindex, abStudent, attendanId) {
-      console.log(abStudent.id+"   "+attendanId);
+      console.log(abStudent.id + "   " + attendanId);
       let _this = this;
       this.$dialog
         .confirm({
@@ -182,7 +186,7 @@ export default {
           };
           axios(config)
             .then(function (response) {
-              if (response.data.code==1) {
+              if (response.data.code == 1) {
                 let supStudent = _this.records[index].abStudent.splice(
                   abindex,
                   1
@@ -191,7 +195,7 @@ export default {
                 _this.records[index].acStudent.push(supStudent[0]);
                 _this.records[index].acStudentNum++;
                 _this.$toast("补签成功");
-              }else{
+              } else {
                 _this.$toast.fail("补签失败");
               }
             })

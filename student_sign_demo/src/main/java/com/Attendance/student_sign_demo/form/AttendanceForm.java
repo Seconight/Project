@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class AttendanceForm {
     @NotEmpty(message = "文件不能为空！")
-    private MultipartFile img;
+    private MultipartFile[] img;
     @NotEmpty(message = "课程ID不能为空！")
     private String id;
 
@@ -18,7 +18,12 @@ public class AttendanceForm {
         return id;
     }
 
-    public MultipartFile getImg() {
-        return img;
+
+    public MultipartFile getImg(int i) {
+        return img[i];
+    }
+
+    public Integer getNumber(){
+        return img.length;
     }
 }

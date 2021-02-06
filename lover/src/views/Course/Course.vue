@@ -17,10 +17,37 @@
           </van-popover>
         </template>
       </van-nav-bar>
+      <form action="/">
+        <van-search
+          v-model="searchValue"
+          show-action
+          left-icon=""
+          placeholder="请输入课程名搜索关键词或课程号"
+          @search="onSearch"
+          @change="changeInput"
+        >
+          <template #action>
+            <van-icon
+              name="search"
+              @click="onSearch"
+              color="#1989fa"
+              size="20"
+              style="padding: 10px"
+            />
+          </template>
+        </van-search>
+      </form>
+      <van-dropdown-menu active-color="#1989fa">
+        <van-dropdown-item
+          v-model="semesterItem"
+          :options="semesterOptions"
+          @change="semesterChange"
+        />
+      </van-dropdown-menu>
       <div>
-        <van-collapse v-model="activeNames">
+        <van-collapse v-model="activeCourse">
           <van-collapse-item
-            v-for="(course, index) in courses"
+            v-for="(course, index) in allCourses[semesterItem]"
             :key="course.id"
           >
             <template #title style="width: 200px">
@@ -58,9 +85,11 @@
       <div style="height: 50px"></div>
     </div>
     <transition>
-      <router-view :course="courses[courseIndex]"></router-view>
+      <router-view
+        :course="allCourses[semesterItem][courseIndex]"
+      ></router-view>
     </transition>
-    <van-popup v-model="showPhotoSign">
+    <van-popup v-model="showPhotoSign" round>
       <div class="photoSign">
         <van-uploader
           :preview-options="preview_options"
@@ -68,6 +97,7 @@
           multiple
           accept="image/*"
           style="padding: 18px"
+          :after-read="onRead"
           :max-count="3"
         />
         <div style="position: fixed; bottom: 0px; left: 75px; padding: 20px">
@@ -86,15 +116,18 @@ export default {
     return {
       showAddCoursePopover: false,
       addCoursePopoverActions: [{ text: "新建课程" }],
-      activeNames: [],
+      searchValue: "",
+      activeCourse: [],
       role: "",
-      courses: [],
+      allCourses: [[]],
       courseIndex: 0,
       imgList: [],
       showPhotoSign: false,
       preview_options: {
         closeable: true,
       },
+      semesterItem: 0,
+      semesterOptions: [],
     };
   },
   created() {
@@ -120,6 +153,7 @@ export default {
 
         axios(config)
           .then(function (response) {
+            console.log(response.data.data);
             _this.loadCourse(response.data.data);
           })
           .catch(function (error) {
@@ -134,6 +168,7 @@ export default {
         };
         axios(config)
           .then(function (response) {
+            console.log(JSON.stringify(response.data.data));
             _this.loadCourse(response.data.data);
           })
           .catch(function (error) {
@@ -143,6 +178,15 @@ export default {
     }
   },
   methods: {
+    onRead(file) {
+      this.GLOBAL.signFiles.push(file.file);
+    },
+    changeInput(e) {
+      if (e.detail.length === 0) {
+        this.historyShow = true;
+      }
+      this.searchValue = e.detail;
+    },
     goToAttendance(index) {
       this.courseIndex = index;
       if (this.role == "老师") {
@@ -152,13 +196,50 @@ export default {
       }
     },
     photoSign(index) {
+      //console.log(JSON.stringify(this.allCourses));
+      this.GLOBAL.signFiles = [];
       this.courseIndex = index;
+      console.log("this index is " + index);
       this.showPhotoSign = true;
     },
     upLodaeSign() {
       if (this.imgList.length == 0) {
         this.$toast("请添加图片");
       } else {
+        //接口
+        console.log(
+          this.allCourses[this.semesterItem][this.courseIndex].id +
+            " add attendance"
+        );
+
+        var axios = require("axios");
+        var FormData = require("form-data");
+        var data = new FormData();
+        for (var i = 0; i < this.GLOBAL.signFiles.length; i++) {
+          data.append("img", this.GLOBAL.signFiles[i]);
+        }
+        data.append(
+          "id",
+          this.allCourses[this.semesterItem][this.courseIndex].id
+        );
+
+        var config = {
+          method: "post",
+          url: this.GLOBAL.port + "/teacher/attendance",
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          data: data,
+        };
+
+        axios(config)
+          .then(function (response) {
+            console.log(JSON.stringify(response.data));
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
         this.$toast.success("上传成功");
         this.showPhotoSign = false;
       }
@@ -188,32 +269,103 @@ export default {
       }
       return time + stime + "-" + etime + "节 ";
     },
-    loadCourse(Courses) {
-      for (let i = 0; i < Courses.length; i++) {
-        let temp = {
-          id: Courses[i].id,
-          name: Courses[i].name,
-          time: this.getTime(
-            Courses[i].days,
-            Courses[i].stime,
-            Courses[i].etime
-          ),
-          week:
-            Courses[i].weeks[0] +
-            "-" +
-            Courses[i].weeks[Courses[i].weeks.length - 1] +
-            "周",
-          semester: Courses[i].semester,
-          teachername:
-            this.role == "老师"
-              ? JSON.parse(localStorage.getItem("userInfo")).name
-              : Courses[i].teachername, //如果是老师，则为老师自己的名字
-        };
-        this.courses.push(temp);
+    loadCourse(data) {
+      this.allCourses = [[]];
+      this.semesterOptions = [];
+      this.semesterOptions.push({ text: "全部课程", value: 0 }); //全部课程选项
+      //遍历每个学期
+
+      for (let i = 0; i < data.length; i++) {
+        let semester = []; //semester存储该学期的课程
+        this.semesterOptions.push({
+          text: data[i].semester,
+          value: i + 1,
+        }); //全部课程选项
+
+        let Courses = data[i].course;
+        for (let j = 0; j < Courses.length; j++) {
+          let temp = {
+            id: Courses[j].id,
+            name: Courses[j].name,
+            time: this.getTime(
+              Courses[j].days,
+              Courses[j].stime,
+              Courses[j].etime
+            ),
+            week:
+              Courses[j].weeks[0] +
+              "-" +
+              Courses[j].weeks[Courses[j].weeks.length - 1] +
+              "周",
+            semester: data[i].semester,
+            teachername:
+              this.role == "老师"
+                ? JSON.parse(localStorage.getItem("userInfo")).name
+                : Courses[j].teachername, //如果是老师，则为老师自己的名字
+          };
+          semester.push(temp);
+          this.allCourses[0].push(temp); //添加到全部课程中
+        }
+        this.allCourses.push(semester);
       }
     },
     addCourse(action) {
       this.$router.push("/Course/addCourse");
+    },
+    onSearch() {
+      //调用接口
+      console.log("search " + this.searchValue);
+      var sign = 0;
+      for (var i = 0; i < this.searchValue.length; i++) {
+        if (
+          this.searchValue.charAt(i) >= "0" &&
+          this.searchValue.charAt(i) <= "9"
+        ) {
+          sign = 1;
+        }
+      }
+      if (sign == 1) {
+        var axios = require("axios");
+
+        var config = {
+          method: "get",
+          url:
+            this.GLOBAL.port +
+            "/user/searchByCourseId?courseId=" +
+            this.searchValue,
+          headers: {},
+        };
+
+        axios(config)
+          .then(function (response) {
+            console.log(JSON.stringify(response.data));
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        var axios = require("axios");
+
+        var config = {
+          method: "get",
+          url:
+            this.GLOBAL.port+"/user/searchByCourseName?courseName="+this.searchValue,
+          headers: {},
+        };
+
+        const _this = this;
+        axios(config)
+          .then(function (response) {
+            console.log(JSON.stringify(response.data));
+            _this.loadCourse(response.data.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+    },
+    semesterChange() {
+      this.activeCourse = []; //保持所有课程缩放状态
     },
   },
 };
@@ -224,6 +376,7 @@ export default {
   // background: rgb(117, 213, 236);
   background: linear-gradient(to right, #63d5f1, #5d87d4);
   border-radius: 10px;
+  font-size: medium;
 }
 .photoSign {
   text-align: center;

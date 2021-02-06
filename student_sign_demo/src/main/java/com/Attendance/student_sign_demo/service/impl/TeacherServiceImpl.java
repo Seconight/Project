@@ -200,6 +200,15 @@ public class TeacherServiceImpl implements TeacherService {
         String semester = courseForm.getSemester();
         String teacherId = courseForm.getTeacherId();
         MultipartFile studentsFile = courseForm.getStudents();
+        if(courseForm.getStudents()==null){
+            System.out.println("the file is null！");
+        }
+        String filePath=PathUtil.demoPath+"/students/"+courseName+".xlsx";
+        try {
+            studentsFile.transferTo(new File(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Integer num=courseRepository.findAll().toArray().length+1;
         String number=String.valueOf(num);
@@ -219,7 +228,8 @@ public class TeacherServiceImpl implements TeacherService {
         newCourse.setCourseTeacherNo(teacherId);
         String courseStudents="";
        try{
-           XSSFWorkbook workbook = new XSSFWorkbook(studentsFile.getInputStream());
+           //XSSFWorkbook workbook = new XSSFWorkbook(studentsFile.getInputStream());
+           XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(filePath));
            //HSSFWorkbook workbook=new HSSFWorkbook(studentsFile.getInputStream());
            XSSFSheet hssfSheet=workbook.getSheetAt(0);//获取表单
            int numOfRows=hssfSheet.getPhysicalNumberOfRows();//获取行数
@@ -239,6 +249,17 @@ public class TeacherServiceImpl implements TeacherService {
        courseStudents=courseStudents.substring(0,courseStudents.length()-1);
        newCourse.setCourseShouldStudent(courseStudents);
 
+       //更新老师的课程信息
+       Teacher teacher = teacherRepository.findByTeacherNo(teacherId);
+       String[] current = teacher.getTeacherCourse();
+       StringBuffer stringBuffer = new StringBuffer();
+       for(int i=0;i<current.length;i++){
+           stringBuffer.append(current[i]+",");
+       }
+       stringBuffer.append(newCourse.getCourseNo());
+       teacher.setTeacherCourse(stringBuffer.toString());
+       teacherRepository.save(teacher);
+
        courseRepository.save(newCourse);
     }
 
@@ -246,13 +267,16 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Async("asyncServiceExecutor")
     public Future<Boolean> Sign(AttendanceForm attendanceForm)throws Exception {
-        MultipartFile imageFile = attendanceForm.getImg();
+        //MultipartFile imageFile = attendanceForm.getImg();
         String courseId = attendanceForm.getId();
         //先将文件存到本地
-        String filePath=PathUtil.demoPath+"/attendance.jpg"; //定义上传文件的存放位置
+        String filePath=PathUtil.demoPath+"/attendance/attendance"; //定义上传文件的存放位置
         //将传来的图片保存到本地
         try{
-            imageFile.transferTo(new File(filePath));
+            for(int i=0; i < attendanceForm.getNumber();i++) {
+                //imageFile.transferTo(new File(filePath));
+                attendanceForm.getImg(i).transferTo(new File(filePath+String.valueOf(i)+".jpg"));
+            }
         }catch (IllegalStateException e){
             e.printStackTrace();
         }catch (IOException e){
@@ -277,23 +301,20 @@ public class TeacherServiceImpl implements TeacherService {
         //进行人脸识别将识别出的人脸保存到文件里
         String actualStudentFilePath=PathUtil.demoPath+"/actualStudent.txt"; //定义学生文件的存放位置
         String absentStudentFilePath=PathUtil.demoPath+"/absentStudent.txt";
+        String signFilePath = PathUtil.demoPath+"/isFinished.txt";
         try{
-//            String exe="python";
-//            String command="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/face_recognize.py";
-//            String[] cmdArr = new String[] { exe, command };
-//            Process process = Runtime.getRuntime().exec(cmdArr);
             Process process = Runtime.getRuntime().exec(
-                    "cmd.exe /c start "+ PathUtil.demoPath+"/runRecognize.bat ");
+                    "cmd.exe /c start "+ PathUtil.demoPath+"/runRecognize.bat "+attendanceForm.getNumber());
             process.waitFor();
-//            InputStream in = process.getInputStream();
-//            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-//            String tmp = null;
-//            while ((tmp = br.readLine()) != null) {
-//                // do nothing
-//            }
         }catch (Exception e){
             e.printStackTrace();
         }
+        //检验是否生成完毕
+        File finishedSign = new File(signFilePath);
+        while(!finishedSign.exists()){
+            //do nothing and wait
+        }
+
         BufferedReader reader=null;
         StringBuffer stringBuffer=new StringBuffer();
         try{
@@ -308,21 +329,28 @@ public class TeacherServiceImpl implements TeacherService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String actualStudent=stringBuffer.toString();
-        stringBuffer=new StringBuffer();
-        try{
-            reader=new BufferedReader(new FileReader(new File(absentStudentFilePath)));
-            String tempStr;
-            while((tempStr=reader.readLine())!=null){
-                stringBuffer.append(tempStr);
-            }
-            reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        //设置实到学生，缺席学生
+        String actualStudent = "";
+        String absentStudent = "";
+        actualStudent=actualStudent+stringBuffer.toString();
+        String [] actualStudentString=actualStudent.substring(0,actualStudent.length()).split(",");
+        Set set = new HashSet();
+        for (int i = 0; i < actualStudentString.length; i++) {
+            set.add(actualStudentString[i]);
         }
-        String absentStudent=stringBuffer.toString();
+        actualStudentString = (String[]) set.toArray(new String[0]);
+        String totalActualStudent="";
+        for(int i=0;i<actualStudentString.length;i++){
+            totalActualStudent=totalActualStudent+actualStudentString[i]+",";
+        }
+
+        //求缺席学生
+        for(int i=0;i<studentsId.length;i++){
+            if(!set.contains(studentsId[i])){
+                absentStudent=absentStudent+studentsId[i]+",";
+            }
+        }
         //新建签到对象
         Attendance attendance=new Attendance();
         //设置签到号
@@ -358,9 +386,28 @@ public class TeacherServiceImpl implements TeacherService {
 
         //设置实到学生，缺席学生
         attendance.setAttendanceActualStudent(actualStudent);
-        attendance.setAttendanceAbsentStudent(absentStudent);
+        if(!absentStudent.equals("")){
+            attendance.setAttendanceAbsentStudent(absentStudent.substring(0,absentStudent.length()-1));
+        }
+        else{
+            attendance.setAttendanceAbsentStudent(absentStudent);
+        }
         attendance.setAttendanceCourseNo(courseId);
         attendanceRepository.save(attendance);
+
+        //删除文件
+        File actualFile = new File(actualStudentFilePath);
+        File absentFile = new File(absentStudentFilePath);
+
+        if(finishedSign.exists()){
+            finishedSign.delete();
+        }
+        if(actualFile.exists()){
+            actualFile.delete();
+        }
+        if(absentFile.exists()) {
+            absentFile.delete();
+        }
         return new AsyncResult<>(true);
     }
 
@@ -481,6 +528,7 @@ public class TeacherServiceImpl implements TeacherService {
         for(int i=0;i<actualStudentString.length;i++){
             totalActualStudent=totalActualStudent+actualStudentString[i]+",";
         }
+
         //求缺席学生
         for(int i=0;i<studentsId.length;i++){
             if(!set.contains(studentsId[i])){
