@@ -353,9 +353,11 @@ export default {
           headers: {},
         };
 
+        const _this = this;
         axios(config)
           .then(function (response) {
             console.log(JSON.stringify(response.data));
+            _this.loadCourse(response.data.data);
           })
           .catch(function (error) {
             console.log(error);

@@ -249,6 +249,17 @@ public class TeacherServiceImpl implements TeacherService {
        courseStudents=courseStudents.substring(0,courseStudents.length()-1);
        newCourse.setCourseShouldStudent(courseStudents);
 
+       //更新老师的课程信息
+       Teacher teacher = teacherRepository.findByTeacherNo(teacherId);
+       String[] current = teacher.getTeacherCourse();
+       StringBuffer stringBuffer = new StringBuffer();
+       for(int i=0;i<current.length;i++){
+           stringBuffer.append(current[i]+",");
+       }
+       stringBuffer.append(newCourse.getCourseNo());
+       teacher.setTeacherCourse(stringBuffer.toString());
+       teacherRepository.save(teacher);
+
        courseRepository.save(newCourse);
     }
 
