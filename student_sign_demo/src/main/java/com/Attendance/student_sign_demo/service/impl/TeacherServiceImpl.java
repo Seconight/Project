@@ -370,17 +370,16 @@ public class TeacherServiceImpl implements TeacherService {
         String startTimeDown=startTimeList.get(0).getDown();//上学期
         LocalDate date = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         //计算时间差
         int Days=TimeUtil.caculateTotalTime(startTimeDown,date.format(formatter));
         if(Days>0){
-            int weeks=Days/7;
-            attendanceTime=attendanceTime+String.valueOf(weeks+1)+"-"+String.valueOf(Days%7);
+            Days=TimeUtil.caculateTotalTime(startTimeUp,cur);
+            int weeks=-(Days/7)+1;
+            attendanceTime=attendanceTime+String.valueOf(weeks)+"-"+String.valueOf(Math.abs(Days)%7+1);
         }
         else{
-            Days=TimeUtil.caculateTotalTime(startTimeUp,date.format(formatter));
-            int weeks=Days/7;
-            attendanceTime=attendanceTime+String.valueOf(weeks+1)+"-"+String.valueOf(Days%7);
+            int weeks=-(Days/7)+1;
+            attendanceTime=attendanceTime+String.valueOf(weeks)+"-"+String.valueOf(Math.abs(Days)%7+1);
         }
         attendance.setAttendanceTime(attendanceTime);
 
