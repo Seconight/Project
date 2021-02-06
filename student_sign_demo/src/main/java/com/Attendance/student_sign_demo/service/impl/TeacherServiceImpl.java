@@ -292,21 +292,9 @@ public class TeacherServiceImpl implements TeacherService {
         String absentStudentFilePath=PathUtil.demoPath+"/absentStudent.txt";
         String signFilePath = PathUtil.demoPath+"/isFinished.txt";
         try{
-//            String exe="python";
-//            String command="E:/360Downloads/计算机设计大赛/cdc_face/keras-face-recognition-master/face_recognize.py";
-//            String[] cmdArr = new String[] { exe, command };
-//            Process process = Runtime.getRuntime().exec(cmdArr);
-
             Process process = Runtime.getRuntime().exec(
                     "cmd.exe /c start "+ PathUtil.demoPath+"/runRecognize.bat "+attendanceForm.getNumber());
             process.waitFor();
-//            InputStream in = process.getInputStream();
-//            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-//            String tmp = null;
-//            while ((tmp = br.readLine()) != null) {
-//                // do nothing
-//            }
-
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -325,24 +313,33 @@ public class TeacherServiceImpl implements TeacherService {
                 stringBuffer.append(tempStr);
             }
             reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String actualStudent=stringBuffer.toString();
-        stringBuffer=new StringBuffer();
-        try{
-            reader=new BufferedReader(new FileReader(new File(absentStudentFilePath)));
-            String tempStr;
-            while((tempStr=reader.readLine())!=null){
-                stringBuffer.append(tempStr);
-            }
-            reader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String absentStudent=stringBuffer.toString();
+
+        //设置实到学生，缺席学生
+        String actualStudent = "";
+        String absentStudent = "";
+        actualStudent=actualStudent+stringBuffer.toString();
+        String [] actualStudentString=actualStudent.substring(0,actualStudent.length()).split(",");
+        Set set = new HashSet();
+        for (int i = 0; i < actualStudentString.length; i++) {
+            set.add(actualStudentString[i]);
+        }
+        actualStudentString = (String[]) set.toArray(new String[0]);
+        String totalActualStudent="";
+        for(int i=0;i<actualStudentString.length;i++){
+            totalActualStudent=totalActualStudent+actualStudentString[i]+",";
+        }
+
+        //求缺席学生
+        for(int i=0;i<studentsId.length;i++){
+            if(!set.contains(studentsId[i])){
+                absentStudent=absentStudent+studentsId[i]+",";
+            }
+        }
         //新建签到对象
         Attendance attendance=new Attendance();
         //设置签到号
@@ -378,7 +375,12 @@ public class TeacherServiceImpl implements TeacherService {
 
         //设置实到学生，缺席学生
         attendance.setAttendanceActualStudent(actualStudent);
-        attendance.setAttendanceAbsentStudent(absentStudent);
+        if(!absentStudent.equals("")){
+            attendance.setAttendanceAbsentStudent(absentStudent.substring(0,absentStudent.length()-1));
+        }
+        else{
+            attendance.setAttendanceAbsentStudent(absentStudent);
+        }
         attendance.setAttendanceCourseNo(courseId);
         attendanceRepository.save(attendance);
 
@@ -392,8 +394,9 @@ public class TeacherServiceImpl implements TeacherService {
         if(actualFile.exists()){
             actualFile.delete();
         }
-        if(absentFile.exists())
+        if(absentFile.exists()) {
             absentFile.delete();
+        }
         return new AsyncResult<>(true);
     }
 
@@ -514,6 +517,7 @@ public class TeacherServiceImpl implements TeacherService {
         for(int i=0;i<actualStudentString.length;i++){
             totalActualStudent=totalActualStudent+actualStudentString[i]+",";
         }
+
         //求缺席学生
         for(int i=0;i<studentsId.length;i++){
             if(!set.contains(studentsId[i])){

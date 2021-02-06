@@ -24,6 +24,7 @@
           left-icon=""
           placeholder="请输入课程名搜索关键词或课程号"
           @search="onSearch"
+          @change="changeInput"
         >
           <template #action>
             <van-icon
@@ -180,6 +181,12 @@ export default {
     onRead(file) {
       this.GLOBAL.signFiles.push(file.file);
     },
+    changeInput(e) {
+      if (e.detail.length === 0) {
+        this.historyShow = true;
+      }
+      this.searchValue = e.detail;
+    },
     goToAttendance(index) {
       this.courseIndex = index;
       if (this.role == "老师") {
@@ -192,7 +199,7 @@ export default {
       //console.log(JSON.stringify(this.allCourses));
       this.GLOBAL.signFiles = [];
       this.courseIndex = index;
-      console.log("this index is "+index);
+      console.log("this index is " + index);
       this.showPhotoSign = true;
     },
     upLodaeSign() {
@@ -200,21 +207,27 @@ export default {
         this.$toast("请添加图片");
       } else {
         //接口
-        console.log(this.allCourses[0][this.courseIndex].id+" add attendance");
-        
+        console.log(
+          this.allCourses[this.semesterItem][this.courseIndex].id +
+            " add attendance"
+        );
+
         var axios = require("axios");
         var FormData = require("form-data");
         var data = new FormData();
-        for(var i=0;i<this.GLOBAL.signFiles.length;i++){
-          data.append("img",this.GLOBAL.signFiles[i]);
+        for (var i = 0; i < this.GLOBAL.signFiles.length; i++) {
+          data.append("img", this.GLOBAL.signFiles[i]);
         }
-        data.append("id", this.allCourses[0][this.courseIndex].id);
+        data.append(
+          "id",
+          this.allCourses[this.semesterItem][this.courseIndex].id
+        );
 
         var config = {
           method: "post",
-          url: this.GLOBAL.port+"/teacher/attendance",
+          url: this.GLOBAL.port + "/teacher/attendance",
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
           data: data,
         };
@@ -301,6 +314,53 @@ export default {
     },
     onSearch() {
       //调用接口
+      console.log("search " + this.searchValue);
+      var sign = 0;
+      for (var i = 0; i < this.searchValue.length; i++) {
+        if (
+          this.searchValue.charAt(i) >= "0" &&
+          this.searchValue.charAt(i) <= "9"
+        ) {
+          sign = 1;
+        }
+      }
+      if (sign == 1) {
+        var axios = require("axios");
+
+        var config = {
+          method: "get",
+          url:
+            this.GLOBAL.port +
+            "/user/searchByCourseId?courseId=" +
+            this.searchValue,
+          headers: {},
+        };
+
+        axios(config)
+          .then(function (response) {
+            console.log(JSON.stringify(response.data));
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        var axios = require("axios");
+
+        var config = {
+          method: "get",
+          url:
+            this.GLOBAL.port+"/user/searchByCourseName?courseName="+this.searchValue,
+          headers: {},
+        };
+
+        axios(config)
+          .then(function (response) {
+            console.log(JSON.stringify(response.data));
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
     },
     semesterChange() {
       this.activeCourse = []; //保持所有课程缩放状态
