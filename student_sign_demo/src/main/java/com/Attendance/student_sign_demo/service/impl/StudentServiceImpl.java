@@ -326,7 +326,7 @@ public class StudentServiceImpl implements StudentService {
             courseVO.setSemester(semesterList.get(i));
             List<Course1VO> course1VOList=new ArrayList<>();
             for(int j=0;j<courseList.toArray().length;j++){//取出合适学期的课程
-                if(courseList.get(j).getCourseSemester().equals(semesterList.get(i))){
+                if(courseList.get(j).getCourseName().contains(courseName)&&courseList.get(j).getCourseSemester().equals(semesterList.get(i))){
                     Course course=courseList.get(j);
                     Course1VO course1VO=new Course1VO();
                     course1VO.setId(course.getCourseNo());

@@ -106,6 +106,9 @@ class StudentServiceImplTest {
                 break;
             }
         }
+        for(CourseVO courseVO:courseVOList){
+            System.out.println(courseVO);
+        }
         int a=0;
     }
 }
