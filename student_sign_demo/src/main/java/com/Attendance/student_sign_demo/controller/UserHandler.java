@@ -97,13 +97,13 @@ public class UserHandler {
 
     //根据课程号获取课程信息
     @GetMapping("/searchByCourseId")
-    public ResultVO searchByCourseId(String courseId){
+    public ResultVO searchByCourseId(String courseId,String studentId){
         if(courseId.length()!=10){
             return ResultUtil.failed("课程id不合法");
         }
         else{
             try {
-                return ResultUtil.success(studentService.searchByCourseId(courseId).get());
+                return ResultUtil.success(studentService.searchByCourseId(courseId,studentId).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -113,13 +113,13 @@ public class UserHandler {
 
     //根据课程名获取课程信息
     @GetMapping("/searchByCourseName")
-    public ResultVO searchByCourseName(String courseName){
+    public ResultVO searchByCourseName(String courseName,String studentId){
         if(courseName==null){
             return ResultUtil.failed("课程名为空！");
         }
         else{
             try {
-                return ResultUtil.success(studentService.searchByCourseName(courseName).get());
+                return ResultUtil.success(studentService.searchByCourseName(courseName,studentId).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }

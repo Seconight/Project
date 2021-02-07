@@ -21,7 +21,7 @@ class TeacherServiceImplTest {
     private TeacherService teacherService;
     @Test
     void getCourses() throws Exception {
-    Future<List<TeacherCourseVO>> listFuture=teacherService.getCourses("000000001");
+    Future<List<TeacherCourseVO>> listFuture=teacherService.getCourses("000000002");
     List<TeacherCourseVO> teacherCourseVOList=new ArrayList<>();
     while(true){
         if(listFuture.isDone()){

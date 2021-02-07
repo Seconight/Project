@@ -85,7 +85,7 @@ class StudentServiceImplTest {
     }
     @Test
     void searchByCourseId() throws Exception {
-        Future<CourseVO> courseVOFuture=studentService.searchByCourseId("0000000001");
+        Future<CourseVO> courseVOFuture=studentService.searchByCourseId("0000000002","0121810880201");
         CourseVO courseVO=new CourseVO();
         while(true){
             if(courseVOFuture.isDone())
@@ -94,11 +94,12 @@ class StudentServiceImplTest {
                 break;
             }
         }
+        System.out.println(courseVO);
         int a=0;
     }
     @Test
     void searchByCourseName() throws Exception {
-        Future<List<CourseVO>> courseVOFuture=studentService.searchByCourseName("C");
+        Future<List<CourseVO>> courseVOFuture=studentService.searchByCourseName("C","0121810880201");
         List<CourseVO> courseVOList=new ArrayList<>();
         while(true){
             if(courseVOFuture.isDone()){

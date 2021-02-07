@@ -43,6 +43,7 @@ public class Student {
         }
         return courses;
     }
+    public String getStudentCourses(){return this.studentCourse;}
     public void setStudentNo(String studentNo){
         this.studentNo=studentNo;
     }

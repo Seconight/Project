@@ -43,6 +43,7 @@ public class Course {
         }
         return students;
     }
+    public String getCourseStudent(){return this.courseShouldStudent;}
     public List<Integer> getCourseDays(){
         String[] days=null;
         List<Integer> dayList=new ArrayList<Integer>();

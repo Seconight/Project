@@ -22,6 +22,6 @@ public interface StudentService {
     public Future<Boolean> addFace(String id,MultipartFile[] faceList)throws Exception;//上个函数的更改
     public Future<Boolean> register(RegisterForm registerForm)throws Exception;
    // public Future<Boolean> register(String userId,String password,String userClass,String address,String name)throws Exception;
-    public Future<CourseVO> searchByCourseId(String id)throws Exception;
-    public Future<List<CourseVO>> searchByCourseName(String courseName)throws Exception;
+    public Future<CourseVO> searchByCourseId(String courseId,String studentId)throws Exception;
+    public Future<List<CourseVO>> searchByCourseName(String courseName,String studentId)throws Exception;
 }
