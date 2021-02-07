@@ -100,12 +100,6 @@ export default {
       this.$router.go(-1);
     },
     onSubmit(values) {
-      console.log("name", this.name);
-      console.log("id", this.id);
-      console.log("password", this.password);
-      console.log("class", this.class_);
-      console.log("Address", this.address);
-
       var axios = require("axios");
       var FormData = require("form-data");
       var data = new FormData();
@@ -113,20 +107,40 @@ export default {
       data.append("password", this.password);
       data.append("name", this.name);
       data.append("studentClass", this.class_);
-      data.append("address",this.address);
+      data.append("address", this.address);
 
       var config = {
         method: "put",
         url: this.GLOBAL.port + "/user/register",
         headers: {
-          'Content-Type' : 'multipart/form-data'
+          "Content-Type": "multipart/form-data",
         },
         data: data,
       };
-
+      let _this = this;
       axios(config)
         .then(function (response) {
-          console.log(JSON.stringify(response.data));
+          if (response.data.code == 1) {
+            //注册成功
+            _this.$dialog
+              .alert({
+                message: "注册成功！",
+              })
+              .then(() => {
+                // on close
+
+                let val = {
+                  id: _this.id,
+                  name: _this.name,
+                  class: _this.class_,
+                  address: _this.address,
+                  role: _this.role,
+                };
+                localStorage.setItem("userInfo", JSON.stringify(val));
+                localStorage.setItem("checkFace", false);
+                _this.$router.go(-1);
+              });
+          }
         })
         .catch(function (error) {
           console.log(error);

@@ -127,7 +127,7 @@ export default {
         closeable: true,
       },
       semesterItem: 0,
-      semesterOptions: [],
+      semesterOptions: [{ text: "全部课程", value: 0 }],
       coursesStorage: [],
     };
   },
@@ -154,6 +154,10 @@ export default {
 
         axios(config)
           .then(function (response) {
+            if (response.data.code == 0) {
+              _this.$toast("获取课程信息失败");
+              return;
+            }
             _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
           })
@@ -169,7 +173,10 @@ export default {
         };
         axios(config)
           .then(function (response) {
-            console.log(response.data.data);
+            if (response.data.code == 0) {
+              _this.$toast("获取课程信息失败");
+              return;
+            }
             _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
           })
@@ -270,7 +277,9 @@ export default {
       this.semesterOptions = [];
       this.semesterOptions.push({ text: "全部课程", value: 0 }); //全部课程选项
       //遍历每个学期
-
+      if (data.length == 0) {
+        this.$toast("暂无课程");
+      }
       for (let i = 0; i < data.length; i++) {
         let semester = []; //semester存储该学期的课程
         this.semesterOptions.push({
@@ -305,14 +314,10 @@ export default {
         this.allCourses.push(semester);
       }
     },
-    loadSingleCourse(data) {
-      console.log(data);
-    },
     addCourse(action) {
       this.$router.push("/Course/addCourse");
     },
     onClear() {
-      console.log(this.coursesStorage);
       this.loadCourse(this.coursesStorage);
     },
     onSearch() {
@@ -345,7 +350,7 @@ export default {
             if (response.data.code == 0) {
               //搜索失败
               _this.$toast("课程号搜索失败，请重新检查输入的课程号！");
-              _this.searchValue="";
+              _this.searchValue = "";
               return;
             }
             let temp = [];
