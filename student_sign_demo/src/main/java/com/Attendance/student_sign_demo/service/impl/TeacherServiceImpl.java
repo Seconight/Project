@@ -373,7 +373,7 @@ public class TeacherServiceImpl implements TeacherService {
         //计算时间差
         int Days=TimeUtil.caculateTotalTime(startTimeDown,date.format(formatter));
         if(Days>0){
-            Days=TimeUtil.caculateTotalTime(startTimeUp,cur);
+            Days=TimeUtil.caculateTotalTime(startTimeUp,date.format(formatter));
             int weeks=-(Days/7)+1;
             attendanceTime=attendanceTime+String.valueOf(weeks)+"-"+String.valueOf(Math.abs(Days)%7+1);
         }
