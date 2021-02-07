@@ -27,7 +27,7 @@
       <van-cell-group title="人脸信息">
         <van-cell
           title="人脸状态"
-          :value="'checkFace' ? '人脸已上传' : '人脸未上传'"
+          :value="checkFace==true ?'人脸已上传':'人脸未上传'"
         />
       </van-cell-group>
       <div style="text-align: center; padding: 20px">
@@ -151,8 +151,7 @@ export default {
                 JSON.stringify(response.data.data)
               );
               //获取人脸是否注册
-              _this.checkFace = _this.axiosCheckFace(response.data.data.id);
-              localStorage.setItem("checkFace", _this.checkFace);
+              _this.axiosCheckFace(response.data.data.id);
               //console.log("this is "+_this.checkFace);
               _this.$toast.success("登录成功");
               _this.showinfor(); //更新组件信息显示
@@ -181,8 +180,7 @@ export default {
 
       axios(config)
         .then(function (response) {
-          console.log(response.data.data);
-          return response.data.data;
+          localStorage.setItem("checkFace", response.data.data);
         })
         .catch(function (error) {
           console.log(error);
