@@ -105,16 +105,41 @@ export default {
       console.log("password", this.password);
       console.log("class", this.class_);
       console.log("Address", this.address);
+
+      var axios = require("axios");
+      var FormData = require("form-data");
+      var data = new FormData();
+      data.append("id", this.id);
+      data.append("password", this.password);
+      data.append("name", this.name);
+      data.append("studentClass", this.class_);
+      data.append("address",this.address);
+
+      var config = {
+        method: "put",
+        url: this.GLOBAL.port + "/user/register",
+        headers: {
+          'Content-Type' : 'multipart/form-data'
+        },
+        data: data,
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     changeRole() {
       this.idLabel = this.role == "学生" ? "学号" : "职工号";
-      this.name="";
-      this.id="";
-      this.password="";
-      this.confirmPassword="";
-      this.class_="";
-      this.address="";
-
+      this.name = "";
+      this.id = "";
+      this.password = "";
+      this.confirmPassword = "";
+      this.class_ = "";
+      this.address = "";
     },
     validator(val) {
       return this.password == this.confirmPassword ? true : false;
