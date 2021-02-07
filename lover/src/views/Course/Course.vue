@@ -24,7 +24,7 @@
           left-icon=""
           placeholder="请输入课程名搜索关键词或课程号"
           @search="onSearch"
-          @change="changeInput"
+          @clear="onClear"
         >
           <template #action>
             <van-icon
@@ -128,6 +128,7 @@ export default {
       },
       semesterItem: 0,
       semesterOptions: [],
+      coursesStorage: [],
     };
   },
   created() {
@@ -153,7 +154,7 @@ export default {
 
         axios(config)
           .then(function (response) {
-            console.log(response.data.data);
+            _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
           })
           .catch(function (error) {
@@ -168,7 +169,8 @@ export default {
         };
         axios(config)
           .then(function (response) {
-            console.log(JSON.stringify(response.data.data));
+            console.log(response.data.data);
+            _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
           })
           .catch(function (error) {
@@ -180,12 +182,6 @@ export default {
   methods: {
     onRead(file) {
       this.GLOBAL.signFiles.push(file.file);
-    },
-    changeInput(e) {
-      if (e.detail.length === 0) {
-        this.historyShow = true;
-      }
-      this.searchValue = e.detail;
     },
     goToAttendance(index) {
       this.courseIndex = index;
@@ -309,8 +305,15 @@ export default {
         this.allCourses.push(semester);
       }
     },
+    loadSingleCourse(data) {
+      console.log(data);
+    },
     addCourse(action) {
       this.$router.push("/Course/addCourse");
+    },
+    onClear() {
+      console.log(this.coursesStorage);
+      this.loadCourse(this.coursesStorage);
     },
     onSearch() {
       //调用接口
@@ -324,6 +327,7 @@ export default {
           sign = 1;
         }
       }
+      const _this = this;
       if (sign == 1) {
         var axios = require("axios");
 
@@ -338,25 +342,34 @@ export default {
 
         axios(config)
           .then(function (response) {
-            console.log(JSON.stringify(response.data));
+            if (response.data.code == 0) {
+              //搜索失败
+              _this.$toast("课程号搜索失败，请重新检查输入的课程号！");
+              _this.searchValue="";
+              return;
+            }
+            let temp = [];
+            temp.push(response.data.data);
+            console.log(temp);
+            _this.loadCourse(temp);
           })
           .catch(function (error) {
             console.log(error);
           });
       } else {
         var axios = require("axios");
-
         var config = {
           method: "get",
           url:
-            this.GLOBAL.port+"/user/searchByCourseName?courseName="+this.searchValue,
+            this.GLOBAL.port +
+            "/user/searchByCourseName?courseName=" +
+            this.searchValue,
           headers: {},
         };
 
-        const _this = this;
         axios(config)
           .then(function (response) {
-            console.log(JSON.stringify(response.data));
+            console.log(response.data);
             _this.loadCourse(response.data.data);
           })
           .catch(function (error) {
