@@ -4,6 +4,7 @@ import com.Attendance.student_sign_demo.form.AttendanceForm;
 import com.Attendance.student_sign_demo.form.CourseForm;
 import com.Attendance.student_sign_demo.vo.AttendanceVO;
 import com.Attendance.student_sign_demo.vo.CourseStudentVO;
+import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.TeacherCourseVO;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
@@ -17,4 +18,6 @@ public interface TeacherService {
     public void newCourse(CourseForm courseForm)throws Exception;
     public Future<Boolean> Sign(AttendanceForm attendanceForm)throws Exception;
     public Future<Boolean> Sign(String courseId,MultipartFile[] imageList)throws Exception;//上一个方法的改正
+    public Future<CourseVO> searchByCourseId(String courseId, String teacherId)throws Exception;
+    public Future<List<CourseVO>> searchByCourseName(String courseName,String teacherId)throws Exception;
 }

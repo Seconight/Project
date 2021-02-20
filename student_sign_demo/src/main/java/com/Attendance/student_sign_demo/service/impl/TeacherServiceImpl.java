@@ -540,4 +540,81 @@ public class TeacherServiceImpl implements TeacherService {
         attendanceRepository.save(attendance);
         return new AsyncResult<>(true);
     }
+
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<CourseVO> searchByCourseId(String courseId, String teacherId) throws Exception {
+        Teacher teacher=teacherRepository.findByTeacherNo(teacherId);
+        if(!teacher.getTeacherCourses().contains(courseId))
+        {
+            return null;
+        }
+        else{
+            System.out.println(teacher.getTeacherCourses());
+            Course course= courseRepository.findByCourseNo(courseId);
+            Course1VO course1VO=new Course1VO();
+            course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
+            course1VO.setWeeks(course.getCourseWeeks());
+            course1VO.setName(course.getCourseName());
+            course1VO.setDays(course.getCourseDays());
+            course1VO.setId(course.getCourseNo());
+            course1VO.setStartTime(course.getCourseStartTime());
+            course1VO.setEndTime(course.getCourseEndTime());
+            List<Course1VO> course1VOList=new ArrayList<>();
+            course1VOList.add(course1VO);
+            CourseVO courseVO=new CourseVO();
+            courseVO.setCourse1VOList(course1VOList);
+            courseVO.setSemester(course.getCourseSemester());
+            return new AsyncResult<>(courseVO);
+        }
+    }
+
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<List<CourseVO>> searchByCourseName(String courseName, String teacherId) throws Exception {
+        List<Course> courseList1=new ArrayList<>();
+        Teacher teacher=teacherRepository.findByTeacherNo(teacherId);
+        String []courses=teacher.getTeacherCourse();
+        for(String courseNo:courses){
+            courseList1.add(courseRepository.findByCourseNo(courseNo));
+        }
+        List<String> semesterList=new ArrayList<>();//新建学期列表
+        for(int i=0;i<courseList1.toArray().length;i++)
+        {
+            Course course= courseList1.get(i);
+            if(course.getCourseName().contains(courseName)){//符合条件判断学期
+                if(semesterList.toArray().length==0){//列表为空直接添加
+                    semesterList.add(course.getCourseSemester());
+                }
+                else{
+                    if(!semesterList.contains(course.getCourseSemester())){
+                        semesterList.add(course.getCourseSemester());//列表不为空比较后添加
+                    }
+                }
+            }
+        }
+        List<CourseVO> courseVOList=new ArrayList<>();
+        for(int i = 0; i<semesterList.toArray().length; i++){//遍历学期列表创建courseVO对象
+            CourseVO courseVO=new CourseVO();
+            courseVO.setSemester(semesterList.get(i));
+            List<Course1VO> course1VOList=new ArrayList<>();
+            for(int j=0;j<courseList1.toArray().length;j++){//取出合适学期的课程
+                if(courseList1.get(j).getCourseName().contains(courseName)&&courseList1.get(j).getCourseSemester().equals(semesterList.get(i))){
+                    Course course=courseList1.get(j);
+                    Course1VO course1VO=new Course1VO();
+                    course1VO.setId(course.getCourseNo());
+                    course1VO.setDays(course.getCourseDays());
+                    course1VO.setEndTime(course.getCourseEndTime());
+                    course1VO.setName(course.getCourseName());
+                    course1VO.setWeeks(course.getCourseWeeks());
+                    course1VO.setStartTime(course.getCourseStartTime());
+                    course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
+                    course1VOList.add(course1VO);
+                }
+            }
+            courseVO.setCourse1VOList(course1VOList);
+            courseVOList.add(courseVO);
+        }
+        return new AsyncResult<>(courseVOList);
+    }
 }
