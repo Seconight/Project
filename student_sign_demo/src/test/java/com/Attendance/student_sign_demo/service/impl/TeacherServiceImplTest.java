@@ -3,6 +3,7 @@ package com.Attendance.student_sign_demo.service.impl;
 import com.Attendance.student_sign_demo.service.TeacherService;
 import com.Attendance.student_sign_demo.vo.AttendanceVO;
 import com.Attendance.student_sign_demo.vo.CourseStudentVO;
+import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.TeacherCourseVO;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -68,5 +69,40 @@ class TeacherServiceImplTest {
             }
         }
         int a=0;
+    }
+    @Test
+    void searchByCourseId() throws Exception {
+        Future<CourseVO> courseVOFuture=teacherService.searchByCourseId("0000000002","000000001");
+        if(courseVOFuture!=null){
+            CourseVO courseVO=new CourseVO();
+            while(true){
+                if(courseVOFuture.isDone())
+                {
+                    courseVO=courseVOFuture.get();
+                    break;
+                }
+            }
+            System.out.println(courseVO);
+            int a=0;
+        }
+    }
+    @Test
+    void searchByCourseName() throws Exception {
+
+        Future<List<CourseVO>> courseVOFuture=teacherService.searchByCourseName("H","000000001");
+        if(courseVOFuture!=null)
+        {
+            List<CourseVO> courseVOList=new ArrayList<>();
+            while(true){
+                if(courseVOFuture.isDone()){
+                    courseVOList=courseVOFuture.get();
+                    break;
+                }
+            }
+            for(CourseVO courseVO:courseVOList){
+                System.out.println(courseVO);
+            }
+            int a=0;
+        }
     }
 }

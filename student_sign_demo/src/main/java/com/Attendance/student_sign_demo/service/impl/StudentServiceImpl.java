@@ -158,53 +158,53 @@ public class StudentServiceImpl implements StudentService {
     public Future<Boolean> updateFace(FaceForm faceForm) throws Exception {
         //先将文件存到本地
         String studentNo = faceForm.getStudentId();
-        MultipartFile faceImage = faceForm.getFaceImage();
+        MultipartFile[] faceImage = faceForm.getFaceImage();
+        String encodings="";
+        for(int i=0;i<faceImage.length;i++){//遍历人脸列表并计算128维特征向量
+            String filePath=PathUtil.demoPath+"/userFace/"+studentNo+String.valueOf(i)+".jpg"; //定义上传文件的存放位置//这里多加了人脸序号
+            try{
+                //进行文件写入
+                faceImage[i].transferTo(new File(filePath));
 
-        String filePath=PathUtil.demoPath+"/userFace/"+studentNo+".jpg"; //定义上传文件的存放位置
-        try{
-            //进行文件写入
-            faceImage.transferTo(new File(filePath));
-        }catch (IllegalStateException e){
-            e.printStackTrace();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        //运行python程序获得人脸encoding并保存在文件中
-        String encodingFilePath=PathUtil.demoPath+"/userFace/encoding"+studentNo+".txt"; //定义encoding文件的存放位置
-        try{
-
-            CommandUtil commandUtil = new CommandUtil();
-            commandUtil.executeCommand("cmd.exe /c start "+PathUtil.demoPath+"/runEncode.bat "+studentNo);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        File code = new File(encodingFilePath);
-        while(!code.exists()){
-            //do nothing
-            //&wait for getting the code
-        }
-        //从文件中读取encoding
-        BufferedReader reader=null;
-        StringBuffer stringBuffer=new StringBuffer();
-        try{
-            reader=new BufferedReader(new FileReader(new File(encodingFilePath)));
-            String tempStr;
-            while((tempStr=reader.readLine())!=null){
-                stringBuffer.append(tempStr);
+            }catch (IllegalStateException e){
+                e.printStackTrace();
+            }catch (IOException e){
+                e.printStackTrace();
             }
-            reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            //运行python程序获得人脸encoding并保存在文件中
+            String encodingFilePath=PathUtil.demoPath+"/userFace/encoding"+studentNo+String.valueOf(i)+".txt"; //定义encoding文件的存放位置
+            try{
+
+                CommandUtil commandUtil = new CommandUtil();
+                commandUtil.executeCommand("cmd.exe /c start "+PathUtil.demoPath+"/runEncode.bat "+studentNo);
+                //这里不知道应不应该加需要你看一下，对应的python部分也需要你看一下
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            File code = new File(encodingFilePath);
+            while(!code.exists()){
+                //do nothing
+                //&wait for getting the code
+            }
+            //从文件中读取encoding
+            BufferedReader reader=null;
+            StringBuffer stringBuffer=new StringBuffer();
+            try{
+                reader=new BufferedReader(new FileReader(new File(encodingFilePath)));
+                String tempStr;
+                while((tempStr=reader.readLine())!=null){
+                    stringBuffer.append(tempStr);
+                }
+                reader.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            encodings=encodings+stringBuffer.toString()+";";
         }
-//        File image=new File(filePath);
-//        if(image.exists()){//删除图片
-//            image.delete();
-//        }
         Student student=studentRepository.findByStudentNo(studentNo);
-        student.setStudentEncoding(stringBuffer.toString());
+        student.setStudentEncoding(encodings.substring(0,encodings.length()));
         studentRepository.save(student);//更新
         return new AsyncResult<>(true);
     }

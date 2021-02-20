@@ -31,6 +31,7 @@ public class Teacher {
     public String getTeacherPassword() {
         return this.teacherPassword;
     }
+    public String getTeacherCourses(){return this.teacherCourse;}
     public String[] getTeacherCourse(){
         String[] courses=null;
         if(this.teacherCourse!=null)
