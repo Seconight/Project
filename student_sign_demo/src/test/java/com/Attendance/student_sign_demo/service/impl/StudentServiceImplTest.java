@@ -101,7 +101,7 @@ class StudentServiceImplTest {
     void searchByCourseName() throws Exception {
 
         Future<List<CourseVO>> courseVOFuture=studentService.searchByCourseName("C","0121810880201");
-        
+
         List<CourseVO> courseVOList=new ArrayList<>();
         while(true){
             if(courseVOFuture.isDone()){
