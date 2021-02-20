@@ -99,11 +99,9 @@ class StudentServiceImplTest {
     }
     @Test
     void searchByCourseName() throws Exception {
-<<<<<<< Updated upstream
+
         Future<List<CourseVO>> courseVOFuture=studentService.searchByCourseName("C","0121810880201");
-=======
-        Future<List<CourseVO>> courseVOFuture=studentService.searchByCourseName("Java");
->>>>>>> Stashed changes
+        
         List<CourseVO> courseVOList=new ArrayList<>();
         while(true){
             if(courseVOFuture.isDone()){
