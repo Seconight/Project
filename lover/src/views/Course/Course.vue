@@ -63,18 +63,27 @@
             <div style="text-align: center">
               <van-button
                 plain
+                type="info"
+                size="small"
+                icon="contact"
+                @click="goToStudentList(index)"
+                >学生名单</van-button
+              >
+              <van-button
+                plain
                 type="primary"
                 size="small"
                 icon="eye-o"
+                style="margin-left: 20px"
                 @click="goToAttendance(index)"
-                >查看签到记录</van-button
+                >签到记录</van-button
               >
               <van-button
                 v-if="role == '老师'"
                 type="primary"
                 size="small"
                 icon="scan"
-                style="width: 108.4px; margin-left: 50px"
+                style="margin-left: 20px"
                 @click="photoSign(index)"
                 >拍照签到</van-button
               >
@@ -196,6 +205,15 @@ export default {
         this.$router.push("/Course/teaAttendance");
       } else if (this.role == "学生") {
         this.$router.push("/Course/stuAttendance");
+      }
+    },
+    goToStudentList(index) {
+      //暂时老师和学生共用一个学生列表界面
+      this.courseIndex = index;
+      if (this.role == "老师") {
+        this.$router.push("/Course/stuStudentList");
+      } else if (this.role == "学生") {
+        this.$router.push("/Course/stuStudentList");
       }
     },
     photoSign(index) {
