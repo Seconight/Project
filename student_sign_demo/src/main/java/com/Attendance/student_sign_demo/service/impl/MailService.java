@@ -1,4 +1,4 @@
-package com.Attendance.student_sign_demo.service;
+package com.Attendance.student_sign_demo.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

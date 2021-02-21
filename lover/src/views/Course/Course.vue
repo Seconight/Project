@@ -351,17 +351,36 @@ export default {
         }
       }
       const _this = this;
+
+      let userInfo = localStorage.getItem("userInfo");
+      let _userInfo = JSON.parse(userInfo);
+      console.log(_userInfo.id);
+
       if (sign == 1) {
         var axios = require("axios");
-
-        var config = {
-          method: "get",
-          url:
-            this.GLOBAL.port +
-            "/user/searchByCourseId?courseId=" +
-            this.searchValue,
-          headers: {},
-        };
+        if (_userInfo.id.length == 13) {
+          var config = {
+            method: "get",
+            url:
+              this.GLOBAL.port +
+              "/user/searchByCourseId?courseId=" +
+              this.searchValue +
+              "&studentId=" +
+              _userInfo.id,
+            headers: {},
+          };
+        } else {
+          var config = {
+            method: "get",
+            url:
+              this.GLOBAL.port +
+              "/teacher/searchById?courseId=" +
+              this.searchValue +
+              "&teacherId=" +
+              _userInfo.id,
+            headers: {},
+          };
+        }
 
         axios(config)
           .then(function (response) {
@@ -381,14 +400,31 @@ export default {
           });
       } else {
         var axios = require("axios");
-        var config = {
-          method: "get",
-          url:
-            this.GLOBAL.port +
-            "/user/searchByCourseName?courseName=" +
-            this.searchValue,
-          headers: {},
-        };
+
+        if (_userInfo.id.length == 13) {
+          var config = {
+            method: "get",
+            url:
+              this.GLOBAL.port +
+              "/user/searchByCourseName?courseName=" +
+              this.searchValue +
+              "&studentId=" +
+              _userInfo.id,
+            headers: {},
+          };
+        }
+        else{
+            var config = {
+            method: "get",
+            url:
+              this.GLOBAL.port +
+              "/teacher/searchByName?courseName=" +
+              this.searchValue +
+              "&teacherId=" +
+              _userInfo.id,
+            headers: {},
+          };
+        }
 
         axios(config)
           .then(function (response) {

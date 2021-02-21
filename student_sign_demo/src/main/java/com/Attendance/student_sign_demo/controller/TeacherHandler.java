@@ -153,4 +153,35 @@ public class TeacherHandler {
             }
         }
     }
+
+    @GetMapping(path = "/searchById")
+    public ResultVO searchById(String courseId,String teacherId){
+        if(courseId.length()!=10){
+            return ResultUtil.failed("课程id不合法");
+        }
+        else{
+            try {
+                return ResultUtil.success(teacherService.searchByCourseId(courseId,teacherId).get());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    @GetMapping(path = "/searchByName")
+    public ResultVO searchByName(String courseName,String teacherId){
+        if(courseName==null){
+            return ResultUtil.failed("课程id不合法");
+        }
+        else{
+            try {
+                return ResultUtil.success(teacherService.searchByCourseId(courseName,teacherId).get());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 }

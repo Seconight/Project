@@ -1,5 +1,5 @@
 package com.Attendance.student_sign_demo.controller;
-import com.Attendance.student_sign_demo.service.MailService;
+import com.Attendance.student_sign_demo.service.impl.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

@@ -11,6 +11,7 @@ import com.Attendance.student_sign_demo.repository.AttendanceRepository;
 import com.Attendance.student_sign_demo.repository.CourseRepository;
 import com.Attendance.student_sign_demo.repository.StudentRepository;
 import com.Attendance.student_sign_demo.repository.TeacherRepository;
+import com.Attendance.student_sign_demo.service.impl.MailService;
 import com.Attendance.student_sign_demo.service.StudentService;
 import com.Attendance.student_sign_demo.util.CommandUtil;
 import com.Attendance.student_sign_demo.vo.Course1VO;
@@ -43,7 +44,6 @@ public class StudentServiceImpl implements StudentService {
     private CourseRepository courseRepository;
     @Autowired
     private AttendanceRepository attendanceRepository;
-
     //学生登录函数(修改参数为表单类型)
     @Override
     @Async("asyncServiceExecutor")
@@ -289,7 +289,7 @@ public class StudentServiceImpl implements StudentService {
     public Future<CourseVO> searchByCourseId(String courseId,String studentId)throws Exception {
         Course course=courseRepository.findByCourseNo(courseId);
         Student student=studentRepository.findByStudentNo(studentId);
-        if(course==null||!course.getCourseStudent().contains(studentId)||student.getStudentCourses().contains(courseId))
+        if(course==null||!course.getCourseStudent().contains(studentId)||!student.getStudentCourses().contains(courseId))
         {
             return null;
         }
@@ -362,6 +362,36 @@ public class StudentServiceImpl implements StudentService {
             courseVOList.add(courseVO);
         }
         return new AsyncResult<>(courseVOList);
+    }
+
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<Boolean> updatePassword(String studentId,String oldPassword, String newPassword) throws Exception {
+        Student student=studentRepository.findByStudentNo(studentId);
+        String password=student.getStudentPassword();
+        if(password!=null&&!password.equals("")&&password.equals(oldPassword)){
+            student.setStudentPassword(newPassword);
+            studentRepository.save(student);
+            return new AsyncResult<>(true);
+        }
+        return new AsyncResult<>(false);
+    }
+
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<Boolean> addAddress(String studentId, String address) throws Exception {
+        Student student=studentRepository.findByStudentNo(studentId);
+        student.setStudentAddress(address);
+        studentRepository.save(student);
+        return new AsyncResult<>(true);
+    }
+
+    @Override
+    public Future<Boolean> resetPassword(String studentId, String password) throws Exception {
+        Student student=studentRepository.findByStudentNo(studentId);
+        student.setStudentPassword(password);
+        studentRepository.save(student);
+        return new AsyncResult<>(true);
     }
 
 }

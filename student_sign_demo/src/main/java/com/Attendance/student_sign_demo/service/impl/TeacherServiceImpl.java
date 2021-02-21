@@ -12,6 +12,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -616,5 +617,34 @@ public class TeacherServiceImpl implements TeacherService {
             courseVOList.add(courseVO);
         }
         return new AsyncResult<>(courseVOList);
+    }
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<Boolean> updatePassword(String teacherId,String oldPassword, String newPassword) throws Exception {
+        Teacher teacher=teacherRepository.findByTeacherNo(teacherId);
+        String password=teacher.getTeacherPassword();
+        if(password!=null&&!password.equals("")&&password.equals(oldPassword)){
+            teacher.setTeacherPassword(newPassword);
+            teacherRepository.save(teacher);
+            return new AsyncResult<>(true);
+        }
+        return new AsyncResult<>(false);
+    }
+
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<Boolean> addAddress(String teacherId, String address) throws Exception {
+        Teacher teacher=teacherRepository.findByTeacherNo(teacherId);
+        teacher.setTeacherAddress(address);
+        teacherRepository.save(teacher);
+        return new AsyncResult<>(true);
+    }
+
+    @Override
+    public Future<Boolean> resetPassword(String teacherId, String password) throws Exception {
+        Teacher teacher=teacherRepository.findByTeacherNo(teacherId);
+        teacher.setTeacherPassword(password);
+        teacherRepository.save(teacher);
+        return new AsyncResult<>(true);
     }
 }
