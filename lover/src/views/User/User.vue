@@ -19,6 +19,9 @@
       </van-grid>
 
     </div>
+    <transition>
+      <router-view></router-view>
+    </transition>
     <div class="login_modal" v-if="showLoginModal">
       <section @click="closeLoginModal"></section>
       <van-form @submit="onSubmit">
@@ -47,7 +50,7 @@
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
         />
-      <router-link to="/register">注册</router-link>
+        <router-link to="/register">注册</router-link>
         <div style="margin: 16px">
           <van-button round block type="info" native-type="submit"
             >登录</van-button
@@ -210,11 +213,11 @@ export default {
             headers: {
               //...data.getHeaders(),
               //设置请求头
-              'Content-Type' : 'multipart/form-data'
+              "Content-Type": "multipart/form-data",
             },
             data: data,
           };
-          
+
           axios(config)
             .then(function (response) {
               console.log(JSON.stringify(response.data));
