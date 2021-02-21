@@ -9,10 +9,10 @@ import java.util.List;
 
 @Data
 public class FaceForm {
-    @NotEmpty(message = "人脸信息不能为空")
-    private MultipartFile []faceImage;
     @NotEmpty(message = "学生ID不能为空")
     private String studentId;
+    @NotEmpty(message = "人脸信息不能为空")
+    private MultipartFile []faceImage;
 
     public MultipartFile[] getFaceImage() {
         return faceImage;

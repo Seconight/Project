@@ -163,10 +163,22 @@ public class StudentServiceImpl implements StudentService {
         MultipartFile[] faceImage = faceForm.getFaceImage();
         String encodings="";
         for(int i=0;i<faceImage.length;i++){//遍历人脸列表并计算128维特征向量
-            String filePath=PathUtil.demoPath+"/userFace/"+studentNo+String.valueOf(i)+".jpg"; //定义上传文件的存放位置//这里多加了人脸序号
+
+            //对应学生以学号存入文件夹 D:/xxxx/userface/0121810880207
+            String imagePath = PathUtil.demoPath+"/userFace/"+studentNo;
+            File pathDir = new File(imagePath);
+            if(!pathDir.exists()){
+                pathDir.mkdir();
+            }
+
+            //学生文件名，格式eg : 0121810880207_1.jpg
+            //与文件夹相接加上‘/’
+            String fileName = studentNo+"_"+String.valueOf(i)+".jpg";
+
+            //String filePath=PathUtil.demoPath+"/userFace/"+studentNo+String.valueOf(i)+".jpg"; //定义上传文件的存放位置//这里多加了人脸序号
             try{
                 //进行文件写入
-                faceImage[i].transferTo(new File(filePath));
+                faceImage[i].transferTo(new File(imagePath+"/"+fileName));
 
             }catch (IllegalStateException e){
                 e.printStackTrace();
@@ -174,12 +186,10 @@ public class StudentServiceImpl implements StudentService {
                 e.printStackTrace();
             }
             //运行python程序获得人脸encoding并保存在文件中
-            String encodingFilePath=PathUtil.demoPath+"/userFace/encoding"+studentNo+String.valueOf(i)+".txt"; //定义encoding文件的存放位置
+            String encodingFilePath=imagePath+"/encoding"+studentNo+"_"+String.valueOf(i)+".txt"; //定义encoding文件的存放位置
             try{
-
                 CommandUtil commandUtil = new CommandUtil();
-                commandUtil.executeCommand("cmd.exe /c start "+PathUtil.demoPath+"/runEncode.bat "+studentNo);
-                //这里不知道应不应该加需要你看一下，对应的python部分也需要你看一下
+                commandUtil.executeCommand("cmd.exe /c start "+PathUtil.demoPath+"/runEncode.bat "+studentNo+" "+i);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -204,7 +214,11 @@ public class StudentServiceImpl implements StudentService {
                 e.printStackTrace();
             }
             encodings=encodings+stringBuffer.toString()+";";
+            if(code.exists()){
+                code.delete();
+            }
         }
+
         Student student=studentRepository.findByStudentNo(studentNo);
         student.setStudentEncoding(encodings.substring(0,encodings.length()));
         studentRepository.save(student);//更新

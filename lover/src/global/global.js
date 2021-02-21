@@ -1,6 +1,6 @@
 //定义全局变量
 const port = 'http://localhost:8081';
-var faceFile = null;
+var faceFile = new Array();
 var studentFile = null;
 var signFiles = new Array();
 

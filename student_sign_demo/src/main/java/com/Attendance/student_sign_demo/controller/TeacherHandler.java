@@ -176,7 +176,7 @@ public class TeacherHandler {
         }
         else{
             try {
-                return ResultUtil.success(teacherService.searchByCourseId(courseName,teacherId).get());
+                return ResultUtil.success(teacherService.searchByCourseName(courseName,teacherId).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }

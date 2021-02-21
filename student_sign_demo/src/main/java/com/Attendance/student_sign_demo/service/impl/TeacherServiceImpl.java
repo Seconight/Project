@@ -288,11 +288,16 @@ public class TeacherServiceImpl implements TeacherService {
         String studentAndEncoding="";
         for(int i=0;i<studentsId.length;i++){
             Student student=studentRepository.findByStudentNo(studentsId[i]);
-            String []encodings=student.getStudentEncoding().split(";");
-            for(String encoding:encodings){
+            String[] encodings = student.getStudentEncoding().split(";");
+            for(String encoding : encodings){
                 studentAndEncoding=studentAndEncoding+studentsId[i]+":"+encoding+";";
             }
+            //back:修改前
+            //studentAndEncoding=studentAndEncoding+studentsId[i]+":"+student.getStudentEncoding()+";";
         }
+//        back:修改前
+//        Student student=studentRepository.findByStudentNo(studentsId[studentsId.length-1]);
+//        studentAndEncoding=studentAndEncoding+studentsId[studentsId.length-1]+":"+student.getStudentEncoding();
         studentAndEncoding=studentAndEncoding.substring(0,studentAndEncoding.length()-1);
         try{
             BufferedWriter bufferedWriter=new BufferedWriter(new FileWriter(new File(PathUtil.demoPath+"/shouldStudents.txt")));
