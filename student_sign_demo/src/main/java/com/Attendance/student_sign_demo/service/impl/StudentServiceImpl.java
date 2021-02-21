@@ -11,7 +11,7 @@ import com.Attendance.student_sign_demo.repository.AttendanceRepository;
 import com.Attendance.student_sign_demo.repository.CourseRepository;
 import com.Attendance.student_sign_demo.repository.StudentRepository;
 import com.Attendance.student_sign_demo.repository.TeacherRepository;
-import com.Attendance.student_sign_demo.service.MailService;
+import com.Attendance.student_sign_demo.service.impl.MailService;
 import com.Attendance.student_sign_demo.service.StudentService;
 import com.Attendance.student_sign_demo.util.CommandUtil;
 import com.Attendance.student_sign_demo.vo.Course1VO;
@@ -289,7 +289,7 @@ public class StudentServiceImpl implements StudentService {
     public Future<CourseVO> searchByCourseId(String courseId,String studentId)throws Exception {
         Course course=courseRepository.findByCourseNo(courseId);
         Student student=studentRepository.findByStudentNo(studentId);
-        if(course==null||!course.getCourseStudent().contains(studentId)||student.getStudentCourses().contains(courseId))
+        if(course==null||!course.getCourseStudent().contains(studentId)||!student.getStudentCourses().contains(courseId))
         {
             return null;
         }
