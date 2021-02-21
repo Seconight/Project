@@ -286,12 +286,14 @@ public class TeacherServiceImpl implements TeacherService {
         //根据课程号把学生名单以及对应的人脸encoding保存到文件中
         String [] studentsId=courseRepository.findByCourseNo(courseId).getCourseShouldStudent();
         String studentAndEncoding="";
-        for(int i=0;i<studentsId.length-1;i++){
+        for(int i=0;i<studentsId.length;i++){
             Student student=studentRepository.findByStudentNo(studentsId[i]);
-            studentAndEncoding=studentAndEncoding+studentsId[i]+":"+student.getStudentEncoding()+";";
+            String []encodings=student.getStudentEncoding().split(";");
+            for(String encoding:encodings){
+                studentAndEncoding=studentAndEncoding+studentsId[i]+":"+encoding+";";
+            }
         }
-        Student student=studentRepository.findByStudentNo(studentsId[studentsId.length-1]);
-        studentAndEncoding=studentAndEncoding+studentsId[studentsId.length-1]+":"+student.getStudentEncoding();
+        studentAndEncoding=studentAndEncoding.substring(0,studentAndEncoding.length()-1);
         try{
             BufferedWriter bufferedWriter=new BufferedWriter(new FileWriter(new File(PathUtil.demoPath+"/shouldStudents.txt")));
             bufferedWriter.write(studentAndEncoding);
@@ -641,6 +643,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Async("asyncServiceExecutor")
     public Future<Boolean> resetPassword(String teacherId, String password) throws Exception {
         Teacher teacher=teacherRepository.findByTeacherNo(teacherId);
         teacher.setTeacherPassword(password);

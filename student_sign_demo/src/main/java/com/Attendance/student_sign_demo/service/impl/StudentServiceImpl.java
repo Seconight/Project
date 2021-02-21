@@ -11,16 +11,15 @@ import com.Attendance.student_sign_demo.repository.AttendanceRepository;
 import com.Attendance.student_sign_demo.repository.CourseRepository;
 import com.Attendance.student_sign_demo.repository.StudentRepository;
 import com.Attendance.student_sign_demo.repository.TeacherRepository;
-import com.Attendance.student_sign_demo.service.impl.MailService;
 import com.Attendance.student_sign_demo.service.StudentService;
 import com.Attendance.student_sign_demo.util.CommandUtil;
 import com.Attendance.student_sign_demo.vo.Course1VO;
 import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
 import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
-import org.apache.poi.ss.formula.functions.T;
-import org.hibernate.persister.walking.spi.WalkingException;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.io.File;
+import java.io.FileInputStream;
+
 
 //服务层：学生功能服务类
 @Service
@@ -384,6 +386,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Async("asyncServiceExecutor")
     public Future<Boolean> resetPassword(String studentId, String password) throws Exception {
         Student student=studentRepository.findByStudentNo(studentId);
         student.setStudentPassword(password);
@@ -391,4 +394,21 @@ public class StudentServiceImpl implements StudentService {
         return new AsyncResult<>(true);
     }
 
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<List<MultipartFile>> getStudentFace(String studentId) throws Exception {
+        String path="E:\\360Downloads\\计算机设计大赛\\学生人脸\\"+studentId;//文件夹路径
+        File file = new File(path);
+        File[] files = file.listFiles();//获取所有文件
+        if(files!=null){
+            List<MultipartFile> multipartFiles= new ArrayList<>();
+            for(File eachFile :files){
+                FileInputStream fileInputStream = new FileInputStream(eachFile);
+                multipartFiles.add(new MockMultipartFile(eachFile.getName(), eachFile.getName(),
+                        ContentType.APPLICATION_OCTET_STREAM.toString(), fileInputStream));
+            }
+            return new AsyncResult<>(multipartFiles);
+        }
+        return null;
+    }
 }

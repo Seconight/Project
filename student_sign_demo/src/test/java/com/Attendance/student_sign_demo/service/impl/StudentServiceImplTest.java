@@ -15,7 +15,9 @@ import javax.persistence.Access;
 
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -99,9 +101,7 @@ class StudentServiceImplTest {
     }
     @Test
     void searchByCourseName() throws Exception {
-
         Future<List<CourseVO>> courseVOFuture=studentService.searchByCourseName("C","0121810880201");
-
         List<CourseVO> courseVOList=new ArrayList<>();
         while(true){
             if(courseVOFuture.isDone()){
@@ -113,5 +113,27 @@ class StudentServiceImplTest {
             System.out.println(courseVO);
         }
         int a=0;
+    }
+    @Test
+    void getStudentFace()throws Exception{
+        Future<List<MultipartFile>> multipartFiles=studentService.getStudentFace("0121810880214");
+        List<MultipartFile> multipartFiles1=new ArrayList<>();
+        while(true){
+            if(multipartFiles.isDone()){
+                multipartFiles1=multipartFiles.get();
+                break;
+            }
+        }
+        if(!multipartFiles1.isEmpty())
+        {
+            int i=0;
+            for(MultipartFile multipartFile:multipartFiles1){
+                multipartFile.transferTo(new File("E:\\360Downloads\\计算机设计大赛\\学生人脸\\0121810880214"+String.valueOf(i)+".jpg"));
+                System.out.println("成功");
+            }
+        }
+        else{
+            System.out.println("无");
+        }
     }
 }
