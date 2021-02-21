@@ -1,8 +1,5 @@
 <template>
   <div>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
     <div v-if="$route.path == '/user'">
       <van-row>
         <van-col span="6">
@@ -20,12 +17,6 @@
         <van-grid-item icon="closed-eye" text="修改密码" to="/User/password" />
         <van-grid-item icon="smile-o" text="人脸上传" to="/User/faceUpload" />
       </van-grid>
-
-=======
-=======
->>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
-=======
->>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
     <van-row>
       <van-col span="6">
         <img :src="avatarSrc" alt="" />
@@ -63,28 +54,12 @@
           multiple
           accept="image/*"
           preview-size="110px"
-<<<<<<< HEAD
-<<<<<<< HEAD
           :max-count="3"
-=======
-          :max-count="1"
->>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
-=======
-          :max-count="1"
->>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
-          :after-read="onRead"
         />
       </div>
       <div style="text-align: center">
         <van-button round type="info" @click="uploadface">上传人脸</van-button>
       </div>
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
-=======
->>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
     </div>
     <div class="login_modal" v-if="showLoginModal">
       <section @click="closeLoginModal"></section>
