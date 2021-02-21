@@ -289,7 +289,7 @@ public class StudentServiceImpl implements StudentService {
     public Future<CourseVO> searchByCourseId(String courseId,String studentId)throws Exception {
         Course course=courseRepository.findByCourseNo(courseId);
         Student student=studentRepository.findByStudentNo(studentId);
-        if(course==null||!course.getCourseStudent().contains(studentId)||student.getStudentCourses().contains(courseId))
+        if(course==null||!course.getCourseStudent().contains(studentId)||!student.getStudentCourses().contains(courseId))
         {
             return null;
         }
