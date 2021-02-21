@@ -315,16 +315,19 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Async("asyncServiceExecutor")
     public Future<List<CourseVO>> searchByCourseName(String courseName,String studentId)throws Exception {
-        List<Course> courseList1=new ArrayList<>();
+        List<Course> courseList1=courseRepository.findAll();
         Student student=studentRepository.findByStudentNo(studentId);
-        String []courses=student.getStudentCourse();
-        for(String courseId:courses){
-            courseList1.add(courseRepository.findByCourseNo(courseId));
+        List<Course> courseList=new ArrayList<>();
+        //删除不是当前学生得课程
+        for(int i=0;i<courseList1.toArray().length;i++){
+            if(courseList1.get(i).getCourseStudent().contains(studentId)&&!student.getStudentCourses().contains(courseList1.get(i).getCourseNo())){
+                courseList.add(courseList1.get(i));
+            }
         }
         List<String> semesterList=new ArrayList<>();//新建学期列表
-        for(int i=0;i<courseList1.toArray().length;i++)
+        for(int i=0;i<courseList.toArray().length;i++)
         {
-            Course course= courseList1.get(i);
+            Course course= courseList.get(i);
             if(course.getCourseName().contains(courseName)){//符合条件判断学期
                 if(semesterList.toArray().length==0){//列表为空直接添加
                     semesterList.add(course.getCourseSemester());
@@ -341,9 +344,9 @@ public class StudentServiceImpl implements StudentService {
             CourseVO courseVO=new CourseVO();
             courseVO.setSemester(semesterList.get(i));
             List<Course1VO> course1VOList=new ArrayList<>();
-            for(int j=0;j<courseList1.toArray().length;j++){//取出合适学期的课程
-                if(courseList1.get(j).getCourseName().contains(courseName)&&courseList1.get(j).getCourseSemester().equals(semesterList.get(i))){
-                    Course course=courseList1.get(j);
+            for(int j=0;j<courseList.toArray().length;j++){//取出合适学期的课程
+                if(courseList.get(j).getCourseName().contains(courseName)&&courseList.get(j).getCourseSemester().equals(semesterList.get(i))){
+                    Course course=courseList.get(j);
                     Course1VO course1VO=new Course1VO();
                     course1VO.setId(course.getCourseNo());
                     course1VO.setDays(course.getCourseDays());
