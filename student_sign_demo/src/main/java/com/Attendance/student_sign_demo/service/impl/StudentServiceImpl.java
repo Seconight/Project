@@ -11,7 +11,7 @@ import com.Attendance.student_sign_demo.repository.AttendanceRepository;
 import com.Attendance.student_sign_demo.repository.CourseRepository;
 import com.Attendance.student_sign_demo.repository.StudentRepository;
 import com.Attendance.student_sign_demo.repository.TeacherRepository;
-import com.Attendance.student_sign_demo.service.MailService;
+import com.Attendance.student_sign_demo.service.impl.MailService;
 import com.Attendance.student_sign_demo.service.StudentService;
 import com.Attendance.student_sign_demo.util.CommandUtil;
 import com.Attendance.student_sign_demo.vo.Course1VO;
