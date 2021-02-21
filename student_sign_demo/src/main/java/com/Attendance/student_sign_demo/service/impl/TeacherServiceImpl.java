@@ -618,7 +618,6 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return new AsyncResult<>(courseVOList);
     }
-
     @Override
     @Async("asyncServiceExecutor")
     public Future<Boolean> updatePassword(String teacherId,String oldPassword, String newPassword) throws Exception {

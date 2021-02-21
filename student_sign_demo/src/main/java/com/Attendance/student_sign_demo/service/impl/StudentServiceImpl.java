@@ -44,8 +44,6 @@ public class StudentServiceImpl implements StudentService {
     private CourseRepository courseRepository;
     @Autowired
     private AttendanceRepository attendanceRepository;
-    @Autowired
-    private MailService mailService;
     //学生登录函数(修改参数为表单类型)
     @Override
     @Async("asyncServiceExecutor")

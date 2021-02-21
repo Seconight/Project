@@ -88,8 +88,7 @@ class TeacherServiceImplTest {
     }
     @Test
     void searchByCourseName() throws Exception {
-
-        Future<List<CourseVO>> courseVOFuture=teacherService.searchByCourseName("H","000000001");
+        Future<List<CourseVO>> courseVOFuture=teacherService.searchByCourseName("C","000000001");
         if(courseVOFuture!=null)
         {
             List<CourseVO> courseVOList=new ArrayList<>();
