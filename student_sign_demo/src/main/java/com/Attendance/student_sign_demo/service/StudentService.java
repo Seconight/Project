@@ -24,4 +24,7 @@ public interface StudentService {
    // public Future<Boolean> register(String userId,String password,String userClass,String address,String name)throws Exception;
     public Future<CourseVO> searchByCourseId(String courseId,String studentId)throws Exception;
     public Future<List<CourseVO>> searchByCourseName(String courseName,String studentId)throws Exception;
+    public Future<Boolean> updatePassword(String studentId,String oldPassword,String newPassword)throws Exception;
+    public Future<Boolean>  addAddress(String studentId,String address)throws Exception;
+    public Future<Boolean>  resetPassword(String studentId,String password)throws Exception;
 }
