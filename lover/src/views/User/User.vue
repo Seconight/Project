@@ -1,22 +1,5 @@
 <template>
   <div>
-    <div v-if="$route.path == '/user'">
-      <van-row>
-        <van-col span="6">
-          <img :src="avatarSrc" alt="" />
-        </van-col>
-        <van-col span="10" @click="openLoginModal">{{ name }}</van-col>
-        <!-- <van-col span='10' @submit="uploadface"> -->
-        <van-col span="8" @click="logout">
-          <van-icon name="cross" />
-        </van-col>
-      </van-row>
-      <van-grid :column-num="3" square>
-        <van-grid-item icon="label-o" text="个人信息" to="/User/personalInfo" />
-        <van-grid-item icon="envelop-o" text="邮箱绑定" to="/User/email" />
-        <van-grid-item icon="closed-eye" text="修改密码" to="/User/password" />
-        <van-grid-item icon="smile-o" text="人脸上传" to="/User/faceUpload" />
-      </van-grid>
     <van-row>
       <van-col span="6">
         <img :src="avatarSrc" alt="" />
