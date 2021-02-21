@@ -1,50 +1,27 @@
 <template>
   <div>
-    <van-row>
-      <van-col span="6">
-        <img :src="avatarSrc" alt="" />
-      </van-col>
-      <van-col span="10" @click="openLoginModal">{{ name }}</van-col>
-      <!-- <van-col span='10' @submit="uploadface"> -->
-      <van-col span="8" @click="logout">
-        <van-icon name="cross" />
-      </van-col>
-    </van-row>
-    <div v-if="role == '老师'">
-      <van-cell-group title="个人信息">
-        <van-cell title="身份" :value="role" />
-        <van-cell title="工号" :value="id" />
-        <van-cell title="邮箱" :value="address" />
-      </van-cell-group>
+    <div v-if="$route.path == '/user'">
+      <van-row>
+        <van-col span="6">
+          <img :src="avatarSrc" alt="" />
+        </van-col>
+        <van-col span="10" @click="openLoginModal">{{ name }}</van-col>
+        <!-- <van-col span='10' @submit="uploadface"> -->
+        <van-col span="8" @click="logout">
+          <van-icon name="cross" />
+        </van-col>
+      </van-row>
+      <van-grid :column-num="3" square>
+        <van-grid-item icon="label-o" text="个人信息" to="/User/personalInfo" />
+        <van-grid-item icon="envelop-o" text="邮箱绑定" to="/User/email" />
+        <van-grid-item icon="closed-eye" text="修改密码" to="/User/password" />
+        <van-grid-item icon="smile-o" text="人脸上传" to="/User/faceUpload" />
+      </van-grid>
+
     </div>
-    <div v-if="role == '学生'">
-      <van-cell-group title="个人信息">
-        <van-cell title="身份" :value="role" />
-        <van-cell title="学号" :value="id" />
-        <van-cell title="班级" :value="class_" />
-        <van-cell title="邮箱" :value="address" />
-      </van-cell-group>
-      <van-cell-group title="人脸信息">
-        <van-cell
-          title="人脸状态"
-          :value="checkFace==true ?'人脸已上传':'人脸未上传'"
-        />
-      </van-cell-group>
-      <div style="text-align: center; padding: 20px">
-        <van-uploader
-          :preview-options="preview_options"
-          v-model="imgList"
-          multiple
-          accept="image/*"
-          preview-size="110px"
-          :max-count="1"
-          :after-read="onRead"
-        />
-      </div>
-      <div style="text-align: center">
-        <van-button round type="info" @click="uploadface">上传人脸</van-button>
-      </div>
-    </div>
+    <transition>
+      <router-view></router-view>
+    </transition>
     <div class="login_modal" v-if="showLoginModal">
       <section @click="closeLoginModal"></section>
       <van-form @submit="onSubmit">
@@ -73,7 +50,7 @@
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
         />
-      <router-link to="/register">注册</router-link>
+        <router-link to="/register">注册</router-link>
         <div style="margin: 16px">
           <van-button round block type="info" native-type="submit"
             >登录</van-button
@@ -236,11 +213,11 @@ export default {
             headers: {
               //...data.getHeaders(),
               //设置请求头
-              'Content-Type' : 'multipart/form-data'
+              "Content-Type": "multipart/form-data",
             },
             data: data,
           };
-          
+
           axios(config)
             .then(function (response) {
               console.log(JSON.stringify(response.data));
