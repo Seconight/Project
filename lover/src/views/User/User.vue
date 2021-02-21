@@ -37,7 +37,8 @@
           multiple
           accept="image/*"
           preview-size="110px"
-          :max-count="3"
+          :max-count="1"
+          :after-read="onRead"
         />
       </div>
       <div style="text-align: center">
