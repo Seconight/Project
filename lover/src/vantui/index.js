@@ -5,7 +5,7 @@ import {Button,Icon,Tabbar,TabbarItem,Form,Field,Row,Col,RadioGroup,
     Radio,Toast,CellGroup,Cell,SwipeCell,Card ,Uploader,Image,Popup,
     Dialog,Collapse,CollapseItem,NavBar,ActionSheet,Tab,Tabs,Popover,
     Picker,Checkbox, CheckboxGroup,Search,DropdownMenu, DropdownItem,
-    List,Grid, GridItem,NoticeBar       } from 'vant'
+    List       } from 'vant'
 Vue.use(Button)
 Vue.use(Icon)
 Vue.use(Tabbar)
@@ -43,7 +43,3 @@ Vue.use(Search);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
 Vue.use(List);
-Vue.use(Grid);
-Vue.use(GridItem);
-Vue.use(NoticeBar);
-

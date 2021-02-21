@@ -8,10 +8,7 @@ import StuAttendance from '../views/Course/StuAttendance.vue'
 import TeaAttendance from '../views/Course/TeaAttendance.vue'
 import AddCourse from '../views/Course/AddCourse.vue'
 import StuStudentList from '../views/Course/StuStudentList.vue'
-import Email from '../views/User/Email.vue'
-import FaceUpload from '../views/User/FaceUpload.vue'
-import Password from '../views/User/Password.vue'
-import PersonalInfo from '../views/User/PersonalInfo.vue'
+
 Vue.use(VueRouter)
 
 
@@ -28,28 +25,6 @@ const routes = [
     path: '/user',
     name: 'User',
     component: User,
-    children: [
-      {
-        path: 'email',
-        name: 'Email',
-        component: Email,
-      },
-      {
-        path: 'faceUpload',
-        name: 'FaceUpload',
-        component: FaceUpload,
-      },
-      {
-        path: 'password',
-        name: 'Password',
-        component: Password,
-      },
-      {
-        path: 'personalInfo',
-        name: 'PersonalInfo',
-        component: PersonalInfo,
-      },
-    ],
     meta: {
       ifShowTabbar: true
     }
@@ -103,7 +78,7 @@ const router = new VueRouter({
 
 // 解决Vue-Router升级导致的Uncaught(in promise) navigation guard问题
 const originalPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push(location, onResolve, onReject) {
+VueRouter.prototype.push = function push (location, onResolve, onReject) {
   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
   return originalPush.call(this, location).catch(err => err)
 }

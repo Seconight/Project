@@ -1,5 +1,6 @@
 <template>
   <div>
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     <div v-if="$route.path == '/user'">
       <van-row>
@@ -20,6 +21,8 @@
       </van-grid>
 
 =======
+=======
+>>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
     <van-row>
       <van-col span="6">
         <img :src="avatarSrc" alt="" />
@@ -57,18 +60,22 @@
           multiple
           accept="image/*"
           preview-size="110px"
+<<<<<<< HEAD
           :max-count="3"
+=======
+          :max-count="1"
+>>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
           :after-read="onRead"
         />
       </div>
       <div style="text-align: center">
         <van-button round type="info" @click="uploadface">上传人脸</van-button>
       </div>
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
     </div>
-    <transition>
-      <router-view></router-view>
-    </transition>
     <div class="login_modal" v-if="showLoginModal">
       <section @click="closeLoginModal"></section>
       <van-form @submit="onSubmit">
@@ -97,7 +104,7 @@
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
         />
-        <router-link to="/register">注册</router-link>
+      <router-link to="/register">注册</router-link>
         <div style="margin: 16px">
           <van-button round block type="info" native-type="submit"
             >登录</van-button
@@ -260,11 +267,11 @@ export default {
             headers: {
               //...data.getHeaders(),
               //设置请求头
-              "Content-Type": "multipart/form-data",
+              'Content-Type' : 'multipart/form-data'
             },
             data: data,
           };
-
+          
           axios(config)
             .then(function (response) {
               console.log(JSON.stringify(response.data));
