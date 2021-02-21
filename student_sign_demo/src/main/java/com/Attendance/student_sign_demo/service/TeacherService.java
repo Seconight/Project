@@ -20,4 +20,7 @@ public interface TeacherService {
     public Future<Boolean> Sign(String courseId,MultipartFile[] imageList)throws Exception;//上一个方法的改正
     public Future<CourseVO> searchByCourseId(String courseId, String teacherId)throws Exception;
     public Future<List<CourseVO>> searchByCourseName(String courseName,String teacherId)throws Exception;
+    public Future<Boolean> updatePassword(String teacherId,String oldPassword,String newPassword)throws Exception;
+    public Future<Boolean>  addAddress(String teacherId,String address)throws Exception;
+    public Future<Boolean>  resetPassword(String teacherId,String password)throws Exception;
 }
