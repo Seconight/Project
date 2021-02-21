@@ -1,6 +1,7 @@
 <template>
   <div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     <div v-if="$route.path == '/user'">
       <van-row>
@@ -21,6 +22,8 @@
       </van-grid>
 
 =======
+=======
+>>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
 =======
 >>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
     <van-row>
@@ -61,7 +64,11 @@
           accept="image/*"
           preview-size="110px"
 <<<<<<< HEAD
+<<<<<<< HEAD
           :max-count="3"
+=======
+          :max-count="1"
+>>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
 =======
           :max-count="1"
 >>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
@@ -72,7 +79,10 @@
         <van-button round type="info" @click="uploadface">上传人脸</van-button>
       </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
 =======
 >>>>>>> parent of 0cbf737 (Merge branch 'main' of https://github.com/Seconight/Project into main)
     </div>
