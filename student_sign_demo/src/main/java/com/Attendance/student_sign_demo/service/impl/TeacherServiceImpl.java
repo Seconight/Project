@@ -392,7 +392,8 @@ public class TeacherServiceImpl implements TeacherService {
         attendance.setAttendanceTime(attendanceTime);
 
         //设置实到学生，缺席学生
-        attendance.setAttendanceActualStudent(actualStudent);
+        //attendance.setAttendanceActualStudent(actualStudent);
+        attendance.setAttendanceActualStudent(totalActualStudent.substring(0,totalActualStudent.length()-1));
         if(!absentStudent.equals("")){
             attendance.setAttendanceAbsentStudent(absentStudent.substring(0,absentStudent.length()-1));
         }

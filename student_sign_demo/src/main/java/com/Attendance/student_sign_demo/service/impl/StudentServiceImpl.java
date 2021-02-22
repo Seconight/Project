@@ -220,7 +220,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         Student student=studentRepository.findByStudentNo(studentNo);
-        student.setStudentEncoding(encodings.substring(0,encodings.length()));
+        student.setStudentEncoding(encodings.substring(0,encodings.length()-1));
         studentRepository.save(student);//更新
         return new AsyncResult<>(true);
     }
