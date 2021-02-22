@@ -342,7 +342,8 @@ public class TeacherServiceImpl implements TeacherService {
         String actualStudent = "";
         String absentStudent = "";
         actualStudent=actualStudent+stringBuffer.toString();
-        String [] actualStudentString=actualStudent.substring(0,actualStudent.length()).split(",");
+        //String [] actualStudentString=actualStudent.substring(0,actualStudent.length()).split(",");
+        String [] actualStudentString=actualStudent.split(",");
         Set set = new HashSet();
         for (int i = 0; i < actualStudentString.length; i++) {
             set.add(actualStudentString[i]);
@@ -352,7 +353,6 @@ public class TeacherServiceImpl implements TeacherService {
         for(int i=0;i<actualStudentString.length;i++){
             totalActualStudent=totalActualStudent+actualStudentString[i]+",";
         }
-
         //求缺席学生
         for(int i=0;i<studentsId.length;i++){
             if(!set.contains(studentsId[i])){
