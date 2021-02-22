@@ -11,18 +11,22 @@
           <van-icon name="cross" />
         </van-col>
       </van-row>
-      <van-grid :column-num="3" square>
+      <van-grid :column-num="3" square v-if="role != ''">
         <van-grid-item icon="label-o" text="个人信息" to="/User/personalInfo" />
-        <van-grid-item icon="envelop-o" text="邮箱绑定" to="/User/email" />
-        <van-grid-item icon="closed-eye" text="修改密码" to="/User/password" />
-        <van-grid-item icon="smile-o" text="人脸上传" to="/User/faceUpload" />
+        <van-grid-item icon="envelop-o" text="邮箱设置" to="/User/email" />
+        <van-grid-item icon="closed-eye" text="修改密码" to="/User/changePassword" />
+        <van-grid-item
+          v-if="role == '学生'"
+          icon="smile-o"
+          text="人脸上传"
+          to="/User/faceUpload"
+        />
       </van-grid>
-
     </div>
     <transition>
       <router-view></router-view>
     </transition>
-    <div class="login_modal" v-if="showLoginModal">
+    <div class="login_modal" v-if="showLoginModal&&$route.path == '/user'">
       <section @click="closeLoginModal"></section>
       <van-form @submit="onSubmit">
         <!-- <div class="radio">
@@ -50,7 +54,8 @@
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
         />
-        <router-link to="/register">注册</router-link>
+        <router-link to="/User/register" @click="onRegister" style="font-size: 12px;">注册</router-link>
+        <router-link to="/User/retrievePassword" @click="onRegister" style="font-size: 12px; float:right">忘记密码？</router-link>
         <div style="margin: 16px">
           <van-button round block type="info" native-type="submit"
             >登录</van-button
@@ -73,10 +78,6 @@ export default {
       password: "",
       showLoginModal: false,
       role: "",
-      id: "",
-      address: "",
-      class_: "",
-      checkFace: false,
       imgList: [],
       preview_options: {
         closeable: true,
@@ -167,16 +168,11 @@ export default {
     showinfor() {
       let _userInfo = JSON.parse(localStorage.getItem("userInfo"));
       this.role = _userInfo.role;
-      this.name = _userInfo.name;
-      this.id = _userInfo.id;
-      this.address = _userInfo.address;
       if (this.role == "老师") {
         this.avatarSrc = require("@/assets/teacher.jpg");
-        this.id;
       }
       if (this.role == "学生") {
         this.avatarSrc = require("@/assets/student.jpg");
-        this.class_ = _userInfo.class;
         this.checkFace = localStorage.getItem("checkFace");
       }
     },
@@ -252,16 +248,15 @@ export default {
           this.password = "";
           this.showLoginModal = false;
           this.role = "";
-          this.id = "";
-          this.address = "";
-          this.class_ = "";
-          this.checkFace = false;
           this.imgList = [];
           this.preview_options.closeable = true;
         })
         .catch(() => {
           // on cancel
         });
+    },
+    onRegister() {
+      this.showLoginModal = false;
     },
   },
 };
@@ -293,7 +288,6 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 99;
   section {
     width: 100%;
     height: 100vh;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-nav-bar
-      title="邮箱绑定"
+      title="邮箱设置"
       left-text="返回"
       left-arrow
       @click-left="onClickLeft"
@@ -143,7 +143,6 @@ export default {
       oldEmail: "",
       newEmail: "",
       password: "",
-      verificationCode: "",
       //控制旧邮箱验证码按钮
       smsCountdown1: true,
       smsCount1: "",
@@ -232,7 +231,6 @@ export default {
         }, 1000);
       }
     },
-    getsms() {},
   },
 };
 </script>
