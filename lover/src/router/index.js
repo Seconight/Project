@@ -10,7 +10,8 @@ import AddCourse from '../views/Course/AddCourse.vue'
 import StuStudentList from '../views/Course/StuStudentList.vue'
 import Email from '../views/User/Email.vue'
 import FaceUpload from '../views/User/FaceUpload.vue'
-import Password from '../views/User/Password.vue'
+import ChangePassword from '../views/User/ChangePassword.vue'
+import RetrievePassword from '../views/User/RetrievePassword.vue'
 import PersonalInfo from '../views/User/PersonalInfo.vue'
 Vue.use(VueRouter)
 
@@ -40,25 +41,31 @@ const routes = [
         component: FaceUpload,
       },
       {
-        path: 'password',
-        name: 'Password',
-        component: Password,
+        path: 'retrievePassword',
+        name: 'RetrievePassword',
+        component: RetrievePassword,
+      },
+      {
+        path: 'changePassword',
+        name: 'ChangePassword',
+        component: ChangePassword,
       },
       {
         path: 'personalInfo',
         name: 'PersonalInfo',
         component: PersonalInfo,
       },
+      {
+        path: 'register',
+        name: 'Register',
+        component: Register,
+      },
     ],
     meta: {
       ifShowTabbar: true
     }
   },
-  {
-    path: '/register',
-    name: 'Register',
-    component: Register,
-  },
+
   {
     path: '/course',
     name: 'Course',

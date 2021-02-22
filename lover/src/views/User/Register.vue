@@ -2,7 +2,6 @@
   <div>
     <van-nav-bar title="账号注册" left-text="返回" @click-left="onClickLeft" />
     <div>
-      <div style="height: 150px"></div>
       <van-form @submit="onSubmit">
         <van-field label="身份">
           <template #input>
