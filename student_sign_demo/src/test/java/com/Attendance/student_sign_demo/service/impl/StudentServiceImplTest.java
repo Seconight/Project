@@ -136,4 +136,31 @@ class StudentServiceImplTest {
             System.out.println("无");
         }
     }
+    @Test
+    void searchByCourseNameForAdd()throws Exception{
+        Future<List<CourseVO>> courseVOFuture=studentService.searchByCourseNameForAdd("C","0121810880201");
+        List<CourseVO> courseVOList=new ArrayList<>();
+        while(true){
+            if(courseVOFuture.isDone()){
+                courseVOList=courseVOFuture.get();
+                break;
+            }
+        }
+        for(CourseVO courseVO:courseVOList){
+            System.out.println(courseVO);
+        }
+    }
+    @Test
+    void searchByCourseIdForAdd() throws Exception{
+        Future<CourseVO> courseVOFuture=studentService.searchByCourseIdForAdd("0121810880201","0000000005");
+        CourseVO courseVO=new CourseVO();
+        while(true){
+            if(courseVOFuture.isDone())
+            {
+                courseVO=courseVOFuture.get();
+                break;
+            }
+        }
+        System.out.println(courseVO);
+    }
 }

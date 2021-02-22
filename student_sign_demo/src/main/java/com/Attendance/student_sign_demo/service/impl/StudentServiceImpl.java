@@ -305,7 +305,7 @@ public class StudentServiceImpl implements StudentService {
     public Future<CourseVO> searchByCourseId(String courseId,String studentId)throws Exception {
         Course course=courseRepository.findByCourseNo(courseId);
         Student student=studentRepository.findByStudentNo(studentId);
-        if(course==null||!course.getCourseStudent().contains(studentId)||!student.getStudentCourses().contains(courseId))
+        if(course==null||!student.getStudentCourses().contains(courseId))
         {
             return null;
         }
@@ -424,5 +424,102 @@ public class StudentServiceImpl implements StudentService {
             return new AsyncResult<>(multipartFiles);
         }
         return null;
+    }
+
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<CourseVO> searchByCourseIdForAdd(String studentId, String courseId) throws Exception {
+        Course course=courseRepository.findByCourseNo(courseId);
+        System.out.println(course.getCourseName());
+        Student student=studentRepository.findByStudentNo(studentId);
+        if(course!=null&&course.getCourseStudent().contains(studentId)&&!student.getStudentCourses().contains(courseId))
+        {
+            Course1VO course1VO=new Course1VO();
+            course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
+            course1VO.setWeeks(course.getCourseWeeks());
+            course1VO.setName(course.getCourseName());
+            course1VO.setDays(course.getCourseDays());
+            course1VO.setId(course.getCourseNo());
+            course1VO.setStartTime(course.getCourseStartTime());
+            course1VO.setEndTime(course.getCourseEndTime());
+            List<Course1VO> course1VOList=new ArrayList<>();
+            course1VOList.add(course1VO);
+            CourseVO courseVO=new CourseVO();
+            courseVO.setCourse1VOList(course1VOList);
+            courseVO.setSemester(course.getCourseSemester());
+            return new AsyncResult<>(courseVO);
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<List<CourseVO>> searchByCourseNameForAdd(String courseName, String studentId) throws Exception {
+        List<Course> courseList1=courseRepository.findAll();
+        Student student=studentRepository.findByStudentNo(studentId);
+        String courses=student.getStudentCourses();//当前学生已经添加的课程
+        List<Course> courseList=new ArrayList<>();
+        for(int i=0;i<courseList1.toArray().length;i++){
+            if(!courses.contains(courseList1.get(i).getCourseNo())&&courseList1.get(i).getCourseStudent().contains(studentId)){
+                courseList.add(courseList1.get(i));
+            }
+        }
+        for(int i=0;i<courseList.toArray().length;i++){
+            System.out.println((courseList.get(i)));
+        }
+        List<String> semesterList=new ArrayList<>();//新建学期列表
+        for(int i=0;i<courseList.toArray().length;i++)
+        {
+            Course course= courseList.get(i);
+            if(course.getCourseName().contains(courseName)){//符合条件判断学期
+                if(semesterList.toArray().length==0){//列表为空直接添加
+                    semesterList.add(course.getCourseSemester());
+                }
+                else{
+                    if(!semesterList.contains(course.getCourseSemester())){
+                        semesterList.add(course.getCourseSemester());//列表不为空比较后添加
+                    }
+                }
+            }
+        }
+        List<CourseVO> courseVOList=new ArrayList<>();
+        for(int i = 0; i<semesterList.toArray().length; i++){//遍历学期列表创建courseVO对象
+            CourseVO courseVO=new CourseVO();
+            courseVO.setSemester(semesterList.get(i));
+            List<Course1VO> course1VOList=new ArrayList<>();
+            for(int j=0;j<courseList.toArray().length;j++){//取出合适学期的课程
+                if(courseList.get(j).getCourseName().contains(courseName)&&courseList.get(j).getCourseSemester().equals(semesterList.get(i))){
+                    Course course=courseList.get(j);
+                    Course1VO course1VO=new Course1VO();
+                    course1VO.setId(course.getCourseNo());
+                    course1VO.setDays(course.getCourseDays());
+                    course1VO.setEndTime(course.getCourseEndTime());
+                    course1VO.setName(course.getCourseName());
+                    course1VO.setWeeks(course.getCourseWeeks());
+                    course1VO.setStartTime(course.getCourseStartTime());
+                    course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
+                    course1VOList.add(course1VO);
+                }
+            }
+            courseVO.setCourse1VOList(course1VOList);
+            courseVOList.add(courseVO);
+        }
+        return new AsyncResult<>(courseVOList);
+    }
+
+    @Override
+    public Future<Boolean> joinCourse(String studentId, String courseId) throws Exception {
+        Student student=studentRepository.findByStudentNo(studentId);
+        String courses=student.getStudentCourses();
+        if(courses==null||courses.equals("")){
+            student.setStudentCourse(courseId);
+        }
+        else {
+            student.setStudentCourse(courses+","+courseId);
+        }
+        studentRepository.save(student);
+        return new AsyncResult<>(true);
     }
 }

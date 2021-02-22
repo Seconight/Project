@@ -62,8 +62,8 @@ public class Student {
     public void setStudentPassword(String studentPassword){
         this.studentPassword=studentPassword;
     }
-    public void addStudentCourse(String courseNo){
-        this.studentCourse=this.studentCourse+","+courseNo;
+    public void setStudentCourse(String courses){
+        this.studentCourse=courses;
     }
     public void deleteStudentCourse(String courseNo){
         String deleteCourse=","+courseNo;//当前要删除的课号，课号间以，分割
