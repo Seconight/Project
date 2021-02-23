@@ -14,7 +14,11 @@
       <van-grid :column-num="3" square v-if="role != ''">
         <van-grid-item icon="label-o" text="个人信息" to="/User/personalInfo" />
         <van-grid-item icon="envelop-o" text="邮箱设置" to="/User/email" />
-        <van-grid-item icon="closed-eye" text="修改密码" to="/User/changePassword" />
+        <van-grid-item
+          icon="closed-eye"
+          text="修改密码"
+          @click="onChangePassword"
+        />
         <van-grid-item
           v-if="role == '学生'"
           icon="smile-o"
@@ -26,7 +30,7 @@
     <transition>
       <router-view></router-view>
     </transition>
-    <div class="login_modal" v-if="showLoginModal&&$route.path == '/user'">
+    <div class="login_modal" v-if="showLoginModal && $route.path == '/user'">
       <section @click="closeLoginModal"></section>
       <van-form @submit="onSubmit">
         <!-- <div class="radio">
@@ -54,8 +58,18 @@
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
         />
-        <router-link to="/User/register" @click="onRegister" style="font-size: 12px;">注册</router-link>
-        <router-link to="/User/retrievePassword" @click="onRegister" style="font-size: 12px; float:right">忘记密码？</router-link>
+        <router-link
+          to="/User/register"
+          @click="onRegister"
+          style="font-size: 12px"
+          >注册</router-link
+        >
+        <router-link
+          to="/User/retrievePassword"
+          @click="onRegister"
+          style="font-size: 12px; float: right"
+          >忘记密码？</router-link
+        >
         <div style="margin: 16px">
           <van-button round block type="info" native-type="submit"
             >登录</van-button
@@ -257,6 +271,15 @@ export default {
     },
     onRegister() {
       this.showLoginModal = false;
+    },
+    onChangePassword() {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      if(userInfo.address==null)
+      {
+        this.$toast("邮箱未绑定!,请先绑定邮箱！");
+      }else{
+        this.$router.push("/User/changePassword");
+      }
     },
   },
 };
