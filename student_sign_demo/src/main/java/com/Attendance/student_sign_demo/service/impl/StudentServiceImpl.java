@@ -510,6 +510,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Async("asyncServiceExecutor")
     public Future<Boolean> joinCourse(String studentId, String courseId) throws Exception {
         Student student=studentRepository.findByStudentNo(studentId);
         String courses=student.getStudentCourses();
