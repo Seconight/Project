@@ -7,6 +7,7 @@ import Course from '../views/Course/Course.vue'
 import StuAttendance from '../views/Course/StuAttendance.vue'
 import TeaAttendance from '../views/Course/TeaAttendance.vue'
 import AddCourse from '../views/Course/AddCourse.vue'
+import CreatCourse from '../views/Course/CreatCourse.vue'
 import StuStudentList from '../views/Course/StuStudentList.vue'
 import Email from '../views/User/Email.vue'
 import FaceUpload from '../views/User/FaceUpload.vue'
@@ -85,6 +86,11 @@ const routes = [
         path: 'addCourse',
         name: 'AddCourse',
         component: AddCourse,
+      },
+      {
+        path: 'creatCourse',
+        name: 'CreatCourse',
+        component: CreatCourse,
       },
       {
         path: 'stuStudentList',

@@ -6,12 +6,16 @@
           <van-popover
             v-model="showAddCoursePopover"
             trigger="click"
-            :actions="addCoursePopoverActions"
-            @select="addCourse"
+            :actions="
+              role == '老师'
+                ? creatCoursePopoverActions
+                : addCoursePopoverActions
+            "
+            @select="onPopoverSelect"
             theme="dark"
             placement="bottom-end"
           >
-            <template #reference v-if="role == '老师'">
+            <template #reference>
               <van-icon name="add-o" size="20" color="black" />
             </template>
           </van-popover>
@@ -124,7 +128,8 @@ export default {
   data() {
     return {
       showAddCoursePopover: false,
-      addCoursePopoverActions: [{ text: "新建课程" }],
+      creatCoursePopoverActions: [{ text: "新建课程" }],
+      addCoursePopoverActions: [{ text: "添加课程" }],
       searchValue: "",
       activeCourse: [],
       role: "",
@@ -331,9 +336,14 @@ export default {
         }
         this.allCourses.push(semester);
       }
+      console.log( this.allCourses);
     },
-    addCourse(action) {
-      this.$router.push("/Course/addCourse");
+    onPopoverSelect() {
+      if (this.role == "老师") {
+        this.$router.push("/Course/creatCourse");
+      } else {
+        this.$router.push("/Course/addCourse");
+      }
     },
     onClear() {
       this.loadCourse(this.coursesStorage);
@@ -412,9 +422,8 @@ export default {
               _userInfo.id,
             headers: {},
           };
-        }
-        else{
-            var config = {
+        } else {
+          var config = {
             method: "get",
             url:
               this.GLOBAL.port +
