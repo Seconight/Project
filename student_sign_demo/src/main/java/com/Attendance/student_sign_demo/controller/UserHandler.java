@@ -5,6 +5,7 @@ import com.Attendance.student_sign_demo.form.FaceForm;
 import com.Attendance.student_sign_demo.form.LoginForm;
 import com.Attendance.student_sign_demo.form.RegisterForm;
 import com.Attendance.student_sign_demo.service.impl.StudentServiceImpl;
+import com.Attendance.student_sign_demo.service.impl.TeacherServiceImpl;
 import com.Attendance.student_sign_demo.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class UserHandler {
 
     @Autowired
     StudentServiceImpl studentService;
+
+    @Autowired
+    TeacherServiceImpl teacherService;
 
     //登录
     //@RequestBody注解，接收解析前段来的JSON
@@ -127,7 +131,77 @@ public class UserHandler {
         }
     }
 
-    //根据课程名获取课程信息
+    //更新密码
+    @PostMapping("/changePassword")
+    public ResultVO changePassword(String id, String oldPassword, String newPassword){
+        if(id.equals("") || id == null) {
+            return ResultUtil.failed("id为空");
+        }
+        else{
+            try{
+                //用户为学生
+                if(id.length() == 13){
+                    return ResultUtil.success(studentService.updatePassword(id,oldPassword,newPassword).get());
+                }
+                //用户为老师
+                else{
+                    return ResultUtil.success(teacherService.updatePassword(id,oldPassword,newPassword).get());
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return ResultUtil.failed(null);
+    }
+
+    //添加邮箱
+    @PostMapping("/addAddress")
+    public ResultVO addAddress(String id, String address){
+        if(id.equals("") || id == null) {
+            return ResultUtil.failed("id为空");
+        }
+        else{
+            try{
+                //用户为学生
+                if(id.length() == 13){
+                    return ResultUtil.success(studentService.addAddress(id,address));
+                }
+                //用户为老师
+                else{
+                    return ResultUtil.success(teacherService.addAddress(id, address));
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    //重置密码
+    @PostMapping("/resetPassword")
+    public ResultVO resetPassword(String id, String password){
+        if(id.equals("") || id == null) {
+            return ResultUtil.failed("id为空");
+        }
+        else{
+            try{
+                //用户为学生
+                if(id.length() == 13){
+                    return ResultUtil.success(studentService.resetPassword(id,password));
+                }
+                //用户为老师
+                else{
+                    return ResultUtil.success((teacherService.resetPassword(id, password)));
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
     //测试类，检测get的多参数传值
     @GetMapping(path = "test")

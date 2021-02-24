@@ -175,7 +175,7 @@ export default {
       if ((this.identityMethod = "Password")) {
         //调用接口获取密码  _password
         //password与_password比较
-
+        
         if (true) {
           this.stepsActive = 2;
         }
