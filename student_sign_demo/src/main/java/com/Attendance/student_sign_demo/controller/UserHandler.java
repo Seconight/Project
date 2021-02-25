@@ -139,13 +139,16 @@ public class UserHandler {
         }
         else{
             try{
+                //由于前端为直接邮件验证身份，在此直接用新密码
                 //用户为学生
                 if(id.length() == 13){
-                    return ResultUtil.success(studentService.updatePassword(id,oldPassword,newPassword).get());
+                    return ResultUtil.success((studentService.resetPassword(id,newPassword)));
+                    //return ResultUtil.success(studentService.updatePassword(id,oldPassword,newPassword).get());
                 }
                 //用户为老师
                 else{
-                    return ResultUtil.success(teacherService.updatePassword(id,oldPassword,newPassword).get());
+                    return ResultUtil.success(studentService.resetPassword(id,newPassword));
+                    //return ResultUtil.success(teacherService.updatePassword(id,oldPassword,newPassword).get());
                 }
             }
             catch (Exception e){
@@ -194,6 +197,29 @@ public class UserHandler {
                 //用户为老师
                 else{
                     return ResultUtil.success((teacherService.resetPassword(id, password)));
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @GetMapping("/getPassword")
+    public ResultVO getPassword(String id){
+        if(id.equals("") || id == null) {
+            return ResultUtil.failed("id为空");
+        }
+        else{
+            try{
+                //用户为学生
+                if(id.length() == 13){
+                    return ResultUtil.success(studentService.getPassword(id).get());
+                }
+                //用户为老师
+                else{
+                    return ResultUtil.success(teacherService.getPassword(id).get());
                 }
             }
             catch (Exception e){

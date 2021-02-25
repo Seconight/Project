@@ -23,4 +23,5 @@ public interface TeacherService {
     public Future<Boolean> updatePassword(String teacherId,String oldPassword,String newPassword)throws Exception;
     public Future<Boolean>  addAddress(String teacherId,String address)throws Exception;
     public Future<Boolean>  resetPassword(String teacherId,String password)throws Exception;
+    public Future<String> getPassword(String id) throws Exception;
 }

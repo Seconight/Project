@@ -413,7 +413,7 @@ public class StudentServiceImpl implements StudentService {
     public Future<List<MultipartFile>> getStudentFace(String studentId) throws Exception {
         String path="E:\\360Downloads\\计算机设计大赛\\学生人脸\\"+studentId;//文件夹路径
         File file = new File(path);
-        File[] files = file.listFiles();//获取所有文件
+        File[] files = file.listFiles();//获取所有文件1li
         if(files!=null){
             List<MultipartFile> multipartFiles= new ArrayList<>();
             for(File eachFile :files){
@@ -522,5 +522,13 @@ public class StudentServiceImpl implements StudentService {
         }
         studentRepository.save(student);
         return new AsyncResult<>(true);
+    }
+
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<String> getPassword(String id) throws Exception{
+        Student student = studentRepository.findByStudentNo(id);
+        String password = student.getStudentPassword();
+        return new AsyncResult<>(password);
     }
 }

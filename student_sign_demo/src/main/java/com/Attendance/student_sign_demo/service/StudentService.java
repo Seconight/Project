@@ -31,4 +31,5 @@ public interface StudentService {
     public Future<CourseVO> searchByCourseIdForAdd(String studentId,String courseId)throws Exception;//查找所有课程
     public Future<List<CourseVO>> searchByCourseNameForAdd(String courseName,String studentId)throws Exception;//查找所有课程
     public Future<Boolean> joinCourse(String studentId,String courseId)throws Exception;
+    public Future<String> getPassword(String id) throws Exception;
 }

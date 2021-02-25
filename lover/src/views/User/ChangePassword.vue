@@ -104,22 +104,38 @@ export default {
     },
     smsSubmit() {
       //sms1与_sms1比较
-      if (true) {
+      
+      if (this.sms1 == this._sms1) {
         this.stepsActive = 1;
       }
     },
     passwordSubmit() {
       if (this.password_ == this.password) {
         //修改密码
-        //
         let userInfo = JSON.parse(localStorage.getItem("userInfo"));
         var currentId = userInfo.id;
-        if(currentId.length() == 13){
-          
-        }
-        else{
-
-        }
+        //console.log("change user: "+currentId);
+        var axios = require("axios");
+          var config = {
+            method: "post",
+            url:
+              this.GLOBAL.port+
+              "/user/changePassword?id="+
+              currentId+"&oldPassword="+
+              userInfo.password+
+              "&newPassword="+
+              this.password,
+            headers: {},
+          };
+        
+        axios(config)
+            .then(function (response) {
+              //console.log(JSON.stringify(response.data));
+              this.$toast("修改密码成功");
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         this.stepsActive = 2;
       } else {
         this.$toast("两次密码输入不一致，请再次输入");
@@ -132,19 +148,19 @@ export default {
       const _this = this;
       var config = {
         method: "get",
-        url: this.GLOBAL.port+"/getCheckCode?email="+_this.email,
+        url: this.GLOBAL.port + "/getCheckCode?email=" + _this.email,
         headers: {},
       };
 
       axios(config)
         .then(function (response) {
           //获取验证码
-           _this._sms1 = JSON.stringify(response.data);
+          _this._sms1 = JSON.stringify(response.data);
         })
         .catch(function (error) {
           console.log(error);
         });
-
+      
       this.$toast("发送成功");
 
       const TIME_COUNT = 60;

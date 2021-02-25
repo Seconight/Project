@@ -110,7 +110,9 @@
           </template>
         </van-field>
         <div style="margin: 10px auto; width: 80%">
-          <van-button type="primary" block>下一步</van-button>
+          <van-button type="primary" block @click="addAddress"
+            >下一步</van-button
+          >
         </div>
       </van-form>
     </div>
@@ -143,6 +145,7 @@ export default {
       oldEmail: "",
       newEmail: "",
       password: "",
+      _password: "",
       //控制旧邮箱验证码按钮
       smsCountdown1: true,
       smsCount1: "",
@@ -169,7 +172,7 @@ export default {
     },
     onChoiceEmail() {
       if (this.oldEmail == null) {
-        this.$dialog({ message: '第一次绑定邮箱请使用密码验证身份。' });
+        this.$dialog({ message: "第一次绑定邮箱请使用密码验证身份。" });
       } else {
         this.stepsActive = 1;
         this.identityMethod = "Email";
@@ -177,24 +180,84 @@ export default {
     },
     identitySubmit() {
       if ((this.identityMethod = "Password")) {
+        let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        var _password;
+        const _this = this;
         //调用接口获取密码  _password
-        //password与_password比较
+        var axios = require("axios");
 
-        if (true) {
-          this.stepsActive = 2;
-        }
+        var config = {
+          method: "get",
+          url: this.GLOBAL.port + "/user/getPassword?id=" + userInfo.id,
+          headers: {},
+        };
+
+        axios(config)
+          .then(function (response) {
+            _password = response.data.data;
+            console.log("this is " + _password);
+            //password与_password比较
+            if (_this.password == _password) {
+              _this.stepsActive = 2;
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       } else {
         //sms1与_sms1比较
-        if (true) {
+        if (this.sms1 == this._sms1) {
           this.stepsActive = 2;
         }
       }
     },
     newEmailSubmit() {
-      this.stepsActive = 3;
+      if (this.sms2 == this._sms2) {
+        var axios = require("axios");
+        let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        var config = {
+          method: "post",
+          url:
+            this.GLOBAL.port+"/user/addAddress?id="+
+            userInfo.id+
+            "&address="+
+            this.newEmail,
+          headers: {},
+        };
+
+        axios(config)
+          .then(function (response) {
+            //console.log(JSON.stringify(response.data));
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+        this.stepsActive = 3;
+      } else {
+        this.$toast("验证码错误！");
+      }
     },
     sendsms1() {
       //验证码发送接口,向oldEmail发送,用_sms1接收
+
+      var axios = require("axios");
+      const _this = this;
+      var config = {
+        method: "get",
+        url: this.GLOBAL.port + "/getCheckCode?email=" + _this.oldEmail,
+        headers: {},
+      };
+
+      axios(config)
+        .then(function (response) {
+          //获取验证码
+          _this._sms1 = JSON.stringify(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
       this.$toast("发送成功");
 
       const TIME_COUNT = 60;
@@ -216,6 +279,24 @@ export default {
     },
     sendsms2() {
       //验证码发送接口,向newEmail发送,用_sms2接收
+
+      var axios = require("axios");
+      const _this = this;
+      var config = {
+        method: "get",
+        url: this.GLOBAL.port + "/getCheckCode?email=" + _this.newEmail,
+        headers: {},
+      };
+
+      axios(config)
+        .then(function (response) {
+          //获取验证码
+          _this._sms2 = JSON.stringify(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
       this.$toast("发送成功");
 
       const TIME_COUNT = 60;
@@ -235,6 +316,7 @@ export default {
         }, 1000);
       }
     },
+    addAddress() {},
   },
 };
 </script>
