@@ -125,7 +125,7 @@
         </van-col>
         <!-- <van-col span='10' @submit="uploadface"> -->
       </van-row>
-      <div style=" text-align: center;">已绑定邮箱账号:{{ newEmail }}</div>
+      <div style="text-align: center">已绑定邮箱账号:{{ newEmail }}</div>
     </div>
   </div>
 </template>
@@ -168,14 +168,18 @@ export default {
       this.identityMethod = "Password";
     },
     onChoiceEmail() {
-      this.stepsActive = 1;
-      this.identityMethod = "Email";
+      if (this.oldEmail == null) {
+        this.$dialog({ message: '第一次绑定邮箱请使用密码验证身份。' });
+      } else {
+        this.stepsActive = 1;
+        this.identityMethod = "Email";
+      }
     },
     identitySubmit() {
       if ((this.identityMethod = "Password")) {
         //调用接口获取密码  _password
         //password与_password比较
-        
+
         if (true) {
           this.stepsActive = 2;
         }

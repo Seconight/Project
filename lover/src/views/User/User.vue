@@ -181,6 +181,7 @@ export default {
     //组件个人信息显示
     showinfor() {
       let _userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      this.name=_userInfo.name;
       this.role = _userInfo.role;
       if (this.role == "老师") {
         this.avatarSrc = require("@/assets/teacher.jpg");
@@ -202,7 +203,6 @@ export default {
     },
     //上传人脸
     uploadface() {
-      this.$dialog;
       this.$dialog
         .confirm({
           title: "确定上传人脸数据",
