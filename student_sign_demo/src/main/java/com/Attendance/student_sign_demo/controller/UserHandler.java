@@ -206,6 +206,7 @@ public class UserHandler {
         return null;
     }
 
+    //获得密码
     @GetMapping("/getPassword")
     public ResultVO getPassword(String id){
         if(id.equals("") || id == null) {
@@ -229,6 +230,7 @@ public class UserHandler {
         return null;
     }
 
+    //获得email
     @GetMapping("/getEmail")
     public ResultVO getEmail(String id){
         if(id.equals("") || id == null) {
@@ -244,6 +246,55 @@ public class UserHandler {
                 else{
                     return ResultUtil.success(teacherService.getEmail(id).get());
                 }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    //学生选课搜索课程 by ID
+    @GetMapping("searchForAddById")
+    public ResultVO searchForAddById(String studentId,String courseId){
+        if(studentId.equals("")||courseId.equals("")||studentId==null||courseId==null){
+            return ResultUtil.failed("id为空！");
+        }
+        else{
+            try {
+                return ResultUtil.success(studentService.searchByCourseIdForAdd(studentId, courseId).get());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    //学生选课搜索课程 by Name
+    @GetMapping("searchForAddByName")
+    public ResultVO searchForAddByName(String courseName, String studentId){
+        if(studentId.equals("")||studentId == null){
+            return ResultUtil.failed("id为空！");
+        }
+        else{
+            try {
+                return ResultUtil.success(studentService.searchByCourseNameForAdd(courseName, studentId).get());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    //加入课程
+    @PostMapping("joinCourse")
+    public ResultVO joinCourse(String studentId, String courseId){
+        if(studentId.equals("")||courseId.equals("")||studentId==null||courseId==null){
+            return ResultUtil.failed("id为空");
+        }
+        else{
+            try {
+                return ResultUtil.success(studentService.joinCourse(studentId, courseId).get());
             }
             catch (Exception e){
                 e.printStackTrace();

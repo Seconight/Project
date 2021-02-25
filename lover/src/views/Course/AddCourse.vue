@@ -128,29 +128,16 @@ export default {
 
       if (sign == 1) {
         var axios = require("axios");
-        if (_userInfo.id.length == 13) {
-          var config = {
-            method: "get",
-            url:
-              this.GLOBAL.port +
-              "/user/searchByCourseId?courseId=" +
-              this.searchValue +
-              "&studentId=" +
-              _userInfo.id,
-            headers: {},
-          };
-        } else {
-          var config = {
-            method: "get",
-            url:
-              this.GLOBAL.port +
-              "/teacher/searchById?courseId=" +
-              this.searchValue +
-              "&teacherId=" +
-              _userInfo.id,
-            headers: {},
-          };
-        }
+        var config = {
+          method: "get",
+          url:
+            this.GLOBAL.port +
+            "/user/searchForAddById?studentId=" +
+            _userInfo.id +
+            "&courseId=" +
+            this.searchValue,
+          headers: {},
+        };
 
         axios(config)
           .then(function (response) {
@@ -171,29 +158,16 @@ export default {
       } else {
         var axios = require("axios");
 
-        if (_userInfo.id.length == 13) {
-          var config = {
-            method: "get",
-            url:
-              this.GLOBAL.port +
-              "/user/searchByCourseName?courseName=" +
-              this.searchValue +
-              "&studentId=" +
-              _userInfo.id,
-            headers: {},
-          };
-        } else {
-          var config = {
-            method: "get",
-            url:
-              this.GLOBAL.port +
-              "/teacher/searchByName?courseName=" +
-              this.searchValue +
-              "&teacherId=" +
-              _userInfo.id,
-            headers: {},
-          };
-        }
+        var config = {
+          method: "get",
+          url:
+            this.GLOBAL.port +
+            "/user/searchForAddByName?courseName=" +
+            this.searchValue +
+            "&studentId=" +
+            _userInfo.id,
+          headers: {},
+        };
 
         axios(config)
           .then(function (response) {
@@ -283,10 +257,29 @@ export default {
       let courseId = course.id;
       console.log("studentId:" + studentId);
       console.log("courseId:" + courseId);
+      const _this = this;
       //通过接口   studentId和courseId  添加课程
-      if (true) {
-        this.$toast("添加课程成功!");
-      }
+      var axios = require("axios");
+
+      var config = {
+        method: "post",
+        url:
+          this.GLOBAL.port+"/user/joinCourse?studentId="+
+          studentId+
+          "&courseId="+
+          courseId,
+        headers: {},
+      };
+
+      axios(config)
+        .then(function (response) {
+          if(response.data.data){
+            _this.$toast("添加课程成功!");
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   },
 };
