@@ -531,4 +531,13 @@ public class StudentServiceImpl implements StudentService {
         String password = student.getStudentPassword();
         return new AsyncResult<>(password);
     }
+
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<String> getEmail(String id) throws Exception{
+        Student student = studentRepository.findByStudentNo(id);
+        String email = student.getStudentAddress();
+        return new AsyncResult<>(email);
+    }
+
 }

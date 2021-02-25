@@ -59,9 +59,8 @@
         </van-col>
         <!-- <van-col span='10' @submit="uploadface"> -->
       </van-row>
-      <div style="text-align:center">账号:{{password}}</div>
-      <div style="text-align:center">密码:{{password}}</div>
-      
+      <div style="text-align: center">账号:{{ id }}</div>
+      <div style="text-align: center">密码:{{ password }}</div>
     </div>
   </div>
 </template>
@@ -71,7 +70,7 @@ export default {
   data() {
     return {
       stepsActive: 0,
-      id:"",
+      id: "",
       sms1: "",
       _sms1: "",
       email: "",
@@ -88,22 +87,76 @@ export default {
       this.$router.go(-1);
     },
     idSubmit() {
-        //通过id获取绑定的邮箱email
-      if (true) {
-        this.email = "123@qq.com";
+      //通过id获取绑定的邮箱email
+      var axios = require("axios");
+      const _this = this;
+      var config = {
+        method: "get",
+        url: this.GLOBAL.port+"/user/getEmail?id="+_this.id,
+        headers: {},
+      };
+
+      axios(config)
+        .then(function (response) {
+          _this.email = response.data.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      if(this.email == null){
+        this.$toast("请联系工作人员！");
+      }
+      else{
         this.stepsActive = 1;
       }
     },
     smsSubmit() {
       //sms1与_sms1比较
-      if (true) {
+      if (this.sms1 == this._sms1) {
         this.stepsActive = 2;
-        //获取密码
-        this.password=123;
+        const _this = this;
+        var axios = require("axios");
+
+        var config = {
+          method: "get",
+          url: this.GLOBAL.port + "/user/getPassword?id=" + _this.id,
+          headers: {},
+        };
+
+        axios(config)
+          .then(function (response) {
+            _this.password = response.data.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+      }
+      else{
+        this.$toast("验证码错误！");
       }
     },
     sendsms1() {
       //验证码发送接口,向oldEmail发送,用_sms1接收
+
+      var axios = require("axios");
+      const _this = this;
+      var config = {
+        method: "get",
+        url: this.GLOBAL.port + "/getCheckCode?email=" + _this.email,
+        headers: {},
+      };
+
+      axios(config)
+        .then(function (response) {
+          //获取验证码
+          _this._sms1 = JSON.stringify(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
       this.$toast("发送成功");
 
       const TIME_COUNT = 60;

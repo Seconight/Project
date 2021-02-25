@@ -664,4 +664,12 @@ public class TeacherServiceImpl implements TeacherService {
         String password = teacher.getTeacherPassword();
         return new AsyncResult<>(password);
     }
+
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<String> getEmail(String id) throws Exception{
+        Teacher teacher = teacherRepository.findByTeacherNo(id);
+        String email = teacher.getTeacherAddress();
+        return new AsyncResult<>(email);
+    }
 }

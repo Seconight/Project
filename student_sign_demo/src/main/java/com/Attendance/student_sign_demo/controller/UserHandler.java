@@ -229,6 +229,29 @@ public class UserHandler {
         return null;
     }
 
+    @GetMapping("/getEmail")
+    public ResultVO getEmail(String id){
+        if(id.equals("") || id == null) {
+            return ResultUtil.failed("id为空");
+        }
+        else{
+            try{
+                //用户为学生
+                if(id.length() == 13){
+                    return ResultUtil.success(studentService.getEmail(id).get());
+                }
+                //用户为老师
+                else{
+                    return ResultUtil.success(teacherService.getEmail(id).get());
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     //测试类，检测get的多参数传值
     @GetMapping(path = "test")
     public ResultVO test(String a, Integer b){
