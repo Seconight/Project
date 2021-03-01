@@ -206,6 +206,23 @@ public class UserHandler {
         return null;
     }
 
+    //获取人脸信息
+    @GetMapping("/getFaces")
+    public ResultVO getFaces(String id){
+        if(id.equals("") || id == null) {
+            return ResultUtil.failed("id为空");
+        }
+        else{
+            try{
+                return ResultUtil.success(studentService.getStudentFace(id).get());
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return ResultUtil.failed(null);
+    }
+
     //获得密码
     @GetMapping("/getPassword")
     public ResultVO getPassword(String id){

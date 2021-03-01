@@ -167,6 +167,15 @@ public class StudentServiceImpl implements StudentService {
             //对应学生以学号存入文件夹 D:/xxxx/userface/0121810880207
             String imagePath = PathUtil.demoPath+"/userFace/"+studentNo;
             File pathDir = new File(imagePath);
+
+            //删除当前子文件
+            if(pathDir.exists()){
+                File[] childFiles = pathDir.listFiles();
+                for(File current : childFiles){
+                    current.delete();
+                }
+            }
+
             if(!pathDir.exists()){
                 pathDir.mkdir();
             }
@@ -411,7 +420,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Async("asyncServiceExecutor")
     public Future<List<MultipartFile>> getStudentFace(String studentId) throws Exception {
-        String path="E:\\360Downloads\\计算机设计大赛\\学生人脸\\"+studentId;//文件夹路径
+        String path=PathUtil.demoPath+"/userFace/"+studentId;//文件夹路径
         File file = new File(path);
         File[] files = file.listFiles();//获取所有文件1li
         if(files!=null){
