@@ -127,11 +127,11 @@ export default {
               this.password,
             headers: {},
           };
-        
+        let _this=this;
         axios(config)
             .then(function (response) {
               //console.log(JSON.stringify(response.data));
-              this.$toast("修改密码成功");
+              _this.$toast("修改密码成功");
             })
             .catch(function (error) {
               console.log(error);
