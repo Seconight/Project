@@ -179,30 +179,26 @@ export default {
       }
     },
     identitySubmit() {
-      if (this.identityMethod == "Password") {
+      if ((this.identityMethod = "Password")) {
         let userInfo = JSON.parse(localStorage.getItem("userInfo"));
         var _password;
         const _this = this;
         //调用接口获取密码  _password
         var axios = require("axios");
+
         var config = {
           method: "get",
           url: this.GLOBAL.port + "/user/getPassword?id=" + userInfo.id,
           headers: {},
         };
+
         axios(config)
           .then(function (response) {
-            //console.log(response.data);
-            if (response.data.code == 1) {
-              _password = response.data.data;
-              //password与_password比较
-              if (_this.password == _password) {
-                _this.stepsActive = 2;
-              } else {
-                _this.$toast("密码错误！");
-              }
-            } else {
-              _this.$toast("网络错误！");
+            _password = response.data.data;
+            console.log("this is " + _password);
+            //password与_password比较
+            if (_this.password == _password) {
+              _this.stepsActive = 2;
             }
           })
           .catch(function (error) {
@@ -210,10 +206,8 @@ export default {
           });
       } else {
         //sms1与_sms1比较
-        if (this.sms1 == this._sms1 && this.sms1 != null) {
+        if (this.sms1 == this._sms1) {
           this.stepsActive = 2;
-        } else {
-          this.$toast("验证码错误！");
         }
       }
     },
@@ -224,46 +218,29 @@ export default {
         var config = {
           method: "post",
           url:
-            this.GLOBAL.port +
-            "/user/addAddress?id=" +
-            userInfo.id +
-            "&address=" +
+            this.GLOBAL.port+"/user/addAddress?id="+
+            userInfo.id+
+            "&address="+
             this.newEmail,
           headers: {},
         };
-        const _this = this;
+
         axios(config)
           .then(function (response) {
-            if (response.data.code == 1) {
-              _this.stepsActive = 3;
-              userInfo.address = _this.newEmail;
-              //重新设置 localStorage
-              localStorage.removeItem("userInfo");
-              localStorage.setItem("userInfo", JSON.stringify(userInfo));
-            } else {
-              _this.$toast("网络错误！");
-            }
+            //console.log(JSON.stringify(response.data));
           })
           .catch(function (error) {
             console.log(error);
           });
+
+        this.stepsActive = 3;
       } else {
         this.$toast("验证码错误！");
       }
     },
-    emailTest(emil) {
-      if (emil != "") {
-        let reg = /^$|^([a-zA-Z0-9]+[-_\.]?)+@[a-zA-Z0-9]+\.[a-z]+$/;
-        return reg.test(emil);
-      } else return false;
-    },
     sendsms1() {
-      //判断邮箱是否满足格式
-      if (!this.emailTest(this.oldEmail)) {
-        this.$toast("请输入正确邮箱格式！");
-        return;
-      }
       //验证码发送接口,向oldEmail发送,用_sms1接收
+
       var axios = require("axios");
       const _this = this;
       var config = {
@@ -302,11 +279,6 @@ export default {
     },
     sendsms2() {
       //验证码发送接口,向newEmail发送,用_sms2接收
-      //判断邮箱是否满足格式
-      if (!this.emailTest(this.newEmail)) {
-        this.$toast("请输入正确邮箱格式！");
-        return;
-      }
 
       var axios = require("axios");
       const _this = this;
