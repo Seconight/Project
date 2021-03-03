@@ -38,7 +38,11 @@ public class UserHandler {
         }
         else{
             try {
-                return ResultUtil.success(studentService.checkLogin(loginForm).get());
+                String re = studentService.checkLogin(loginForm).get().getUserNO();
+                if(re == null)
+                    return ResultUtil.failed("用户名或密码错误!");
+                else
+                    return ResultUtil.success(studentService.checkLogin(loginForm).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
