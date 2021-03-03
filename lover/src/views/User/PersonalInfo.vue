@@ -32,7 +32,7 @@
         />
         <van-field
           label="人脸状态"
-          :value="checkFace == true ? '人脸已上传' : '人脸未上传'"
+          :value="checkFace == 'true' ? '人脸已上传' : '人脸未上传'"
           disabled
         />
       </van-cell-group>

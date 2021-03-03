@@ -38,7 +38,11 @@ public class UserHandler {
         }
         else{
             try {
-                return ResultUtil.success(studentService.checkLogin(loginForm).get());
+                String re = studentService.checkLogin(loginForm).get().getUserNO();
+                if(re == null)
+                    return ResultUtil.failed("用户名或密码错误!");
+                else
+                    return ResultUtil.success(studentService.checkLogin(loginForm).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -84,8 +88,8 @@ public class UserHandler {
     }
 
     //检查学生是否存在人脸信息
-    @GetMapping("/checkFace/{id}")
-    public ResultVO checkFace(@PathVariable("id") String id){
+    @GetMapping("/checkFace")
+    public ResultVO checkFace(String id){
         if(id.length()!=13){
             return ResultUtil.failed("学生id不合法");
         }

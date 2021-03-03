@@ -268,10 +268,15 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Async("asyncServiceExecutor")
     public Future<Boolean> Sign(AttendanceForm attendanceForm)throws Exception {
+
+        //根据时间设置id,标识当前任务
+        String currentId = String.valueOf(System.currentTimeMillis());
         //MultipartFile imageFile = attendanceForm.getImg();
         String courseId = attendanceForm.getId();
         //先将文件存到本地
-        String filePath=PathUtil.demoPath+"/attendance/attendance"; //定义上传文件的存放位置
+        String filePath=PathUtil.demoPath+"/attendance/"+currentId+"/"; //定义上传文件的存放位置
+        File wenjianjia = new File(filePath);
+        wenjianjia.mkdir();
         //将传来的图片保存到本地
         try{
             for(int i=0; i < attendanceForm.getNumber();i++) {
@@ -292,37 +297,24 @@ public class TeacherServiceImpl implements TeacherService {
             for(String encoding : encodings){
                 studentAndEncoding=studentAndEncoding+studentsId[i]+":"+encoding+";";
             }
-            //back:修改前
-            //studentAndEncoding=studentAndEncoding+studentsId[i]+":"+student.getStudentEncoding()+";";
         }
-//        back:修改前
-//        Student student=studentRepository.findByStudentNo(studentsId[studentsId.length-1]);
-//        studentAndEncoding=studentAndEncoding+studentsId[studentsId.length-1]+":"+student.getStudentEncoding();
+
+        //当前应到学生名单
         studentAndEncoding=studentAndEncoding.substring(0,studentAndEncoding.length()-1);
-        try{
-            BufferedWriter bufferedWriter=new BufferedWriter(new FileWriter(new File(PathUtil.demoPath+"/shouldStudents.txt")));
-            bufferedWriter.write(studentAndEncoding);
-            bufferedWriter.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        //进行人脸识别将识别出的人脸保存到文件里
-        String actualStudentFilePath=PathUtil.demoPath+"/actualStudent.txt"; //定义学生文件的存放位置
-        String absentStudentFilePath=PathUtil.demoPath+"/absentStudent.txt";
-        String signFilePath = PathUtil.demoPath+"/isFinished.txt";
-        try{
-            Process process = Runtime.getRuntime().exec(
-                    "cmd.exe /c start "+ PathUtil.demoPath+"/runRecognize.bat "+attendanceForm.getNumber());
-            process.waitFor();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+
+        //开始请求服务
+        TaskService.work(currentId,String.valueOf(1),String.valueOf(1),studentAndEncoding);
+
+        //结果文件生成路径
+        String actualStudentFilePath=PathUtil.demoPath+"/recognize/resultR"+currentId;
+
         //检验是否生成完毕
-        File finishedSign = new File(signFilePath);
+        File finishedSign = new File(actualStudentFilePath);
         while(!finishedSign.exists()){
             //do nothing and wait
         }
 
+        //生成完毕,读入实到学生
         BufferedReader reader=null;
         StringBuffer stringBuffer=new StringBuffer();
         try{
@@ -404,18 +396,10 @@ public class TeacherServiceImpl implements TeacherService {
         attendanceRepository.save(attendance);
 
         //删除文件
-        File actualFile = new File(actualStudentFilePath);
-        File absentFile = new File(absentStudentFilePath);
-
         if(finishedSign.exists()){
             finishedSign.delete();
         }
-        if(actualFile.exists()){
-            actualFile.delete();
-        }
-        if(absentFile.exists()) {
-            absentFile.delete();
-        }
+
         return new AsyncResult<>(true);
     }
 

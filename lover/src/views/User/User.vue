@@ -165,13 +165,16 @@ export default {
 
       var config = {
         method: "get",
-        url: this.GLOBAL.port + "/user/checkFace/" + userID,
+        url: this.GLOBAL.port + "/user/checkFace?id=" + userID,
         headers: {},
       };
 
       axios(config)
         .then(function (response) {
+          // console.log(response.data.data)
           localStorage.setItem("checkFace", response.data.data);
+          // var current = localStorage.getItem("checkFace");
+          // console.log(current);
         })
         .catch(function (error) {
           console.log(error);

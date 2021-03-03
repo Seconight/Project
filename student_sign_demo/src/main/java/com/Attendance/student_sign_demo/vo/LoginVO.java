@@ -16,6 +16,7 @@ public class LoginVO {
     @JsonProperty("role")
     private String role;
 
+
     public void setUserNO(String No) {
         this.userNo=No;
     }
@@ -35,4 +36,6 @@ public class LoginVO {
     public void setRole(String s) {
         this.role=s;
     }
+
+    public String getUserNO() {return this.userNo;}
 }
