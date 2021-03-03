@@ -134,8 +134,7 @@ export default {
         let _this = this;
         axios(config)
           .then(function (response) {
-            console.log(response.data.code);
-            console.log(response.data.data);
+            console.log(response);
             if (response.data.code == 1) {
               //添加用户信息到localStorage
               localStorage.setItem(

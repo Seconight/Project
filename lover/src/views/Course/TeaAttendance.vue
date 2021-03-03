@@ -107,11 +107,20 @@ export default {
     let _this = this;
     axios(config)
       .then(function (response) {
-        let data = response.data.data;
-        for (let i = 0; i < data.length; i++) {
-          _this.recordActive.push(0); //添加与签到记录个数相同的导航栏的选择项
+        console.log(response);
+        if (response.data.code == 1) {
+          let data = response.data.data;
+          if (data.length == 0) {
+            _this.$toast("没有签到记录。");
+          } else {
+            for (let i = 0; i < data.length; i++) {
+              _this.recordActive.push(0); //添加与签到记录个数相同的导航栏的选择项
+            }
+            _this.loadRecord(data);
+          }
+        } else {
+          _this.$toast("获取签到记录失败！");
         }
-        _this.loadRecord(data);
       })
       .catch(function (error) {
         console.log(error);
@@ -147,6 +156,7 @@ export default {
       let index = time.indexOf("-");
       let fir = "第" + parseInt(time.substring(0, index)) + "周";
       let sec = this.dayChange(parseInt(time.substring(index + 1)));
+      console.log(time.substring(index + 1));
       return fir + " " + sec;
     },
     loadRecord(result) {
