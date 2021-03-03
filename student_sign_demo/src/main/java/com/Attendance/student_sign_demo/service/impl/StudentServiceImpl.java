@@ -158,28 +158,30 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Async("asyncServiceExecutor")
     public Future<Boolean> updateFace(FaceForm faceForm) throws Exception {
-        //先将文件存到本地
+        //当前任务id
+        String currentId = String.valueOf(System.currentTimeMillis());
+
         String studentNo = faceForm.getStudentId();
         MultipartFile[] faceImage = faceForm.getFaceImage();
-        String encodings="";
-        for(int i=0;i<faceImage.length;i++){//遍历人脸列表并计算128维特征向量
 
-            //对应学生以学号存入文件夹 D:/xxxx/userface/0121810880207
-            String imagePath = PathUtil.demoPath+"/userFace/"+studentNo;
-            File pathDir = new File(imagePath);
+        String imagePath = PathUtil.demoPath+"/userFace/"+studentNo;
+        File pathDir = new File(imagePath);
 
-            //删除当前子文件
-            if(pathDir.exists()){
-                File[] childFiles = pathDir.listFiles();
-                for(File current : childFiles){
-                    current.delete();
-                }
+        //删除当前子文件
+        //对应学生以学号存入文件夹 D:/xxxx/userface/0121810880207
+        if(pathDir.exists()){
+            File[] childFiles = pathDir.listFiles();
+            for(File current : childFiles){
+                current.delete();
             }
+        }
 
-            if(!pathDir.exists()){
-                pathDir.mkdir();
-            }
+        if(!pathDir.exists()){
+            pathDir.mkdir();
+        }
 
+        //保存文件
+        for(int i=0;i<faceImage.length;i++){
             //学生文件名，格式eg : 0121810880207_1.jpg
             //与文件夹相接加上‘/’
             String fileName = studentNo+"_"+String.valueOf(i)+".jpg";
@@ -194,39 +196,40 @@ public class StudentServiceImpl implements StudentService {
             }catch (IOException e){
                 e.printStackTrace();
             }
-            //运行python程序获得人脸encoding并保存在文件中
-            String encodingFilePath=imagePath+"/encoding"+studentNo+"_"+String.valueOf(i)+".txt"; //定义encoding文件的存放位置
-            try{
-                CommandUtil commandUtil = new CommandUtil();
-                commandUtil.executeCommand("cmd.exe /c start "+PathUtil.demoPath+"/runEncode.bat "+studentNo+" "+i);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            File code = new File(encodingFilePath);
-            while(!code.exists()){
-                //do nothing
-                //&wait for getting the code
-            }
-            //从文件中读取encoding
-            BufferedReader reader=null;
-            StringBuffer stringBuffer=new StringBuffer();
-            try{
-                reader=new BufferedReader(new FileReader(new File(encodingFilePath)));
-                String tempStr;
-                while((tempStr=reader.readLine())!=null){
-                    stringBuffer.append(tempStr);
-                }
-                reader.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            encodings=encodings+stringBuffer.toString()+";";
-            if(code.exists()){
-                code.delete();
-            }
         }
+
+        //保存编码
+        String encodings="";
+
+        //执行任务
+        TaskService.work(currentId,"2",studentNo,"haha");
+
+        File resultFile = new File(PathUtil.demoPath+"/encoding/resultE"+studentNo);
+
+        while (!resultFile.exists()){
+            //do nothing & wait for result
+        }
+
+        BufferedReader reader=null;
+        StringBuffer stringBuffer=new StringBuffer();
+        try{
+            reader=new BufferedReader(new FileReader(resultFile));
+            String tempStr;
+            while((tempStr=reader.readLine())!=null){
+                stringBuffer.append(tempStr);
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //获得结果
+        encodings = encodings + stringBuffer.toString();
+
+        if(resultFile.exists())
+            resultFile.delete();
 
         Student student=studentRepository.findByStudentNo(studentNo);
         student.setStudentEncoding(encodings.substring(0,encodings.length()-1));
@@ -548,5 +551,7 @@ public class StudentServiceImpl implements StudentService {
         String email = student.getStudentAddress();
         return new AsyncResult<>(email);
     }
+
+
 
 }
