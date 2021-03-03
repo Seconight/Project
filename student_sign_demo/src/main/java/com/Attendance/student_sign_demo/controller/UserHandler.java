@@ -84,8 +84,8 @@ public class UserHandler {
     }
 
     //检查学生是否存在人脸信息
-    @GetMapping("/checkFace/{id}")
-    public ResultVO checkFace(@PathVariable("id") String id){
+    @GetMapping("/checkFace")
+    public ResultVO checkFace(String id){
         if(id.length()!=13){
             return ResultUtil.failed("学生id不合法");
         }
