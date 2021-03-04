@@ -104,9 +104,14 @@ export default {
     },
     smsSubmit() {
       //sms1与_sms1比较
-      
-      if (this.sms1 == this._sms1) {
-        this.stepsActive = 1;
+      if (this.sms1 != "") {
+        if (this.sms1 == this._sms1) {
+          this.stepsActive = 1;
+        } else {
+          this.$toast("验证码输入错误！");
+        }
+      } else {
+        this.$toast("请输入验证码！");
       }
     },
     passwordSubmit() {
@@ -116,26 +121,28 @@ export default {
         var currentId = userInfo.id;
         //console.log("change user: "+currentId);
         var axios = require("axios");
-          var config = {
-            method: "post",
-            url:
-              this.GLOBAL.port+
-              "/user/changePassword?id="+
-              currentId+"&oldPassword="+
-              userInfo.password+
-              "&newPassword="+
-              this.password,
-            headers: {},
-          };
-        let _this=this;
+        var config = {
+          method: "post",
+          url:
+            this.GLOBAL.port +
+            "/user/changePassword?id=" +
+            currentId +
+            "&oldPassword=" +
+            userInfo.password +
+            "&newPassword=" +
+            this.password,
+          headers: {},
+        };
+        let _this = this;
         axios(config)
-            .then(function (response) {
-              //console.log(JSON.stringify(response.data));
-              _this.$toast("修改密码成功");
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+          .then(function (response) {
+            //console.log(JSON.stringify(response.data));
+            _this.$toast("修改密码成功！请重新登录。");
+            this.$emit("logout"); //退出登录
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
         this.stepsActive = 2;
       } else {
         this.$toast("两次密码输入不一致，请再次输入");
@@ -160,7 +167,7 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
-      
+
       this.$toast("发送成功");
 
       const TIME_COUNT = 60;

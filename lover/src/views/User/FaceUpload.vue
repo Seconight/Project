@@ -4,7 +4,9 @@
       title="人脸上传"
       left-text="返回"
       left-arrow
+      :right-text="edit?'取消':'编辑'"
       @click-left="onClickLeft"
+      @click-right="onClickRight"
     />
     <van-notice-bar left-icon="volume-o" text="最多上传三张人脸照片" />
     <div style="text-align: center; padding: 25px">
@@ -16,15 +18,14 @@
         preview-size="100px"
         :max-count="3"
         :after-read="onRead"
+        :disabled="!edit"
+        :deletable="edit"
       />
     </div>
-    <div style="text-align: center">
+    <div v-if="edit" style="text-align: center">
       <van-button round type="info" @click="uploadface">保存修改</van-button>
     </div>
-    <div>
-      <van-image height="100px" width="100px" src="imgFace"></van-image>
-    </div>
-    <van-overlay :show="faceUploading" @click="faceUploading = false">
+    <van-overlay :show="faceUploading">
       <div class="wrapper" @click.stop>
         <van-loading color="#0094ff" size="80px" vertical>人脸上传中...</van-loading>
       </div>
@@ -41,7 +42,7 @@ export default {
         closeable: true,
       },
       faceUploading: false,
-      imgFace : "",
+      edit: false,
     };
   },
   created() {
@@ -66,7 +67,13 @@ export default {
       });
   },
   methods: {
+    onClickRight(){
+      this.edit=!this.edit;
+      this.GLOBAL.faceFile = [];
+      this.imgList= [];
+    },
     onClickLeft() {
+      console.log(this.imgList)
       this.$router.go(-1);
     },
     onRead(file) {

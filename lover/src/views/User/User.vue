@@ -7,7 +7,7 @@
         </van-col>
         <van-col span="10" @click="openLoginModal">{{ name }}</van-col>
         <!-- <van-col span='10' @submit="uploadface"> -->
-        <van-col span="8" @click="logout">
+        <van-col span="8" @click="onlogout">
           <van-icon name="cross" />
         </van-col>
       </van-row>
@@ -28,7 +28,7 @@
       </van-grid>
     </div>
     <transition>
-      <router-view></router-view>
+      <router-view @logout="logout"></router-view>
     </transition>
     <div class="login_modal" v-if="showLoginModal && $route.path == '/user'">
       <section @click="closeLoginModal"></section>
@@ -183,7 +183,7 @@ export default {
     //组件个人信息显示
     showinfor() {
       let _userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      this.name=_userInfo.name;
+      this.name = _userInfo.name;
       this.role = _userInfo.role;
       if (this.role == "老师") {
         this.avatarSrc = require("@/assets/teacher.jpg");
@@ -245,7 +245,7 @@ export default {
         });
     },
     //退出登录事件
-    logout() {
+    onlogout() {
       this.$dialog
         .confirm({
           title: "确定要退出登录吗？",
@@ -256,6 +256,13 @@ export default {
             this.$toast.fail("请先登录");
             return;
           }
+          this.logout();
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+    logout(){
           localStorage.removeItem("userInfo");
           localStorage.removeItem("checkFace");
           this.name = "点击登录";
@@ -266,20 +273,15 @@ export default {
           this.role = "";
           this.imgList = [];
           this.preview_options.closeable = true;
-        })
-        .catch(() => {
-          // on cancel
-        });
     },
     onRegister() {
       this.showLoginModal = false;
     },
     onChangePassword() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      if(userInfo.address==null)
-      {
+      if (userInfo.address == null) {
         this.$toast("邮箱未绑定!,请先绑定邮箱！");
-      }else{
+      } else {
         this.$router.push("/User/changePassword");
       }
     },
