@@ -1,6 +1,5 @@
 package com.Attendance.student_sign_demo.controller;
 
-import com.Attendance.student_sign_demo.exception.StudentException;
 import com.Attendance.student_sign_demo.form.FaceForm;
 import com.Attendance.student_sign_demo.form.LoginForm;
 import com.Attendance.student_sign_demo.form.RegisterForm;
@@ -12,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import com.Attendance.student_sign_demo.util.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -212,19 +214,19 @@ public class UserHandler {
 
     //获取人脸信息
     @GetMapping("/getFaces")
-    public ResultVO getFaces(String id){
+    public List<byte[]> getFaces(String id){
         if(id.equals("") || id == null) {
-            return ResultUtil.failed("id为空");
+            return null;
         }
         else{
             try{
-                return ResultUtil.success(studentService.getStudentFace(id).get());
+                return studentService.getStudentFace(id).get();
             }
             catch (Exception e){
                 e.printStackTrace();
             }
         }
-        return ResultUtil.failed(null);
+        return null;
     }
 
     //获得密码

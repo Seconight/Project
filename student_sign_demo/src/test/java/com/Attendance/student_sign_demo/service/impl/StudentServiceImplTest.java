@@ -116,25 +116,25 @@ class StudentServiceImplTest {
     }
     @Test
     void getStudentFace()throws Exception{
-        Future<List<MultipartFile>> multipartFiles=studentService.getStudentFace("0121810880214");
-        List<MultipartFile> multipartFiles1=new ArrayList<>();
-        while(true){
-            if(multipartFiles.isDone()){
-                multipartFiles1=multipartFiles.get();
-                break;
-            }
-        }
-        if(!multipartFiles1.isEmpty())
-        {
-            int i=0;
-            for(MultipartFile multipartFile:multipartFiles1){
-                multipartFile.transferTo(new File("E:\\360Downloads\\计算机设计大赛\\学生人脸\\0121810880214"+String.valueOf(i)+".jpg"));
-                System.out.println("成功");
-            }
-        }
-        else{
-            System.out.println("无");
-        }
+//        Future<List<MultipartFile>> multipartFiles=studentService.getStudentFace("0121810880214");
+//        List<MultipartFile> multipartFiles1=new ArrayList<>();
+//        while(true){
+//            if(multipartFiles.isDone()){
+//                multipartFiles1=multipartFiles.get();
+//                break;
+//            }
+//        }
+//        if(!multipartFiles1.isEmpty())
+//        {
+//            int i=0;
+//            for(MultipartFile multipartFile:multipartFiles1){
+//                multipartFile.transferTo(new File("E:\\360Downloads\\计算机设计大赛\\学生人脸\\0121810880214"+String.valueOf(i)+".jpg"));
+//                System.out.println("成功");
+//            }
+//        }
+//        else{
+//            System.out.println("无");
+//        }
     }
     @Test
     void searchByCourseNameForAdd()throws Exception{

@@ -12,25 +12,23 @@ import com.Attendance.student_sign_demo.repository.CourseRepository;
 import com.Attendance.student_sign_demo.repository.StudentRepository;
 import com.Attendance.student_sign_demo.repository.TeacherRepository;
 import com.Attendance.student_sign_demo.service.StudentService;
-import com.Attendance.student_sign_demo.util.CommandUtil;
 import com.Attendance.student_sign_demo.vo.Course1VO;
 import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
 import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
-import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.Attendance.student_sign_demo.util.PathUtil;
+
+import javax.imageio.stream.FileImageInputStream;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.io.File;
-import java.io.FileInputStream;
 
 
 //服务层：学生功能服务类
@@ -422,20 +420,39 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Async("asyncServiceExecutor")
-    public Future<List<MultipartFile>> getStudentFace(String studentId) throws Exception {
+    public Future<List<byte[]>> getStudentFace(String studentId) throws Exception {
         String path=PathUtil.demoPath+"/userFace/"+studentId;//文件夹路径
         File file = new File(path);
         File[] files = file.listFiles();//获取所有文件1li
         if(files!=null){
-            List<MultipartFile> multipartFiles= new ArrayList<>();
-            for(File eachFile :files){
-                FileInputStream fileInputStream = new FileInputStream(eachFile);
-                multipartFiles.add(new MockMultipartFile(eachFile.getName(), eachFile.getName(),
-                        ContentType.APPLICATION_OCTET_STREAM.toString(), fileInputStream));
+            List<byte[]> fileList=new ArrayList<>();
+            for(File f :files){
+                byte[] data = null;
+                FileImageInputStream input = null;
+                try {
+                    input = new FileImageInputStream(f);
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    byte[] buf = new byte[1024];
+                    int numBytesRead = 0;
+                    while ((numBytesRead = input.read(buf)) != -1) {
+                        output.write(buf, 0, numBytesRead);
+                    }
+                    data = output.toByteArray();
+                    output.close();
+                    input.close();
+                }
+                catch (FileNotFoundException ex1) {
+                    ex1.printStackTrace();
+                }
+                catch (IOException ex1) {
+                    ex1.printStackTrace();
+                }
+                fileList.add(data);
             }
-            return new AsyncResult<>(multipartFiles);
+            return new AsyncResult<>(fileList);
         }
         return null;
+
     }
 
     @Override

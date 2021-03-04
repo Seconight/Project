@@ -21,6 +21,9 @@
     <div style="text-align: center">
       <van-button round type="info" @click="uploadface">保存修改</van-button>
     </div>
+    <div>
+      <van-image height="100px" width="100px" src="imgFace"></van-image>
+    </div>
     <van-overlay :show="faceUploading" @click="faceUploading = false">
       <div class="wrapper" @click.stop>
         <van-loading color="#0094ff" size="80px" vertical>人脸上传中...</van-loading>
@@ -38,6 +41,7 @@ export default {
         closeable: true,
       },
       faceUploading: false,
+      imgFace : "",
     };
   },
   created() {
@@ -53,7 +57,9 @@ export default {
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data));
+        //console.log(JSON.stringify(response.data));
+        console.log((response.data[0]));
+        this.imgFace = require(response.data[0]);
       })
       .catch(function (error) {
         console.log(error);

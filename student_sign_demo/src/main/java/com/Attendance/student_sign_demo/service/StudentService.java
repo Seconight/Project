@@ -9,6 +9,7 @@ import com.Attendance.student_sign_demo.vo.LoginVO;
 import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -27,7 +28,7 @@ public interface StudentService {
     public Future<Boolean> updatePassword(String studentId,String oldPassword,String newPassword)throws Exception;
     public Future<Boolean>  addAddress(String studentId,String address)throws Exception;
     public Future<Boolean>  resetPassword(String studentId,String password)throws Exception;
-    public Future<List<MultipartFile>> getStudentFace(String studentId)throws Exception;
+    public Future<List<byte[]>> getStudentFace(String studentId)throws Exception;
     public Future<CourseVO> searchByCourseIdForAdd(String studentId,String courseId)throws Exception;//查找所有课程
     public Future<List<CourseVO>> searchByCourseNameForAdd(String courseName,String studentId)throws Exception;//查找所有课程
     public Future<Boolean> joinCourse(String studentId,String courseId)throws Exception;

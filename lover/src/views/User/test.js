@@ -1,22 +1,17 @@
 var axios = require('axios');
-var FormData = require('form-data');
-var fs = require('fs');
-var data = new FormData();
-data.append('faceImage', fs.createReadStream('2.jpg'));
-data.append('studentId', '0121810880204');
 
 var config = {
-  method: 'post',
-  url: 'http://localhost:8080/user/faceInfo',
-  headers: { 
-    ...data.getHeaders()
-  },
-  data : data
+  method: 'get',
+  url: 'http://localhost:8081/user/getFaces?id=0121810880207',
+  headers: { }
 };
 
 axios(config)
 .then(function (response) {
   console.log(JSON.stringify(response.data));
+  
+  
+
 })
 .catch(function (error) {
   console.log(error);
