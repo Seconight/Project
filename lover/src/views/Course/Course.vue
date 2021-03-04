@@ -78,7 +78,7 @@
                 type="primary"
                 size="small"
                 icon="eye-o"
-                style="margin-left: 20px"
+                style="margin-left: 10px"
                 @click="goToAttendance(index)"
                 >签到记录</van-button
               >
@@ -87,7 +87,7 @@
                 type="primary"
                 size="small"
                 icon="scan"
-                style="margin-left: 20px"
+                style="margin-left: 10px"
                 @click="photoSign(index)"
                 >拍照签到</van-button
               >
@@ -100,6 +100,7 @@
     <transition>
       <router-view
         :course="allCourses[semesterItem][courseIndex]"
+        @refresh="refresh"
       ></router-view>
     </transition>
     <van-popup v-model="showPhotoSign" round>
@@ -120,6 +121,13 @@
         </div>
       </div>
     </van-popup>
+    <van-overlay :show="photoSignUploading">
+      <div class="wrapper" @click.stop>
+        <van-loading color="#0094ff" size="80px" vertical
+          >签到识别中...</van-loading
+        >
+      </div>
+    </van-overlay>
   </div>
 </template>
 
@@ -143,6 +151,7 @@ export default {
       semesterItem: 0,
       semesterOptions: [{ text: "全部课程", value: 0 }],
       coursesStorage: [],
+      photoSignUploading: false,
     };
   },
   created() {
@@ -201,6 +210,11 @@ export default {
     }
   },
   methods: {
+    refresh(val) {
+      if (val) {//刷新页面
+        location.reload();
+      }
+    },
     onRead(file) {
       this.GLOBAL.signFiles.push(file.file);
     },
@@ -232,6 +246,8 @@ export default {
       if (this.imgList.length == 0) {
         this.$toast("请添加图片");
       } else {
+        this.photoSignUploading = true;
+        let _this = this;
         //接口
         console.log(
           this.allCourses[this.semesterItem][this.courseIndex].id +
@@ -261,13 +277,13 @@ export default {
         axios(config)
           .then(function (response) {
             console.log(JSON.stringify(response.data));
+            _this.photoSignUploading = false;
+            _this.$toast.success("上传成功，请在签到记录查看结果。");
+            _this.showPhotoSign = false;
           })
           .catch(function (error) {
             console.log(error);
           });
-
-        this.$toast.success("上传成功");
-        this.showPhotoSign = false;
       }
     },
     dayChange(day) {
@@ -336,7 +352,7 @@ export default {
         }
         this.allCourses.push(semester);
       }
-      console.log( this.allCourses);
+      console.log(this.allCourses);
     },
     onPopoverSelect() {
       if (this.role == "老师") {
@@ -463,5 +479,11 @@ export default {
   text-align: center;
   width: 300px;
   height: 200px;
+}
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 </style>

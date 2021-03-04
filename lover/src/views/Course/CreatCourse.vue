@@ -90,9 +90,11 @@
         />
       </van-popup>
       <div style="text-align: center; padding: 20px">
-        <van-uploader accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
-        v-model="excelfile" 
-        :after-read="onRead">
+        <van-uploader
+          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          v-model="excelfile"
+          :after-read="onRead"
+        >
           <van-button icon="plus" type="primary">导入学生名单</van-button>
         </van-uploader>
       </div>
@@ -243,7 +245,7 @@ export default {
     },
   },
   methods: {
-    onRead(file){
+    onRead(file) {
       this.GLOBAL.studentFile = file.file;
     },
     onTimePickerConfirm(value, index) {
@@ -355,10 +357,9 @@ export default {
 
       var config = {
         method: "put",
-        url: this.GLOBAL.port+"/teacher/createCourse",
+        url: this.GLOBAL.port + "/teacher/createCourse",
         headers: {
-          'Content-Type': 'multipart/form-data',
-          
+          "Content-Type": "multipart/form-data",
         },
         data: data,
       };
@@ -366,13 +367,13 @@ export default {
       axios(config)
         .then(function (response) {
           console.log(JSON.stringify(response.data));
+          _this.$emit("refresh", true); //让父页面刷新
+          this.$toast.success("新建课程成功 课程号:");
+          this.$router.go(-1);
         })
         .catch(function (error) {
           console.log(error);
         });
-
-      this.$toast.success("新建课程成功 课程号:");
-      this.$router.go(-1);
     },
   },
 };

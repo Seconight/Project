@@ -275,6 +275,7 @@ export default {
         .then(function (response) {
           if(response.data.data){
             _this.$toast("添加课程成功!");
+            _this.$emit('refresh',true);//让父页面刷新
           }
         })
         .catch(function (error) {
