@@ -49,18 +49,22 @@ export default {
     //进入清空之前存入的照片
     this.GLOBAL.faceFile = [];
     var axios = require("axios");
-
+    let userInfo = localStorage.getItem("userInfo");
+    let _userInfo = JSON.parse(userInfo);
+    let _this = this;
     var config = {
       method: "get",
-      url: "http://localhost:8081/user/getFaces?id=0121810880207",
+      url: "http://localhost:8081/user/getFaces?id="+_userInfo.id,
       headers: {},
     };
 
     axios(config)
       .then(function (response) {
         //console.log(JSON.stringify(response.data));
-        console.log((response.data[0]));
-        this.imgFace = require(response.data[0]);
+        console.log(response.data);
+        for(let i=0;i<response.data.length;i++){
+          _this.imgList.push({url:("data:image/jpg;base64,"+response.data[i]), isImage:true});
+        }
       })
       .catch(function (error) {
         console.log(error);

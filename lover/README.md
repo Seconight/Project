@@ -15,5 +15,10 @@ npm run serve
 npm run build
 ```
 
+### Introduction
+```
+基于VUE的前端项目，显示界面用于移动设备
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
