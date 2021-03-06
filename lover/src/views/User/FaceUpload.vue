@@ -54,14 +54,14 @@ export default {
     let _this = this;
     var config = {
       method: "get",
-      url: "http://localhost:8081/user/getFaces?id="+_userInfo.id,
+      url: this.GLOBAL.port+"/user/getFaces?id="+_userInfo.id,
       headers: {},
     };
-
+    console.log(config.url);
     axios(config)
       .then(function (response) {
         //console.log(JSON.stringify(response.data));
-        console.log(response.data);
+        //console.log(response.data);
         for(let i=0;i<response.data.length;i++){
           _this.imgList.push({url:("data:image/jpg;base64,"+response.data[i]), isImage:true});
         }
