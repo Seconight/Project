@@ -119,8 +119,9 @@ public class TeacherServiceImpl implements TeacherService {
             AttendanceVO attendanceVO=new AttendanceVO();
             attendanceVO.setAttendanceId(attendance.getAttendanceNo());
             attendanceVO.setTime(attendance.getAttendanceTime());
-            String[] acStudents=attendance.getAttendanceActualStudent().split(",");
-            if(acStudents.equals(""))
+            String getAllStu = attendance.getAttendanceActualStudent();
+            String[] acStudents = getAllStu.split(",");
+            if(getAllStu.equals(""))
             {
                 attendanceVO.setAcStudentNum(0);
             }

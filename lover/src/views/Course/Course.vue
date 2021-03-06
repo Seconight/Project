@@ -247,6 +247,7 @@ export default {
         this.$toast("请添加图片");
       } else {
         this.photoSignUploading = true;
+        this.showPhotoSign = false;
         let _this = this;
         //接口
         console.log(
@@ -278,8 +279,9 @@ export default {
           .then(function (response) {
             console.log(JSON.stringify(response.data));
             _this.photoSignUploading = false;
+            
             _this.$toast.success("上传成功，请在签到记录查看结果。");
-            _this.showPhotoSign = false;
+            
           })
           .catch(function (error) {
             console.log(error);
