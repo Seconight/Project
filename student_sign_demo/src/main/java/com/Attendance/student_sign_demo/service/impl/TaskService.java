@@ -32,6 +32,7 @@ public class TaskService {
         socket.close();
         outputStream.close();
 
+        System.out.println("信息发送完毕"+currentId);
     }
 
 }

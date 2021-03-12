@@ -48,7 +48,7 @@ class TeacherServiceImplTest {
     }
     @Test
     void getAttendanceInfo() throws Exception {
-        Future<List<AttendanceVO>> attendanceVOFuture=teacherService.getAttendanceInfo("0000000001");
+        Future<List<AttendanceVO>> attendanceVOFuture=teacherService.getAttendanceInfo("0000000002");
         List<AttendanceVO> attendanceVOList=new ArrayList<>();
         while(true){
             if(attendanceVOFuture.isDone()){

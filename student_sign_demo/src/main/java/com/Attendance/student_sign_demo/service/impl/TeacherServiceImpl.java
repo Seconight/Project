@@ -271,7 +271,7 @@ public class TeacherServiceImpl implements TeacherService {
     public Future<Boolean> Sign(AttendanceForm attendanceForm)throws Exception {
 
         //根据时间设置id,标识当前任务
-        String currentId = String.valueOf(System.currentTimeMillis());
+        String currentId = String.valueOf(new Date().getTime());
         //MultipartFile imageFile = attendanceForm.getImg();
         String courseId = attendanceForm.getId();
         //先将文件存到本地
@@ -303,9 +303,10 @@ public class TeacherServiceImpl implements TeacherService {
         //当前应到学生名单
         studentAndEncoding=studentAndEncoding.substring(0,studentAndEncoding.length()-1);
 
+        System.out.println("开始请求识别");
         //开始请求服务
         TaskService.work(currentId,String.valueOf(1),String.valueOf(1),studentAndEncoding);
-
+        System.out.println("请求结束");
         //结果文件生成路径
         String actualStudentFilePath=PathUtil.demoPath+"/recognize/resultR"+currentId;
 
