@@ -3,6 +3,7 @@ package com.Attendance.student_sign_demo.service.impl;
 import com.Attendance.student_sign_demo.entity.*;
 import com.Attendance.student_sign_demo.form.AttendanceForm;
 import com.Attendance.student_sign_demo.form.CourseForm;
+import com.Attendance.student_sign_demo.grpc.ClientService;
 import com.Attendance.student_sign_demo.repository.*;
 import com.Attendance.student_sign_demo.service.TeacherService;
 import com.Attendance.student_sign_demo.util.PathUtil;
@@ -289,7 +290,7 @@ public class TeacherServiceImpl implements TeacherService {
         }catch (IOException e){
             e.printStackTrace();
         }
-        //根据课程号把学生名单以及对应的人脸encoding保存到文件中
+        //根据课程号把学生名单以及对应的人脸encoding
         String [] studentsId=courseRepository.findByCourseNo(courseId).getCourseShouldStudent();
         String studentAndEncoding="";
         for(int i=0;i<studentsId.length;i++){
@@ -303,40 +304,12 @@ public class TeacherServiceImpl implements TeacherService {
         //当前应到学生名单
         studentAndEncoding=studentAndEncoding.substring(0,studentAndEncoding.length()-1);
 
-        System.out.println("开始请求识别");
-        //开始请求服务
-        TaskService.work(currentId,String.valueOf(1),String.valueOf(1),studentAndEncoding);
-        System.out.println("请求结束");
-        //结果文件生成路径
-        String actualStudentFilePath=PathUtil.demoPath+"/recognize/resultR"+currentId;
-
-        //检验是否生成完毕
-        File finishedSign = new File(actualStudentFilePath);
-        while(!finishedSign.exists()){
-            //do nothing and wait
-        }
-
-        //生成完毕,读入实到学生
-        BufferedReader reader=null;
-        StringBuffer stringBuffer=new StringBuffer();
-        try{
-            reader=new BufferedReader(new FileReader(new File(actualStudentFilePath)));
-            String tempStr;
-            while((tempStr=reader.readLine())!=null){
-                stringBuffer.append(tempStr);
-            }
-            reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         //设置实到学生，缺席学生
         String actualStudent = "";
         String absentStudent = "";
-        actualStudent=actualStudent+stringBuffer.toString();
-        //String [] actualStudentString=actualStudent.substring(0,actualStudent.length()).split(",");
+        //grpc获取服务结果
+        ClientService clientService=new ClientService();
+        actualStudent=actualStudent+clientService.FaceDetect(courseId,studentAndEncoding);
         String [] actualStudentString=actualStudent.split(",");
         Set set = new HashSet();
         for (int i = 0; i < actualStudentString.length; i++) {
@@ -396,12 +369,6 @@ public class TeacherServiceImpl implements TeacherService {
         }
         attendance.setAttendanceCourseNo(courseId);
         attendanceRepository.save(attendance);
-
-        //删除文件
-        if(finishedSign.exists()){
-            finishedSign.delete();
-        }
-
         return new AsyncResult<>(true);
     }
 

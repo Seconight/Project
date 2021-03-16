@@ -7,6 +7,7 @@ import com.Attendance.student_sign_demo.entity.Teacher;
 import com.Attendance.student_sign_demo.form.FaceForm;
 import com.Attendance.student_sign_demo.form.LoginForm;
 import com.Attendance.student_sign_demo.form.RegisterForm;
+import com.Attendance.student_sign_demo.grpc.ClientService;
 import com.Attendance.student_sign_demo.repository.AttendanceRepository;
 import com.Attendance.student_sign_demo.repository.CourseRepository;
 import com.Attendance.student_sign_demo.repository.StudentRepository;
@@ -156,8 +157,6 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Async("asyncServiceExecutor")
     public Future<Boolean> updateFace(FaceForm faceForm) throws Exception {
-        //当前任务id
-        String currentId = String.valueOf(System.currentTimeMillis());
 
         String studentNo = faceForm.getStudentId();
         MultipartFile[] faceImage = faceForm.getFaceImage();
@@ -199,35 +198,9 @@ public class StudentServiceImpl implements StudentService {
         //保存编码
         String encodings="";
 
-        //执行任务
-        TaskService.work(currentId,"2",studentNo,"haha");
-
-        File resultFile = new File(PathUtil.demoPath+"/encoding/resultE"+studentNo);
-
-        while (!resultFile.exists()){
-            //do nothing & wait for result
-        }
-
-        BufferedReader reader=null;
-        StringBuffer stringBuffer=new StringBuffer();
-        try{
-            reader=new BufferedReader(new FileReader(resultFile));
-            String tempStr;
-            while((tempStr=reader.readLine())!=null){
-                stringBuffer.append(tempStr);
-            }
-            reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //获得结果
-        encodings = encodings + stringBuffer.toString();
-
-        if(resultFile.exists())
-            resultFile.delete();
+        //grpc获取服务结果
+        ClientService clientService=new ClientService();
+        encodings=clientService.FaceRecognize(studentNo);
 
         Student student=studentRepository.findByStudentNo(studentNo);
         student.setStudentEncoding(encodings.substring(0,encodings.length()-1));
