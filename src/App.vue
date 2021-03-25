@@ -1,10 +1,6 @@
 <template>
-  <div id="app" :style="backgroundImg">
-    <transition enter-active-class="pt-page-flipInRight">
-      <keep-alive>
-        <router-view />
-      </keep-alive>
-    </transition>
+  <div id="app">
+    <router-view />
     <Tabbar v-if="$route.meta.ifShowTabbar" />
   </div>
 </template>
@@ -14,13 +10,7 @@ import Tabbar from "@/components/Tabbar.vue";
 
 export default {
   data() {
-    return {
-      backgroundImg: {
-        // backgroundImage: "url(" + require("@/assets/background.png") + ")",
-        
-        // backgroundSize: "100% 100%",
-      },
-    };
+    return {};
   },
   components: {
     Tabbar,
@@ -36,12 +26,10 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
- background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
+  background-color: #f7f8fa;
   min-height: 100%;
 }
-html,
-body {
+html,body{
   height: 100%;
 }
-@import "assets/css/animations.css";
 </style>

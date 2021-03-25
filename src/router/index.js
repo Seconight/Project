@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import User from '../views/User/User.vue'
+import Register from '../views/User/Register.vue'
 import Course from '../views/Course/Course.vue'
 import StuAttendance from '../views/Course/StuAttendance.vue'
 import TeaAttendance from '../views/Course/TeaAttendance.vue'
@@ -12,11 +13,10 @@ import PhotoSignIn from '../views/Course/PhotoSignIn.vue'
 import Email from '../views/User/Email.vue'
 import FaceUpload from '../views/User/FaceUpload.vue'
 import ChangePassword from '../views/User/ChangePassword.vue'
-
+import RetrievePassword from '../views/User/RetrievePassword.vue'
 import PersonalInfo from '../views/User/PersonalInfo.vue'
-import Login from '../views/Login/Login.vue'
-import RetrievePassword from '../views/Login/RetrievePassword.vue'
-import Register from '../views/Login/Register.vue'
+
+
 import Test from '../views/Test.vue'
 Vue.use(VueRouter)
 
@@ -36,23 +36,6 @@ const routes = [
     component: Test,
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login,
-    children: [
-      {
-        path: 'retrievePassword',
-        name: 'RetrievePassword',
-        component: RetrievePassword,
-      },
-      {
-        path: 'register',
-        name: 'Register',
-        component: Register,
-      },
-    ],
-  },
-  {
     path: '/user',
     name: 'User',
     component: User,
@@ -67,7 +50,11 @@ const routes = [
         name: 'FaceUpload',
         component: FaceUpload,
       },
-
+      {
+        path: 'retrievePassword',
+        name: 'RetrievePassword',
+        component: RetrievePassword,
+      },
       {
         path: 'changePassword',
         name: 'ChangePassword',
@@ -77,6 +64,11 @@ const routes = [
         path: 'personalInfo',
         name: 'PersonalInfo',
         component: PersonalInfo,
+      },
+      {
+        path: 'register',
+        name: 'Register',
+        component: Register,
       },
     ],
     meta: {

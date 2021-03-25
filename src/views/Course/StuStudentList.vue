@@ -54,7 +54,6 @@
         <van-cell title="班级" :value="students[choice].class" />
         <van-cell title="学号" :value="students[choice].id" />
         <van-cell title="出勤次数" :value="0" />
-        <van-cell title="缺勤次数" :value="0" />
         <van-cell title="出勤率" :value="0" />
       </van-cell-group>
     </van-action-sheet>
@@ -78,7 +77,8 @@ export default {
   },
   created() {
     let courseID = this.course.id;
-    // var axios = require("axios");
+    var axios = require("axios");
+
     // var config = {
     //   method: "get",
     //   url: this.GLOBAL.port + "/teacher/getCourseStudent?id=" + courseID,
@@ -97,7 +97,6 @@ export default {
     //   .catch(function (error) {
     //     console.log(error);
     //   });
-    
   },
   methods: {
     onClickLeft() {

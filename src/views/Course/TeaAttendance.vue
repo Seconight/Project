@@ -12,32 +12,7 @@
         <van-icon name="info-o" @click="showSupplyInfo" />
       </template>
     </van-nav-bar>
-    <van-cell-group>
-      <van-cell center v-for="(record, index) in records" :key="record.id">
-        
-        <template #title style="display:flex; ">
-          <div style="float:left;padding: 10px;font-size:20px;color:#b3b3b3">{{index+1}}</div>
-          <div style="margin-left:10px;float:left;font-size:18px;">
-            <div>{{ record.time }}</div>
-  
-          <div style="font-size:10px;color:#b3b3b3">签到{{ record.acStudentNum }}人 缺勤{{ record.abStudentNum }}人</div>
-          </div>
-          
-        </template>
-        <template #default>
-          <van-circle
-            v-model="currentRate[index]"
-            :speed="100"
-            :color="gradientColor[index]"
-            :rate="data[index].rate"
-            :text="data[index].text"
-            :clockwise="false"
-            size="60px"
-            :stroke-width="100"
-          />
-        </template>
-      </van-cell>
-    </van-cell-group>
+
     <van-collapse v-model="activeNames">
       <van-collapse-item v-for="(record, index) in records" :key="record.id">
         <template #title>
@@ -110,13 +85,10 @@ export default {
   props: ["course"],
   data() {
     return {
-      currentRate: [],
-      gradientColor: [],
       activeNames: [],
       showCourseInfo: false,
       records: [],
       recordActive: [],
-      data: [],
     };
   },
   components: {
@@ -198,42 +170,6 @@ export default {
           abStudent: result[i].abStudent,
         };
         this.records.push(temp);
-      }
-      for (let index = 0; index < this.records.length; index++) {
-        let rate = 0;
-        if (
-          this.records[index].acStudentNum + this.records[index].abStudentNum !=
-          0
-        )
-          rate =
-            (100 * this.records[index].acStudentNum) /
-            (this.records[index].acStudentNum +
-              this.records[index].abStudentNum);
-        let text = rate.toFixed(0) + "%";
-        this.gradientColor.push(this.switchcolor(rate));
-        // linear-gradient(to top, #96fbc4 0%, #f9f586 100%); //中等  75-90
-        //background-image: linear-gradient(-20deg, #  0%, #fc6076 100%);//红 50-75
-        this.data.push({ text: text, rate: rate });
-        this.currentRate.push(0);
-      }
-      console.log(this.data);
-    },
-    switchcolor(rate) {
-      if (rate < 50) {
-        return {
-          "0%": "#ff9a44",
-          "100%": "#fc6076",
-        };
-      } else if (rate < 75) {
-        return {
-          "0%": "#96fbc4",
-          "100%": "#f9f586",
-        };
-      } else {
-        return {
-          "0%": "#00FF00",
-          "100%": "#38f9d7",
-        };
       }
     },
     supply(index, abindex, abStudent, attendanId) {

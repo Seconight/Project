@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@growthbunker/vuetimeline": "^0.1.17",
     "@vant/popperjs": "^1.0.2",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.0",

@@ -1,53 +1,135 @@
 <template>
-    <van-address-edit
-            
-            show-delete
-            :address-info="addressInfo"
-            save-button-text="修改"
-            @save="onSave"
-            @delete="onDelete"
-    />
+  <div class="audio-list">
+    <div class="_bg"></div>
+    <label>
+      <a >编号</a>
+      <span class="van-icon van-icon-fire-o" v-show="activeMusic"></span>
+    </label>
+    <div class="_info">
+      <p class="text-truncate">
+        123
+        <a >(123)</a>
+      </p>
+      <a class="text-truncate">
+
+        123
+      </a>
+    </div>
+    <span class="van-icon van-icon-tv-o" @click.stop="toMv"></span>
+    <span class="van-icon van-icon-ellipsis" @click.stop="openPopup"></span>
+  </div>
 </template>
 
 <script>
-    //import AreaList from '../api/area';
-    import { Toast } from 'vant';
-    export default {
-        name: "AddressEdit",
-        created(){
-            let data = JSON.parse(this.$route.query.item)
-            this.addressInfo = data
-            let index = data.address.indexOf('区')
-            if(index < 0) index = data.address.indexOf('县')
-            this.addressInfo.addressDetail = data.address.substring(index+1)
-        },
-        data() {
-            return {
-                areaList: AreaList,
-                addressInfo: null
-            }
-        },
-        methods: {
-            onSave(item) {
-                const _this = this
-                axios.put('http://localhost:8081/address/update',item).then(function (resp) {
-                    if(resp.data.code == 0){
-                        let instance = Toast('修改成功');
-                        setTimeout(() => {
-                            instance.close()
-                            _this.$router.push('/addressList')
-                        }, 1000)
-                    }
-                })
-
-            },
-            onDelete() {
-                history.go(-1)
-            }
-        }
+export default {
+  name: "audiolist",
+  props: {
+    index: Number,
+    detail: Object,
+    toMore: {
+      type: Function,
+      default: () => {}
+    },
+  },
+  computed: {
+    fullSinger() {
+      return (
+        this.detail.ar.map(item => item.name).join("/") +
+        " - " +
+        this.detail.al.name
+      );
+    },
+    activeMusic() {
+      let key = this.$store.getters.curMusic;
+      return typeof key != "undefined" && key.name === this.detail.name;
+    },
+    isUseful() {
+      return this.detail.url != null;
+    },
+    popupInfo() {
+      return this.detail;
     }
+  },
+  methods: {
+    toMv() {
+      if (this.detail.mv === 0) return this.$toast("此音乐莫有mv");
+      this.toMainPage("/home/mvdetail", this.detail.mv);
+    },
+    openPopup(){
+      this.$bus.emit('openSongPopup',this.popupInfo)
+    }
+  }
+};
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+.audio-list {
+  position: relative;
+  box-sizing: border-box;
+  padding: 10px 0;
+  padding-right: 10px;
+  width: 100%;
+  height: 60px;
+  display: grid;
+  grid-template-columns: 50px 1fr 40px 30px;
+  grid-template-rows: 1fr;
+  ._bg {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    &:active {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
+  label {
+    align-self: center;
+    justify-self: center;
+    color: #999;
+    span {
+      color: crimson;
+      font-size: 1.25rem;
+    }
+  }
+  & > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+    color: #b3b3b3;
+    z-index: 5;
+    &:active {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
+  ._info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    & > p {
+      max-width: 100%;
+      color: #333;
+      & > a {
+        color: #808080;
+      }
+    }
+    & > a {
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      font-size: 0.75rem;
+      color: #808080;
+      span {
+        font-size: 6px;
+        color: crimson;
+        padding: 0 1px;
+        border: 1px solid crimson;
+        border-radius: 2px;
+        margin-right: 2px;
+      }
+    }
+  }
+}
 </style>

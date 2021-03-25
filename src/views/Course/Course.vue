@@ -49,12 +49,12 @@
         />
       </van-dropdown-menu>
       <div>
-        <van-collapse v-model="activeCourse" >
+        <van-collapse v-model="activeCourse">
           <van-collapse-item
             v-for="(course, index) in allCourses[semesterItem]"
             :key="course.id"
           >
-            <template #title style="width: 200px" >
+            <template #title style="width: 200px">
               <div class="courseItem">{{ course.name }}</div>
             </template>
             <van-cell-group>
@@ -103,6 +103,31 @@
         @refresh="refresh"
       ></router-view>
     </transition>
+    <van-popup v-model="showPhotoSign" round>
+      <div class="photoSign">
+        <van-uploader
+          :preview-options="preview_options"
+          v-model="imgList"
+          multiple
+          accept="image/*"
+          style="padding: 18px"
+          :after-read="onRead"
+          :max-count="3"
+        />
+        <div style="position: fixed; bottom: 0px; left: 75px; padding: 20px">
+          <van-button type="danger" @click="upLodaeSign" icon="upgrade"
+            >上传签到</van-button
+          >
+        </div>
+      </div>
+    </van-popup>
+    <van-overlay :show="photoSignUploading" style="z-index:999" >
+      <div class="wrapper" @click.stop>
+        <van-loading color="#0094ff" size="80px" vertical
+          >签到识别中...</van-loading
+        >
+      </div>
+    </van-overlay>
   </div>
 </template>
 
@@ -118,9 +143,15 @@ export default {
       role: "",
       allCourses: [[]],
       courseIndex: 0,
+      imgList: [],
+      showPhotoSign: false,
+      preview_options: {
+        closeable: true,
+      },
       semesterItem: 0,
       semesterOptions: [{ text: "全部课程", value: 0 }],
       coursesStorage: [],
+      photoSignUploading: false,
     };
   },
   created() {
@@ -180,8 +211,7 @@ export default {
   },
   methods: {
     refresh(val) {
-      if (val) {
-        //刷新页面
+      if (val) {//刷新页面
         location.reload();
       }
     },
@@ -207,9 +237,61 @@ export default {
     },
     photoSign(index) {
       //console.log(JSON.stringify(this.allCourses));
+      // this.GLOBAL.signFiles = [];
+      // this.courseIndex = index;
+      // console.log("this index is " + index);
+      // this.showPhotoSign = true;
       this.GLOBAL.signFiles = [];
       this.courseIndex = index;
       this.$router.push("/Course/photoSignIn");
+
+    },
+    upLodaeSign() {
+      if (this.imgList.length == 0) {
+        this.$toast("请添加图片");
+      } else {
+        this.photoSignUploading = true;
+        this.showPhotoSign = false;
+        let _this = this;
+        //_this.photoSignUploading = false;
+        //接口
+        // console.log(
+        //   this.allCourses[this.semesterItem][this.courseIndex].id +
+        //     " add attendance"
+        // );
+
+        // var axios = require("axios");
+        // var FormData = require("form-data");
+        // var data = new FormData();
+        // for (var i = 0; i < this.GLOBAL.signFiles.length; i++) {
+        //   data.append("img", this.GLOBAL.signFiles[i]);
+        // }
+        // data.append(
+        //   "id",
+        //   this.allCourses[this.semesterItem][this.courseIndex].id
+        // );
+
+        // var config = {
+        //   method: "post",
+        //   url: this.GLOBAL.port + "/teacher/attendance",
+        //   headers: {
+        //     "Content-Type": "multipart/form-data",
+        //   },
+        //   data: data,
+        // };
+
+        // axios(config)
+        //   .then(function (response) {
+        //     console.log(JSON.stringify(response.data));
+        //     _this.photoSignUploading = false;
+            
+        //     _this.$toast.success("上传成功，请在签到记录查看结果。");
+            
+        //   })
+        //   .catch(function (error) {
+        //     console.log(error);
+        //   });
+      }
     },
     dayChange(day) {
       switch (day) {
@@ -399,6 +481,11 @@ export default {
   background: linear-gradient(to right, #63d5f1, #5d87d4);
   border-radius: 10px;
   font-size: medium;
+}
+.photoSign {
+  text-align: center;
+  width: 300px;
+  height: 200px;
 }
 .wrapper {
   display: flex;
