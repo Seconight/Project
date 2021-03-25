@@ -22,7 +22,7 @@
         v-for="(student, index) in students"
         :key="student.id"
         :title="student.name"
-        :value="0"
+        :value="student.rate"
         @click="onClickStudent(index)"
       />
     </van-cell-group>
@@ -53,9 +53,8 @@
         <van-cell title="姓名" :value="students[choice].name" />
         <van-cell title="班级" :value="students[choice].class" />
         <van-cell title="学号" :value="students[choice].id" />
-        <van-cell title="出勤次数" :value="0" />
-        <van-cell title="缺勤次数" :value="0" />
-        <van-cell title="出勤率" :value="0" />
+        <van-cell title="出勤次数" :value="students[choice].times" />
+        <van-cell title="出勤率" :value="students[choice].rate" />
       </van-cell-group>
     </van-action-sheet>
   </div>
@@ -106,10 +105,44 @@ export default {
     onClickRight() {
       this.showCourseInfo = true;
     },
+
+    compareById(id){
+      return function(a,b){
+        return a[id] - b[id];
+      }
+    },
+
+    compareByName(name){
+      return function(a,b){
+        return a[name] - b[name]
+      }
+    },
+
+    compareByRateUpToDown(rate){
+      return function(a,b){
+        return b[rate] - a[rate]
+      }
+    },
+
+    compareByRateDownToUp(rate){
+      return function(a,b){
+        return a[rate] - b[rate]
+      }
+    },
+
     onOrderConfirm(value) {
-      console.log(this.students);
+      if(value == "学号")
+        console.log(this.students.sort(this.compareById('id')));
+      if(value == "姓名")
+        console.log(this.students.sort(this.compareByName('name')));
+      if(value == "出勤率从大到小")
+        console.log(this.students.sort(this.compareByRateUpToDown('rate')));
+      if(value == "出勤率从小到大")
+        console.log(this.students.sort(this.compareByRateDownToUp('rate')));
       this.showOrderPicker = false;
     },
+
+
     onClickStudent(index) {
       this.showStudentInfo = true;
       this.choice = index;
