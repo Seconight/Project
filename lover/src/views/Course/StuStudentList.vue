@@ -22,7 +22,7 @@
         v-for="(student, index) in students"
         :key="student.id"
         :title="student.name"
-        :value="0"
+        :value="student.rate"
         @click="onClickStudent(index)"
       />
     </van-cell-group>
@@ -53,8 +53,8 @@
         <van-cell title="姓名" :value="students[choice].name" />
         <van-cell title="班级" :value="students[choice].class" />
         <van-cell title="学号" :value="students[choice].id" />
-        <van-cell title="出勤次数" :value="0" />
-        <van-cell title="出勤率" :value="0" />
+        <van-cell title="出勤次数" :value="students[choice].times" />
+        <van-cell title="出勤率" :value="students[choice].rate" />
       </van-cell-group>
     </van-action-sheet>
   </div>

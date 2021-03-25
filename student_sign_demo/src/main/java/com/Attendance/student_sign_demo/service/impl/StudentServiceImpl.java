@@ -208,6 +208,8 @@ public class StudentServiceImpl implements StudentService {
         return new AsyncResult<>(true);
     }
 
+
+
     @Override
     @Async("asyncServiceExecutor")
     public Future<Boolean> addFace(String id, MultipartFile[] faceList)throws Exception {

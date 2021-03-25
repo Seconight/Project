@@ -99,6 +99,8 @@ public class TeacherServiceImpl implements TeacherService {
     public Future<List<CourseStudentVO>> getCourseStudent(String courseId)throws Exception {
         List<CourseStudentVO> courseStudentVOList=new ArrayList<>();
         String[] studentId=courseRepository.findByCourseNo(courseId).getCourseShouldStudent();
+        //获取对应课程的签到列表
+        List<Attendance> attendanceList=attendanceRepository.findByAttendanceCourseNo(courseId);
         for(int i=0;i<studentId.length;i++)
         {
             Student student=studentRepository.findByStudentNo(studentId[i]);
@@ -106,6 +108,17 @@ public class TeacherServiceImpl implements TeacherService {
             courseStudentVO.setStudentNo(student.getStudentNo());
             courseStudentVO.setStudentClass(student.getStudentClass());
             courseStudentVO.setStudentName(student.getStudentName());
+            //统计当前学生的出勤次数
+            int attendanceTimes = 0;
+            for(Attendance attendance : attendanceList){
+                if(attendance.getAttendanceActualStudent().contains(student.getStudentNo())) {
+                    attendanceTimes++;
+                }
+            }
+            //表示当前学生课程的出勤率
+            double attendanceRate = 1.0 * attendanceTimes / attendanceList.size();
+            courseStudentVO.setAttendanceTimes(attendanceTimes);
+            courseStudentVO.setAttendanceRate(attendanceRate);
             courseStudentVOList.add(courseStudentVO);
         }
         return new AsyncResult<>(courseStudentVOList);
@@ -309,7 +322,7 @@ public class TeacherServiceImpl implements TeacherService {
         String absentStudent = "";
         //grpc获取服务结果
         ClientService clientService=new ClientService();
-        actualStudent=actualStudent+clientService.FaceDetect(courseId,studentAndEncoding);
+        actualStudent=actualStudent+clientService.FaceDetect(currentId,studentAndEncoding);
         String [] actualStudentString=actualStudent.split(",");
         Set set = new HashSet();
         for (int i = 0; i < actualStudentString.length; i++) {
@@ -625,4 +638,6 @@ public class TeacherServiceImpl implements TeacherService {
         String email = teacher.getTeacherAddress();
         return new AsyncResult<>(email);
     }
+
+
 }

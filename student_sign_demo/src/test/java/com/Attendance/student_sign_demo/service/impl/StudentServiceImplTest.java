@@ -1,8 +1,12 @@
 package com.Attendance.student_sign_demo.service.impl;
 
 import com.Attendance.student_sign_demo.entity.Course;
+import com.Attendance.student_sign_demo.entity.Student;
 import com.Attendance.student_sign_demo.form.LoginForm;
+import com.Attendance.student_sign_demo.grpc.ClientService;
+import com.Attendance.student_sign_demo.repository.StudentRepository;
 import com.Attendance.student_sign_demo.service.StudentService;
+import com.Attendance.student_sign_demo.util.PathUtil;
 import com.Attendance.student_sign_demo.vo.CourseVO;
 import com.Attendance.student_sign_demo.vo.LoginVO;
 import com.Attendance.student_sign_demo.vo.StudentAttendanceVO;
@@ -13,11 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.Access;
 
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -30,6 +35,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class StudentServiceImplTest {
     @Autowired
     private StudentService studentService;
+    @Autowired
+    private StudentRepository studentRepository;
+
+
     @Test
     void checkLogin() throws Exception {
         LoginForm loginForm = new LoginForm("0121810880214","123456");
@@ -162,5 +171,38 @@ class StudentServiceImplTest {
             }
         }
         System.out.println(courseVO);
+    }
+
+    @Test
+    void addStudentFaces() throws Exception{
+
+        for(int i=20;i<=20;i++){
+            String studentNo = "01218108807";
+            if(i<10) studentNo += "0";
+            studentNo += String.valueOf(i);
+            //保存编码
+            String encodings="";
+            //grpc获取服务结果
+            ClientService clientService=new ClientService();
+            encodings=clientService.FaceRecognize(studentNo);
+
+            //写入数据库
+            Student student=studentRepository.findByStudentNo(studentNo);
+            student.setStudentEncoding(encodings.substring(0,encodings.length()-1));
+            studentRepository.save(student);//更新
+
+        }
+
+    }
+    @Test
+    void testLength()throws Exception{
+        List<Student> students=studentRepository.findAll();
+        StringBuilder length= new StringBuilder();
+        for(int i=0;i<students.size();i++){
+            length.append(students.get(i).getStudentEncoding());
+            System.out.println(length.length());
+        }
+        String newLength=length.toString();
+        System.out.println(newLength);
     }
 }

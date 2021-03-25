@@ -11,6 +11,10 @@ public class CourseStudentVO {
     private String studentName;
     @JsonProperty("class")
     private String studentClass;
+    @JsonProperty("times")
+    private int attendanceTimes;
+    @JsonProperty("rate")
+    private double attendanceRate;
     public void setStudentNo(String studentNo){
         this.studentNo=studentNo;
     }
@@ -22,4 +26,6 @@ public class CourseStudentVO {
     {
         this.studentName=studentName;
     }
+    public void setAttendanceTimes(int attendanceTimes){this.attendanceTimes = attendanceTimes;}
+    public void setAttendanceRate(double attendanceRate){this.attendanceRate = attendanceRate;}
 }
