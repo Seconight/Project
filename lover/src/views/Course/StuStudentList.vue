@@ -77,25 +77,25 @@ export default {
   },
   created() {
     let courseID = this.course.id;
-    // var axios = require("axios");
-    // var config = {
-    //   method: "get",
-    //   url: this.GLOBAL.port + "/teacher/getCourseStudent?id=" + courseID,
-    //   headers: {},
-    // };
-    // let _this = this;
-    // axios(config)
-    //   .then(function (response) {
-    //     if (response.data.code == 0) {
-    //       _this.$toast.fail("获取学生名单失败！");
-    //     } else {
-    //       _this.students = response.data.data;
-    //       console.log(response.data);
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
+    var axios = require("axios");
+    var config = {
+      method: "get",
+      url: this.GLOBAL.port + "/teacher/getCourseStudent?id=" + courseID,
+      headers: {},
+    };
+    let _this = this;
+    axios(config)
+      .then(function (response) {
+        if (response.data.code == 0) {
+          _this.$toast.fail("获取学生名单失败！");
+        } else {
+          _this.students = response.data.data;
+          console.log(response.data);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     
   },
   methods: {

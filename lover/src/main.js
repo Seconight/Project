@@ -6,9 +6,9 @@ import store from './store'
 import './vantui'
 import 'vant/lib/index.css'
 import  global from './global/global.js'
-import vuetimeline from "@growthbunker/vuetimeline"
+//import vuetimeline from "@growthbunker/vuetimeline"
 
-Vue.use(vuetimeline)
+//Vue.use(vuetimeline)
 //import fs from 'fs';
 
 
