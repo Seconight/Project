@@ -104,10 +104,44 @@ export default {
     onClickRight() {
       this.showCourseInfo = true;
     },
+
+    compareById(id){
+      return function(a,b){
+        return a[id] - b[id];
+      }
+    },
+
+    compareByName(name){
+      return function(a,b){
+        return a[name] - b[name]
+      }
+    },
+
+    compareByRateUpToDown(rate){
+      return function(a,b){
+        return b[rate] - a[rate]
+      }
+    },
+
+    compareByRateDownToUp(rate){
+      return function(a,b){
+        return a[rate] - b[rate]
+      }
+    },
+
     onOrderConfirm(value) {
-      console.log(this.students);
+      if(value == "学号")
+        console.log(this.students.sort(this.compareById('id')));
+      if(value == "姓名")
+        console.log(this.students.sort(this.compareByName('name')));
+      if(value == "出勤率从大到小")
+        console.log(this.students.sort(this.compareByRateUpToDown('rate')));
+      if(value == "出勤率从小到大")
+        console.log(this.students.sort(this.compareByRateDownToUp('rate')));
       this.showOrderPicker = false;
     },
+
+
     onClickStudent(index) {
       this.showStudentInfo = true;
       this.choice = index;
