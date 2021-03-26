@@ -9,13 +9,14 @@
 export default {
   data() {
     return {
-      
-    }
+      userIcon: require("@/assets/icon/course.png"),
+      courseIcon: require("@/assets/icon/course.png"),
+    };
   },
-  computed:{
-    active:{
-      get(){
-        switch(this.$route.path){
+  computed: {
+    active: {
+      get() {
+        switch (this.$route.path) {
           case "/home":
             return 0;
           case "/user":
@@ -24,8 +25,8 @@ export default {
             break;
         }
       },
-      set(){}
-    }
-  }
-}
+      set() {},
+    },
+  },
+};
 </script>

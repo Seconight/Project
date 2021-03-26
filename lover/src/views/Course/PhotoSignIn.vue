@@ -49,7 +49,6 @@ export default {
         this.$toast("请添加图片");
       } else {
         this.photoSignUploading = true;
-        this.showPhotoSign = false;
         let _this = this;
         //_this.photoSignUploading = false;
         //接口
@@ -58,37 +57,37 @@ export default {
             " add attendance"
         );
 
-        // var axios = require("axios");
-        // var FormData = require("form-data");
-        // var data = new FormData();
-        // for (var i = 0; i < this.GLOBAL.signFiles.length; i++) {
-        //   data.append("img", this.GLOBAL.signFiles[i]);
-        // }
-        // data.append(
-        //   "id",
-        //   this.course.id
-        // );
+        var axios = require("axios");
+        var FormData = require("form-data");
+        var data = new FormData();
+        for (var i = 0; i < this.GLOBAL.signFiles.length; i++) {
+          data.append("img", this.GLOBAL.signFiles[i]);
+        }
+        data.append(
+          "id",
+          this.course.id
+        );
 
-        // var config = {
-        //   method: "post",
-        //   url: this.GLOBAL.port + "/teacher/attendance",
-        //   headers: {
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        //   data: data,
-        // };
+        var config = {
+          method: "post",
+          url: this.GLOBAL.port + "/teacher/attendance",
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          data: data,
+        };
 
-        // axios(config)
-        //   .then(function (response) {
-        //     console.log(JSON.stringify(response.data));
-        //     _this.photoSignUploading = false;
+        axios(config)
+          .then(function (response) {
+            console.log(JSON.stringify(response.data));
+            _this.photoSignUploading = false;
 
-        //     _this.$toast.success("上传成功，请在签到记录查看结果。");
+            _this.$toast.success("上传成功，请在签到记录查看结果。");
 
-        //   })
-        //   .catch(function (error) {
-        //     console.log(error);
-        //   });
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     },
   },

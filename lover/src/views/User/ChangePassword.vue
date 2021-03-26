@@ -92,6 +92,7 @@ export default {
       smsCount1: "",
       smsTimer1: null,
       smsText1: "发送验证码",
+      succeed: false,
     };
   },
   created() {
@@ -100,7 +101,12 @@ export default {
   },
   methods: {
     onClickLeft() {
-      this.$router.go(-1);
+      if (this.succeed == false) {
+        this.$router.go(-1);
+      }
+      else{
+        this.$router.push("/login");
+      }
     },
     smsSubmit() {
       //sms1与_sms1比较
@@ -138,7 +144,9 @@ export default {
           .then(function (response) {
             //console.log(JSON.stringify(response.data));
             _this.$toast("修改密码成功！请重新登录。");
-            this.$emit("logout"); //退出登录
+            localStorage.removeItem("userInfo");
+            localStorage.removeItem("checkFace");
+            _this.succeed=true;
           })
           .catch(function (error) {
             console.log(error);

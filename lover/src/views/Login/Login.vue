@@ -64,6 +64,7 @@ export default {
           data: data,
         };
         let _this = this;
+
         axios(config)
           .then(function (response) {
             console.log(response);
@@ -73,13 +74,8 @@ export default {
                 "userInfo",
                 JSON.stringify(response.data.data)
               );
-              //获取人脸是否注册
-              _this.axiosCheckFace(response.data.data.id);
-              //console.log("this is "+_this.checkFace);
-              _this.$toast.success("登录成功");
               location.replace(document.referrer);
             } else {
-              //账户密码错误
               _this.$toast.fail("账号密码错误");
               _this.username = "";
               _this.password = "";
@@ -88,28 +84,7 @@ export default {
           .catch(function (error) {
             console.log(error);
           });
-        //登录成功
       }
-    },
-    axiosCheckFace(userID) {
-      var axios = require("axios");
-
-      var config = {
-        method: "get",
-        url: this.GLOBAL.port + "/user/checkFace?id=" + userID,
-        headers: {},
-      };
-
-      axios(config)
-        .then(function (response) {
-          // console.log(response.data.data)
-          localStorage.setItem("checkFace", response.data.data);
-          // var current = localStorage.getItem("checkFace");
-          // console.log(current);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
     onChangePassword() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -163,7 +138,7 @@ export default {
     right: 0;
     margin: 0 26px;
     height: 290px;
-    background:linear-gradient( #FFFEFF 0%, #D7FFFE 100%);
+    background: linear-gradient(#fffeff 0%, #d7fffe 100%);
     padding: 16px;
     box-sizing: border-box;
     box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);

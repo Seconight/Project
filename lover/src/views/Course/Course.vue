@@ -2,23 +2,12 @@
   <div>
     <div v-if="$route.path == '/course'">
       <van-nav-bar title="课程" fixed placeholder>
-        <template #right>
-          <van-popover
-            v-model="showAddCoursePopover"
-            trigger="click"
-            :actions="
-              role == '老师'
+        <!-- role == '老师'
                 ? creatCoursePopoverActions
-                : addCoursePopoverActions
-            "
-            @select="onPopoverSelect"
-            theme="dark"
-            placement="bottom-end"
-          >
-            <template #reference>
-              <van-icon name="add-o" size="20" color="black" />
-            </template>
-          </van-popover>
+                : addCoursePopoverActions 
+                onNewAction-->
+        <template #right>
+          <van-icon name="add-o" size="20" color="black" @click="onNewAction"/>
         </template>
       </van-nav-bar>
       <form action="/">
@@ -46,55 +35,55 @@
           v-model="semesterItem"
           :options="semesterOptions"
           @change="semesterChange"
-        />
+        >
+        </van-dropdown-item>
       </van-dropdown-menu>
-      <div>
-        <van-collapse v-model="activeCourse" >
-          <van-collapse-item
-            v-for="(course, index) in allCourses[semesterItem]"
-            :key="course.id"
-          >
-            <template #title style="width: 200px" >
-              <div class="courseItem">{{ course.name }}</div>
-            </template>
-            <van-cell-group>
-              <van-cell title="课程号" :value="course.id" />
-              <van-cell title="任课老师" :value="course.teachername" />
-              <van-cell title="上课时间" :value="course.time" />
-              <van-cell title="周次" :value="course.week" />
-              <van-cell title="学期" :value="course.semester" />
-            </van-cell-group>
-            <div style="text-align: center">
-              <van-button
-                plain
-                type="info"
-                size="small"
-                icon="contact"
-                @click="goToStudentList(index)"
-                >学生名单</van-button
-              >
-              <van-button
-                plain
-                type="primary"
-                size="small"
-                icon="eye-o"
-                style="margin-left: 10px"
-                @click="goToAttendance(index)"
-                >签到记录</van-button
-              >
-              <van-button
-                v-if="role == '老师'"
-                type="primary"
-                size="small"
-                icon="scan"
-                style="margin-left: 10px"
-                @click="photoSign(index)"
-                >拍照签到</van-button
-              >
-            </div>
-          </van-collapse-item>
-        </van-collapse>
-      </div>
+
+      <van-collapse v-model="activeCourse" accordion class="courseList">
+        <van-collapse-item
+          v-for="(course, index) in allCourses[semesterItem]"
+          :key="course.id"
+        >
+          <template #title style="width: 200px">
+            <div class="courseItem">{{ course.name }}</div>
+          </template>
+          <van-cell-group>
+            <van-cell title="课程号" :value="course.id" />
+            <van-cell title="任课老师" :value="course.teachername" />
+            <van-cell title="上课时间" :value="course.time" />
+            <van-cell title="周次" :value="course.week" />
+            <van-cell title="学期" :value="course.semester" />
+          </van-cell-group>
+          <div style="text-align: center">
+            <van-button
+              plain
+              type="info"
+              size="small"
+              icon="contact"
+              @click="goToStudentList(index)"
+              >学生名单</van-button
+            >
+            <van-button
+              plain
+              type="primary"
+              size="small"
+              icon="eye-o"
+              style="margin-left: 10px"
+              @click="goToAttendance(index)"
+              >签到记录</van-button
+            >
+            <van-button
+              v-if="role == '老师'"
+              type="primary"
+              size="small"
+              icon="scan"
+              style="margin-left: 10px"
+              @click="photoSign(index)"
+              >拍照签到</van-button
+            >
+          </div>
+        </van-collapse-item>
+      </van-collapse>
       <div style="height: 50px"></div>
     </div>
     <transition>
@@ -110,7 +99,6 @@
 export default {
   data() {
     return {
-      showAddCoursePopover: false,
       creatCoursePopoverActions: [{ text: "新建课程" }],
       addCoursePopoverActions: [{ text: "添加课程" }],
       searchValue: "",
@@ -279,7 +267,7 @@ export default {
       }
       console.log(this.allCourses);
     },
-    onPopoverSelect() {
+    onNewAction() {
       if (this.role == "老师") {
         this.$router.push("/Course/creatCourse");
       } else {
@@ -405,5 +393,28 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+.van-nav-bar {
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  animation-duration: 0.8s;
+}
+.courseList {
+  top: 1vh;
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  animation-duration: 0.8s;
 }
 </style>

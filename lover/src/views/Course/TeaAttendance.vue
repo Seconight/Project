@@ -1,5 +1,5 @@
 <template>
-  <div class="TeaAttendance">
+  <div>
     <van-nav-bar
       left-text="返回"
       right-text="课程信息"
@@ -9,20 +9,29 @@
     >
       <template #title>
         <span> 签到记录</span>
-        <van-icon name="info-o" @click="showSupplyInfo" />
       </template>
     </van-nav-bar>
-    <van-cell-group>
-      <van-cell center v-for="(record, index) in records" :key="record.id">
-        
-        <template #title style="display:flex; ">
-          <div style="float:left;padding: 10px;font-size:20px;color:#b3b3b3">{{index+1}}</div>
-          <div style="margin-left:10px;float:left;font-size:18px;">
-            <div>{{ record.time }}</div>
-  
-          <div style="font-size:10px;color:#b3b3b3">签到{{ record.acStudentNum }}人 缺勤{{ record.abStudentNum }}人</div>
+    <van-cell-group class="recordsList">
+      <van-cell
+        center
+        v-for="(record, index) in records"
+        :key="record.id"
+        is-link
+        @click="goToDetail(record)"
+      >
+        <template #title style="display: flex">
+          <div
+            style="float: left; padding: 10px; font-size: 20px; color: #b3b3b3"
+          >
+            {{ index + 1 }}
           </div>
-          
+          <div style="margin-left: 5px; float: left; font-size: 18px">
+            <div>{{ record.time }}</div>
+
+            <div style="font-size: 10px; color: #b3b3b3">
+              签到{{ record.acStudentNum }}人 缺勤{{ record.abStudentNum }}人
+            </div>
+          </div>
         </template>
         <template #default>
           <van-circle
@@ -38,57 +47,6 @@
         </template>
       </van-cell>
     </van-cell-group>
-    <van-collapse v-model="activeNames">
-      <van-collapse-item v-for="(record, index) in records" :key="record.id">
-        <template #title>
-          <div class="collapseTitle">
-            <div>签到时间:{{ records[index].time }}</div>
-            <span>签到人数:{{ records[index].acStudentNum }}人</span>
-            <span style="padding: 50px"
-              >缺勤人数:{{ records[index].abStudentNum }}人</span
-            >
-          </div>
-        </template>
-        <van-tabs
-          v-model="recordActive[index]"
-          type="card"
-          color="#63d5f1"
-          animated
-          swipeable
-          sticky
-        >
-          <van-tab title="实到学生" style="text-align: center; font-size: 16px">
-            <TabHead v-if="records[index].abStudentNum != 0" />
-            <div style="width: 100%; height: 100px; overflow-y: scroll">
-              <van-row
-                v-for="acStudent in records[index].acStudent"
-                :key="acStudent.id"
-              >
-                <van-col span="8">{{ acStudent.id }}</van-col>
-                <van-col span="8">{{ acStudent.name }}</van-col>
-                <van-col span="8">{{ acStudent.class }}</van-col>
-              </van-row>
-            </div>
-          </van-tab>
-          <van-tab title="缺勤学生" style="text-align: center; font-size: 16px">
-            <TabHead v-if="records[index].abStudentNum != 0" />
-            <div style="width: 100%; height: 100px; overflow-y: scroll">
-              <van-row
-                v-for="(abStudent, abindex) in records[index].abStudent"
-                :key="abStudent.id"
-                @click="
-                  supply(index, abindex, abStudent, records[index].attendanceId)
-                "
-              >
-                <van-col span="8">{{ abStudent.id }}</van-col>
-                <van-col span="8">{{ abStudent.name }}</van-col>
-                <van-col span="8">{{ abStudent.class }}</van-col>
-              </van-row>
-            </div>
-          </van-tab>
-        </van-tabs>
-      </van-collapse-item>
-    </van-collapse>
     <van-action-sheet v-model="showCourseInfo" title="课程信息" position="top">
       <div class="content">
         <van-cell-group>
@@ -100,6 +58,9 @@
         </van-cell-group>
       </div>
     </van-action-sheet>
+    <transition>
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
@@ -112,10 +73,9 @@ export default {
     return {
       currentRate: [],
       gradientColor: [],
-      activeNames: [],
+
       showCourseInfo: false,
       records: [],
-      recordActive: [],
       data: [],
     };
   },
@@ -141,9 +101,6 @@ export default {
           if (data.length == 0) {
             _this.$toast("没有签到记录。");
           } else {
-            for (let i = 0; i < data.length; i++) {
-              _this.recordActive.push(0); //添加与签到记录个数相同的导航栏的选择项
-            }
             _this.loadRecord(data);
           }
         } else {
@@ -236,53 +193,10 @@ export default {
         };
       }
     },
-    supply(index, abindex, abStudent, attendanId) {
-      console.log(abStudent.id + "   " + attendanId);
-      let _this = this;
-      this.$dialog
-        .confirm({
-          title: "补签",
-          message: "姓名:" + abStudent.name + "      班级:" + abStudent.class,
-        })
-        .then(() => {
-          // on confirm
-          //abStudent.studentNo和attendanId进行补签接口
-          var axios = require("axios");
-          var config = {
-            method: "post",
-            url:
-              _this.GLOBAL.port +
-              "/teacher/supply?studentId=" +
-              abStudent.id +
-              "&attendanceId=" +
-              attendanId,
-            headers: {},
-          };
-          axios(config)
-            .then(function (response) {
-              if (response.data.code == 1) {
-                let supStudent = _this.records[index].abStudent.splice(
-                  abindex,
-                  1
-                ); //在缺席学生删除该学生
-                _this.records[index].abStudentNum--;
-                _this.records[index].acStudent.push(supStudent[0]);
-                _this.records[index].acStudentNum++;
-                _this.$toast("补签成功");
-              } else {
-                _this.$toast.fail("补签失败");
-              }
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        })
-        .catch(() => {
-          // on cancel
-        });
-    },
-    showSupplyInfo() {
-      this.$toast({ message: "点击缺勤学生进行补签", position: "top" });
+    goToDetail(record) {
+      localStorage.setItem("attendanceDetail", JSON.stringify(record));
+      console.log(record)
+      this.$router.push("/Course/attendanceDetail");
     },
   },
 };
@@ -294,5 +208,18 @@ export default {
   // background: rgb(117, 213, 236);
   background: linear-gradient(to right, #63d5f1, #5d87d4);
   border-radius: 10px;
+}
+.recordsList {
+
+  top: 1vh;
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  animation-duration: 0.8s;
 }
 </style>

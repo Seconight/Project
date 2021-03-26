@@ -9,6 +9,8 @@ import AddCourse from '../views/Course/AddCourse.vue'
 import CreatCourse from '../views/Course/CreatCourse.vue'
 import StuStudentList from '../views/Course/StuStudentList.vue'
 import PhotoSignIn from '../views/Course/PhotoSignIn.vue'
+import AttendanceDetail from '../views/Course/AttendanceDetail.vue'
+
 import Email from '../views/User/Email.vue'
 import FaceUpload from '../views/User/FaceUpload.vue'
 import ChangePassword from '../views/User/ChangePassword.vue'
@@ -98,6 +100,7 @@ const routes = [
         path: 'teaAttendance',
         name: 'TeaAttendance',
         component: TeaAttendance,
+        children: []
       },
       {
         path: 'addCourse',
@@ -119,6 +122,11 @@ const routes = [
         name: 'PhotoSignIn',
         component: PhotoSignIn,
       },
+      {
+        path: 'attendanceDetail',
+        name: 'AttendanceDetail',
+        component: AttendanceDetail,
+      }
     ],
     meta: {
       ifShowTabbar: true

@@ -17,7 +17,6 @@ export default {
     return {
       backgroundImg: {
         // backgroundImage: "url(" + require("@/assets/background.png") + ")",
-        
         // backgroundSize: "100% 100%",
       },
     };
@@ -36,12 +35,37 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
- background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
+
   min-height: 100%;
 }
 html,
 body {
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: "montserrat";
+  background-image: linear-gradient(
+    125deg,
+    #fed6e3,
+    #a8edea,
+    #d7fffe,
+    #e9defa,
+    #fbfcdb
+  );
+  background-size: 400%;
+  animation: bganimation 5s infinite;
+}
+@keyframes bganimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 @import "assets/css/animations.css";
 </style>

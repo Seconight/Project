@@ -2,6 +2,7 @@
   <div>
     <div class="usercenter-banner" v-if="$route.path == '/user'">
       <!-- <ImgLoader class="user-bg" :src="profile.background" v-if="loadflag" /> -->
+      <div></div>
       <img :src="assert.background" alt="" />
       <div class="_userinfo" @click="onlogout">
         <div class="_userinfo-avatar">
@@ -79,6 +80,7 @@ export default {
     if (userInfo) {
       //存在已登录信息
       this.showinfor(); //更新组件信息显示
+      this.$toast.success("登录成功");
     } else {
       this.$router.push("/login");
     }
@@ -99,6 +101,8 @@ export default {
       }
       if (this.role == "学生") {
         this.assert.avatarSrc = require("@/assets/user/student.jpg");
+        //判断人脸是否注册
+        this.axiosCheckFace(_userInfo.id);
       }
     },
     //上传人脸
@@ -183,6 +187,24 @@ export default {
         this.$router.push("/User/changePassword");
       }
     },
+    axiosCheckFace(userID) {
+      var axios = require("axios");
+      var config = {
+        method: "get",
+        url: this.GLOBAL.port + "/user/checkFace?id=" + userID,
+        headers: {},
+      };
+      axios(config)
+        .then(function (response) {
+          // console.log(response.data.data)
+          localStorage.setItem("checkFace", response.data.data);
+          // var current = localStorage.getItem("checkFace");
+          // console.log(current);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
   },
 };
 </script>
@@ -190,16 +212,12 @@ export default {
 .usercenter-banner {
   position: relative;
   width: 100%;
-  height: 40vh;
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    display: block;
-    width: 100%;
-    height: 60px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
-  }
+  height: 30vh;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+  border-radius: 0 0 36px 36px;
+  animation-duration: 0.8s;
+
   .user-bg,
   & > img {
     position: absolute;
@@ -229,6 +247,7 @@ export default {
     position: absolute;
     left: 0;
     right: 0;
+    top: 60px;
     margin: auto;
     bottom: 100px;
     width: 100px;
@@ -258,11 +277,9 @@ export default {
   width: 100%;
   top: 40vh;
 }
-
-
-.menu{
+.menu {
   position: fixed;
-  top: 45vh;
+  top: 35vh;
   left: 0;
   right: 0;
   margin: 0 26px;

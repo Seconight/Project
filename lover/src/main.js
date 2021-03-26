@@ -6,9 +6,9 @@ import store from './store'
 import './vantui'
 import 'vant/lib/index.css'
 import  global from './global/global.js'
-import vuetimeline from "@growthbunker/vuetimeline"
-
-Vue.use(vuetimeline)
+import 'swiper/swiper-bundle.css'
+// import VueAwesomeSwiper from 'vue-awesome-swiper'
+// Vue.use(VueAwesomeSwiper)
 //import fs from 'fs';
 
 
