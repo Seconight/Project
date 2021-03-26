@@ -13,6 +13,7 @@ public class Attendance {
     private String attendanceActualStudent;
     private String attendanceAbsentStudent;
     private String attendanceCourseNo;
+    private String attendanceId;
 
     public String getAttendanceNo(){
         return this.attendanceNo;
@@ -30,6 +31,7 @@ public class Attendance {
     public String getAttendanceCourseNo() {
         return attendanceCourseNo;
     }
+    public String getAttendanceId(){return attendanceId;}
 
     public void setAttendanceActualStudent(String s){
         this.attendanceActualStudent=s;
@@ -37,7 +39,7 @@ public class Attendance {
     public void setAttendanceAbsentStudent(String s){
         this.attendanceAbsentStudent=s;
     }
-
+    public void setAttendanceId(String s) {this.attendanceId = s;}
 
     public void setAttendanceNo(String attendanceId) {
         this.attendanceNo=attendanceId;

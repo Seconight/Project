@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.context.Theme;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.stream.FileImageInputStream;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -639,5 +640,41 @@ public class TeacherServiceImpl implements TeacherService {
         return new AsyncResult<>(email);
     }
 
+    @Override
+    @Async("asyncServiceExecutor")
+    public Future<List<byte[]>> getSignPictures(String id) throws Exception{
+        Attendance currentAttendance = attendanceRepository.findByAttendanceNo(id);
+        String path=PathUtil.demoPath+"/attendance/"+currentAttendance.getAttendanceId();//对应文件夹路径
+        File file = new File(path);
+        File[] files = file.listFiles();//获取所有文件传输bit流
+        if(files!=null){
+            List<byte[]> fileList=new ArrayList<>();
+            for(File f :files){
+                byte[] data = null;
+                FileImageInputStream input = null;
+                try {
+                    input = new FileImageInputStream(f);
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    byte[] buf = new byte[1024];
+                    int numBytesRead = 0;
+                    while ((numBytesRead = input.read(buf)) != -1) {
+                        output.write(buf, 0, numBytesRead);
+                    }
+                    data = output.toByteArray();
+                    output.close();
+                    input.close();
+                }
+                catch (FileNotFoundException ex1) {
+                    ex1.printStackTrace();
+                }
+                catch (IOException ex1) {
+                    ex1.printStackTrace();
+                }
+                fileList.add(data);
+            }
+            return new AsyncResult<>(fileList);
+        }
+        return null;
+    }
 
 }

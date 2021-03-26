@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -169,6 +170,7 @@ public class TeacherHandler {
         }
     }
 
+    //通过课程名进行搜索
     @GetMapping(path = "/searchByName")
     public ResultVO searchByName(String courseName,String teacherId){
         if(courseName==null){
@@ -182,6 +184,23 @@ public class TeacherHandler {
             }
             return null;
         }
+    }
+
+    //获取照片
+    @GetMapping(path = "/getSignPictures")
+    public List<byte[]> getSignPictures(String id){
+        //id为签到时任务id
+        if(id == null || id.equals("")){
+            return null;
+        }
+        else{
+            try {
+                return teacherService.getSignPictures(id).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
 }
