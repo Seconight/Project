@@ -58,18 +58,7 @@ class TeacherServiceImplTest {
         }
         int a=0;
     }
-    @Test
-    void supplyAttendance() throws Exception {
-        Future<Boolean> booleanFuture=teacherService.supplyAttendance("0121810880207","0000000001");
-        Boolean result=false;
-        while(true){
-            if(booleanFuture.isDone()){
-                result=booleanFuture.get();
-                break;
-            }
-        }
-        int a=0;
-    }
+
     @Test
     void searchByCourseId() throws Exception {
         Future<CourseVO> courseVOFuture=teacherService.searchByCourseId("0000000002","000000001");

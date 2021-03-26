@@ -55,7 +55,6 @@ public class StudentServiceImpl implements StudentService {
         if(id.length()==9)
         {//老师登录
             Teacher teacher=teacherRepository.findByTeacherNo(id);
-            //当数据库异常的时候上一句会直接产生异常，不会往下执行，这时候如果想报错给前端该怎么做
             if(teacher.getTeacherPassword()!=null&&!teacher.getTeacherPassword().equals("")&&pwd.equals(teacher.getTeacherPassword()))
             {//密码不为空，不为空字符串
                 loginVO.setUserNO(teacher.getTeacherNo());

@@ -4,6 +4,7 @@ import com.Attendance.student_sign_demo.entity.Course;
 import com.Attendance.student_sign_demo.exception.StudentException;
 import com.Attendance.student_sign_demo.form.AttendanceForm;
 import com.Attendance.student_sign_demo.form.CourseForm;
+import com.Attendance.student_sign_demo.form.SupplyForm;
 import com.Attendance.student_sign_demo.service.impl.TeacherServiceImpl;
 import com.Attendance.student_sign_demo.util.ResultUtil;
 import com.Attendance.student_sign_demo.vo.ResultVO;
@@ -132,16 +133,16 @@ public class TeacherHandler {
 
     //老师补签
     @PostMapping(path = "/supply")
-    public ResultVO supply(String studentId, String attendanceId){
-        if(studentId==null||studentId.length()!=13){
+    public ResultVO supply(SupplyForm supplyForm){
+        if(supplyForm.getStudentIds()==null){
             return ResultUtil.failed("学生id出错，请稍后重试!");
         }
-        else if(attendanceId==null||attendanceId.length()!=10){
+        else if(supplyForm.getAttendanceId()==null||supplyForm.getAttendanceId().length()!=10){
             return ResultUtil.failed("学生id出错，，请稍后重试!");
         }
         else{
             try {
-                return ResultUtil.success(teacherService.supplyAttendance(studentId,attendanceId).get());
+                return ResultUtil.success(teacherService.supplyAttendance(supplyForm).get());
             } catch (SQLException e) {
                 return ResultUtil.failed("服务器数据库异常，请稍后重试!");//出现异常返回错误信息
             }catch (InterruptedException e){

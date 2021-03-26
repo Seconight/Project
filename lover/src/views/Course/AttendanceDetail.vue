@@ -153,12 +153,26 @@ export default {
   },
   created() {
     this.record = JSON.parse(localStorage.getItem("attendanceDetail"));
-
+    const _this = this;
     //获得签到图片  this.record.attendanceId
+    var axios = require("axios");
 
-    //直接push URL
-    this.signInImg.push("https://img01.yzcdn.cn/vant/leaf.jpg");
-    this.signInImg.push("https://img01.yzcdn.cn/vant/apple-2.jpg");
+    var config = {
+      method: "get",
+      url: "http://localhost:8081/teacher/getSignPictures?id="+this.record.attendanceId,
+      headers: {},
+    };
+
+    axios(config)
+      .then(function (response) {
+        for(let i=0;i<response.data.length;i++){
+          console.log(response.data)
+          _this.signInImg.push("data:image/jpg;base64,"+response.data[i])
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   },
   methods: {
     onClickLeft() {
@@ -202,41 +216,44 @@ export default {
         .then(() => {
           console.log(studentIds, _this.record.attendanceId);
           //修改为多人补签接口   参数studentIds，_this.record.attendanceId
-          // var axios = require("axios");
-          // var config = {
-          //   method: "post",
-          //   url:
-          //     this.GLOBAL.port +
-          //     "/teacher/supply?studentId=" +
-          //     abStudentID +
-          //     "&attendanceId=" +
-          //     attendanId,
-          //   headers: {},
-          // };
-          // axios(config)
-          //   .then(function (response) {
-          //     if (response.data.code == 1) {
-
-          //     }
-          //   })
-          //   .catch(function (error) {
-          //     console.log(error);
-          //   });
-
-          //成功后
-          for (let i = 0; i < _this.record.abStudent.length; i++) {
-            if (studentIds.indexOf(_this.record.abStudent[i].id) != -1) {
-              _this.record.acStudent.push(
-                _this.record.abStudent.splice(i, 1)[0]
-              );
-              _this.record.acStudentNum++;
-              _this.record.abStudentNum--;
-              i--;
-            }
+          var axios = require("axios");
+          var FormData = require("form-data");
+          var data = new FormData();
+          for (var id = 0; id < studentIds.length; id++) {
+            data.append("studentIds", studentIds[id]);
+            console.log("current:"+studentIds[id])
           }
-          _this.$toast("补签成功!");
-          _this.checkbox = false;
-          _this.showabStudentInfo = false;
+          data.append("attendanceId", _this.record.attendanceId);
+
+          var config = {
+            method: "post",
+            url: "http://localhost:8081/teacher/supply",
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            data: data,
+          };
+
+          axios(config)
+            .then(function (response) {
+              //成功后
+              for (let i = 0; i < _this.record.abStudent.length; i++) {
+                if (studentIds.indexOf(_this.record.abStudent[i].id) != -1) {
+                  _this.record.acStudent.push(
+                    _this.record.abStudent.splice(i, 1)[0]
+                  );
+                  _this.record.acStudentNum++;
+                  _this.record.abStudentNum--;
+                  i--;
+                }
+              }
+              _this.$toast("补签成功!");
+              _this.checkbox = false;
+              _this.showabStudentInfo = false;
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         })
         .catch(() => {
           // on cancel

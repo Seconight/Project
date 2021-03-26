@@ -18,7 +18,6 @@ public class AttendanceForm {
         return id;
     }
 
-
     public MultipartFile getImg(int i) {
         return img[i];
     }

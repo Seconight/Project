@@ -3,6 +3,7 @@ package com.Attendance.student_sign_demo.service.impl;
 import com.Attendance.student_sign_demo.entity.*;
 import com.Attendance.student_sign_demo.form.AttendanceForm;
 import com.Attendance.student_sign_demo.form.CourseForm;
+import com.Attendance.student_sign_demo.form.SupplyForm;
 import com.Attendance.student_sign_demo.grpc.ClientService;
 import com.Attendance.student_sign_demo.repository.*;
 import com.Attendance.student_sign_demo.service.TeacherService;
@@ -181,24 +182,31 @@ public class TeacherServiceImpl implements TeacherService {
         return new AsyncResult<>(attendanceVOList);
     }
 
+    //学生多人补签
     @Override
     @Async("asyncServiceExecutor")
-    public Future<Boolean> supplyAttendance(String studentId,String attendanceId) throws Exception{
-        Attendance attendance=attendanceRepository.findByAttendanceNo(attendanceId);
-        String actualStudent=attendance.getAttendanceActualStudent();
-        if(actualStudent!=null&&actualStudent.length()!=0){
-            attendance.setAttendanceActualStudent(actualStudent+","+studentId);
-        }
-        else{
-            attendance.setAttendanceActualStudent(studentId);
-        }
-        String absentStudent=attendance.getAttendanceAbsentStudent();
-        if(absentStudent.length()==13)
-        {
-            attendance.setAttendanceAbsentStudent("");
-        }
-        else{
-            attendance.setAttendanceAbsentStudent(absentStudent.replace(","+studentId,""));
+    public Future<Boolean> supplyAttendance(SupplyForm supplyForm) throws Exception{
+        //获取对应签到记录
+        Attendance attendance=attendanceRepository.findByAttendanceNo(supplyForm.getAttendanceId());
+
+        for( String studentId : supplyForm.getStudentIds() ){
+            //在实到学生中加上对应学生
+            String actualStudent=attendance.getAttendanceActualStudent();
+            if(actualStudent!=null&&actualStudent.length()!=0){
+                attendance.setAttendanceActualStudent(actualStudent+","+studentId);
+            }
+            else{
+                attendance.setAttendanceActualStudent(studentId);
+            }
+            //在缺席学生中删去对应学生
+            String absentStudent=attendance.getAttendanceAbsentStudent();
+            if(absentStudent.length()==13)
+            {
+                attendance.setAttendanceAbsentStudent("");
+            }
+            else{
+                attendance.setAttendanceAbsentStudent(absentStudent.replace(","+studentId,""));
+            }
         }
         attendanceRepository.save(attendance);
         return new AsyncResult<>(true);
@@ -324,6 +332,7 @@ public class TeacherServiceImpl implements TeacherService {
         //grpc获取服务结果
         ClientService clientService=new ClientService();
         actualStudent=actualStudent+clientService.FaceDetect(currentId,studentAndEncoding);
+        System.out.println("获得结果为:"+actualStudent);
         String [] actualStudentString=actualStudent.split(",");
         Set set = new HashSet();
         for (int i = 0; i < actualStudentString.length; i++) {
@@ -646,7 +655,7 @@ public class TeacherServiceImpl implements TeacherService {
         Attendance currentAttendance = attendanceRepository.findByAttendanceNo(id);
         String path=PathUtil.demoPath+"/attendance/"+currentAttendance.getAttendanceId();//对应文件夹路径
         File file = new File(path);
-        File[] files = file.listFiles();//获取所有文件传输bit流
+        File[] files = file.listFiles();//获取所有文件传输bi
         if(files!=null){
             List<byte[]> fileList=new ArrayList<>();
             for(File f :files){
