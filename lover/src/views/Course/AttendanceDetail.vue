@@ -159,14 +159,13 @@ export default {
 
     var config = {
       method: "get",
-      url: "http://localhost:8081/teacher/getSignPictures?id="+this.record.attendanceId,
+      url: this.GLOBAL.port + "/teacher/getSignPictures?id="+this.record.attendanceId,
       headers: {},
     };
 
     axios(config)
       .then(function (response) {
         for(let i=0;i<response.data.length;i++){
-          console.log(response.data)
           _this.signInImg.push("data:image/jpg;base64,"+response.data[i])
         }
       })
@@ -214,20 +213,18 @@ export default {
           title: "确认进行补签",
         })
         .then(() => {
-          console.log(studentIds, _this.record.attendanceId);
           //修改为多人补签接口   参数studentIds，_this.record.attendanceId
           var axios = require("axios");
           var FormData = require("form-data");
           var data = new FormData();
           for (var id = 0; id < studentIds.length; id++) {
             data.append("studentIds", studentIds[id]);
-            console.log("current:"+studentIds[id])
           }
           data.append("attendanceId", _this.record.attendanceId);
 
           var config = {
             method: "post",
-            url: "http://localhost:8081/teacher/supply",
+            url: this.GLOBAL.port+"/teacher/supply",
             headers: {
               "Content-Type": "multipart/form-data",
             },
