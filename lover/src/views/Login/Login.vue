@@ -139,6 +139,7 @@ export default {
     margin: 0 26px;
     height: 290px;
     background: linear-gradient(#fffeff 0%, #d7fffe 100%);
+    
     padding: 16px;
     box-sizing: border-box;
     box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);

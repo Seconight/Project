@@ -4,30 +4,45 @@
       title="人脸上传"
       left-text="返回"
       left-arrow
-      :right-text="edit?'取消':'编辑'"
+      :right-text="edit ? '取消' : '编辑'"
       @click-left="onClickLeft"
       @click-right="onClickRight"
     />
-    <van-notice-bar left-icon="volume-o" text="最多上传三张人脸照片" />
-    <div style="text-align: center; padding: 25px">
-      <van-uploader
-        :preview-options="preview_options"
-        v-model="imgList"
-        multiple
-        accept="image/*"
-        preview-size="100px"
-        :max-count="3"
-        :after-read="onRead"
-        :disabled="!edit"
-        :deletable="edit"
-      />
+    <div class="faceupload">
+      <van-notice-bar left-icon="volume-o" text="最多上传三张人脸照片" />
+      <div class="uploader">
+        <van-uploader
+          :preview-options="preview_options"
+          v-model="imgList"
+          multiple
+          accept="image/*"
+          preview-size="100px"
+          :max-count="3"
+          :after-read="onRead"
+          :disabled="!edit"
+          :deletable="edit"
+        />
+      </div>
+
+      <van-button
+        v-if="edit"
+        class="button"
+        round
+        block
+        type="info"
+        native-type="submit"
+        @click="uploadface"
+        color="linear-gradient(to top, #f77062 0%, #fe5196 100%)"
+        >保存修改</van-button
+      >
+      <van-image width="300" height="155" :src="backgroundImg" />
     </div>
-    <div v-if="edit" style="text-align: center">
-      <van-button round type="info" @click="uploadface">保存修改</van-button>
-    </div>
+
     <van-overlay :show="faceUploading">
       <div class="wrapper" @click.stop>
-        <van-loading color="#0094ff" size="80px" vertical>人脸上传中...</van-loading>
+        <van-loading color="#0094ff" size="80px" vertical
+          >人脸上传中...</van-loading
+        >
       </div>
     </van-overlay>
   </div>
@@ -37,6 +52,7 @@
 export default {
   data() {
     return {
+      backgroundImg: require("@/assets/user/faceUpload_background.png"),
       imgList: [],
       preview_options: {
         closeable: true,
@@ -54,7 +70,7 @@ export default {
     let _this = this;
     var config = {
       method: "get",
-      url: this.GLOBAL.port+"/user/getFaces?id="+_userInfo.id,
+      url: this.GLOBAL.port + "/user/getFaces?id=" + _userInfo.id,
       headers: {},
     };
     console.log(config.url);
@@ -62,8 +78,11 @@ export default {
       .then(function (response) {
         //console.log(JSON.stringify(response.data));
         //console.log(response.data);
-        for(let i=0;i<response.data.length;i++){
-          _this.imgList.push({url:("data:image/jpg;base64,"+response.data[i]), isImage:true});
+        for (let i = 0; i < response.data.length; i++) {
+          _this.imgList.push({
+            url: "data:image/jpg;base64," + response.data[i],
+            isImage: true,
+          });
         }
       })
       .catch(function (error) {
@@ -71,13 +90,13 @@ export default {
       });
   },
   methods: {
-    onClickRight(){
-      this.edit=!this.edit;
+    onClickRight() {
+      this.edit = !this.edit;
       this.GLOBAL.faceFile = [];
-      this.imgList= [];
+      this.imgList = [];
     },
     onClickLeft() {
-      console.log(this.imgList)
+      console.log(this.imgList);
       this.$router.go(-1);
     },
     onRead(file) {
@@ -107,7 +126,7 @@ export default {
           for (var i = 0; i < this.GLOBAL.faceFile.length; i++) {
             data.append("faceImage", this.GLOBAL.faceFile[i]);
           }
-          let _this=this;
+          let _this = this;
           var config = {
             method: "post",
             url: this.GLOBAL.port + "/user/faceInfo",
@@ -121,7 +140,7 @@ export default {
           axios(config)
             .then(function (response) {
               console.log(JSON.stringify(response.data));
-              _this.faceUploading=false;
+              _this.faceUploading = false;
               _this.$toast("人脸上传成功！");
             })
             .catch(function (error) {
@@ -137,19 +156,31 @@ export default {
 </script>
 
 <style lang='less' scoped>
-.aaa {
-  background-color: #fff;
-  width: 100%;
-  height: 100vh;
-}
-html,
-body {
-  height: 100%;
-}
-.wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+.faceupload {
+  position: relative;
+  text-align: center;
+  top: 3vh;
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  animation-duration: 0.8s;
+  .uploader {
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+  .button {
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 60%;
+    height: 40px;
+    border: none;
+
+  }
 }
 </style>

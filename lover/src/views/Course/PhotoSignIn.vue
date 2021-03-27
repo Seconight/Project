@@ -1,20 +1,32 @@
 <template>
-  <div style="text-align: center">
+  <div>
     <van-nav-bar title="拍照签到" left-text="返回" @click-left="onClickLeft" />
-    <van-uploader
-      :preview-options="preview_options"
-      v-model="imgList"
-      multiple
-      accept="image/*"
-      :after-read="onRead"
-      :max-count="3"
-      preview-size="100px"
-    />
-    <div>
-      <van-button type="danger" @click="upLodaeSign" icon="upgrade"
-        >上传签到</van-button
-      >
+    <div class="photoSign" :style="backgroundImg">
+      <van-uploader
+        :preview-options="preview_options"
+        v-model="imgList"
+        multiple
+        accept="image/*"
+        :after-read="onRead"
+        :max-count="3"
+        preview-size="100px"
+      />
+      <div class="button">
+        <van-button
+          class="button"
+          round
+          block
+          type="info"
+          native-type="submit"
+          color="linear-gradient(to top, #f77062 0%, #fe5196 100%)"
+          @click="upLodaeSign"
+          icon="upgrade"
+          >上传签到</van-button
+        >
+      </div>
+      <van-image width="320" height="231" :src="backgroundImg" />
     </div>
+
     <van-overlay :show="photoSignUploading" style="z-index: 999">
       <div class="wrapper" @click.stop>
         <van-loading color="#0094ff" size="80px" vertical
@@ -30,6 +42,7 @@ export default {
   props: ["course"],
   data() {
     return {
+      backgroundImg: require("@/assets/course/photoSignIn_background.png"),
       imgList: [],
       preview_options: {
         closeable: true,
@@ -52,10 +65,7 @@ export default {
         let _this = this;
         //_this.photoSignUploading = false;
         //接口
-        console.log(
-          this.course.id +
-            " add attendance"
-        );
+        console.log(this.course.id + " add attendance");
 
         var axios = require("axios");
         var FormData = require("form-data");
@@ -63,10 +73,7 @@ export default {
         for (var i = 0; i < this.GLOBAL.signFiles.length; i++) {
           data.append("img", this.GLOBAL.signFiles[i]);
         }
-        data.append(
-          "id",
-          this.course.id
-        );
+        data.append("id", this.course.id);
 
         var config = {
           method: "post",
@@ -83,7 +90,6 @@ export default {
             _this.photoSignUploading = false;
 
             _this.$toast.success("上传成功，请在签到记录查看结果。");
-
           })
           .catch(function (error) {
             console.log(error);
@@ -94,10 +100,39 @@ export default {
 };
 </script>
 
-<style>
-.photoSign {
-  text-align: center;
+<style lang='less' scoped>
+/* .photoSign {
   width: 300px;
   height: 200px;
+} */
+.photoSign {
+  text-align: center;
+  position: relative;
+  top: 8vh;
+  left: 0;
+  right: 0;
+  height: 450px;
+  margin: 0 12.6px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  animation-duration: 0.8s;
+  .van-uploader {
+    left: 5px;
+  }
+  .button {
+    margin-top: 15px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 60%;
+    height: 40px;
+    border: none;
+  }
+  .van-image {
+    top: 20px;
+  }
 }
 </style>

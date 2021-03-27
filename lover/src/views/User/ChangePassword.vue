@@ -6,73 +6,77 @@
       left-arrow
       @click-left="onClickLeft"
     />
-    <van-steps :active="stepsActive">
-      <van-step>验证身份</van-step>
-      <van-step>修改密码</van-step>
-      <van-step>修改成功</van-step>
-    </van-steps>
-    <div v-if="stepsActive == 0">
-      <van-cell-group>
-        <van-field label="已绑定邮箱" :value="email" disabled />
-        <van-field
-          v-model="sms1"
-          center
-          clearable
-          label="验证码"
-          placeholder="请输入邮箱验证码"
-        >
-          <template #button>
-            <!-- <van-button size="small" type="primary">发送验证码</van-button> -->
-            <van-button
-              size="small"
-              type="primary"
-              :disabled="!smsCountdown1"
-              @click="sendsms1"
-            >
-              <span v-if="smsCountdown1">{{ smsText1 }}</span>
-              <span v-if="!smsCountdown1"
-                >{{ smsText1 }} ({{ smsCount1 }})</span
+    <div class="changPassword">
+            <van-steps :active="stepsActive">
+        <van-step>验证身份</van-step>
+        <van-step>修改密码</van-step>
+        <van-step>修改成功</van-step>
+      </van-steps>
+      <div v-if="stepsActive == 0">
+        <van-cell-group>
+          <van-field label="已绑定邮箱" :value="email" disabled />
+          <van-field
+            v-model="sms1"
+            center
+            clearable
+            label="验证码"
+            placeholder="请输入邮箱验证码"
+          >
+            <template #button>
+              <!-- <van-button size="small" type="primary">发送验证码</van-button> -->
+              <van-button
+                size="small"
+                type="primary"
+                :disabled="!smsCountdown1"
+                @click="sendsms1"
               >
-            </van-button>
-          </template>
-        </van-field>
-      </van-cell-group>
-      <div style="margin: 10px auto; width: 80%">
-        <van-button type="primary" block @click="smsSubmit">下一步</van-button>
+                <span v-if="smsCountdown1">{{ smsText1 }}</span>
+                <span v-if="!smsCountdown1"
+                  >{{ smsText1 }} ({{ smsCount1 }})</span
+                >
+              </van-button>
+            </template>
+          </van-field>
+        </van-cell-group>
+        <div style="margin: 10px auto; width: 80%">
+          <van-button type="primary" block @click="smsSubmit"
+            >下一步</van-button
+          >
+        </div>
       </div>
-    </div>
-    <div v-if="stepsActive == 1">
-      <van-field
-        v-model="password"
-        type="password"
-        label="密码"
-        placeholder="请输入密码"
-        clearable
-      />
-      <van-field
-        v-model="password_"
-        type="password"
-        label="密码"
-        placeholder="请再次输入密码"
-        clearable
-      />
-      <div style="margin: 10px auto; width: 80%">
-        <van-button type="primary" block @click="passwordSubmit"
-          >下一步</van-button
-        >
+      <div v-if="stepsActive == 1">
+        <van-field
+          v-model="password"
+          type="password"
+          label="密码"
+          placeholder="请输入密码"
+          clearable
+        />
+        <van-field
+          v-model="password_"
+          type="password"
+          label="密码"
+          placeholder="请再次输入密码"
+          clearable
+        />
+        <div style="margin: 10px auto; width: 80%">
+          <van-button type="primary" block @click="passwordSubmit"
+            >下一步</van-button
+          >
+        </div>
       </div>
-    </div>
-    <div v-if="stepsActive == 2">
-      <van-row>
-        <van-col span="4"></van-col>
-        <van-col span="6">
-          <van-icon name="checked" color="#2cc20e" size="80" />
-        </van-col>
-        <van-col span="0">
-          <div style="font-size: 20px; font-weight: 700">修改密码成功!</div>
-        </van-col>
-        <!-- <van-col span='10' @submit="uploadface"> -->
-      </van-row>
+      <div v-if="stepsActive == 2">
+        <van-row>
+          <van-col span="4"></van-col>
+          <van-col span="6">
+            <van-icon name="checked" color="#2cc20e" size="80" />
+          </van-col>
+          <van-col span="0">
+            <div style="font-size: 20px; font-weight: 700">修改密码成功!</div>
+          </van-col>
+          <!-- <van-col span='10' @submit="uploadface"> -->
+        </van-row>
+      </div>
     </div>
   </div>
 </template>
@@ -103,8 +107,7 @@ export default {
     onClickLeft() {
       if (this.succeed == false) {
         this.$router.go(-1);
-      }
-      else{
+      } else {
         this.$router.push("/login");
       }
     },
@@ -146,7 +149,7 @@ export default {
             _this.$toast("修改密码成功！请重新登录。");
             localStorage.removeItem("userInfo");
             localStorage.removeItem("checkFace");
-            _this.succeed=true;
+            _this.succeed = true;
           })
           .catch(function (error) {
             console.log(error);
@@ -209,5 +212,19 @@ export default {
     font-size: 20px;
     text-align: center;
   }
+}
+
+.changPassword {
+  position: relative;
+  top: 3vh;
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  animation-duration: 0.8s;
 }
 </style>

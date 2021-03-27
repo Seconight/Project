@@ -7,7 +7,12 @@
                 : addCoursePopoverActions 
                 onNewAction-->
         <template #right>
-          <van-icon name="add-o" size="20" color="black" @click="onNewAction"/>
+          <van-icon
+            :name="asserts.addCourse_icon"
+            size="20"
+            color="black"
+            @click="onNewAction"
+          />
         </template>
       </van-nav-bar>
       <form action="/">
@@ -38,52 +43,64 @@
         >
         </van-dropdown-item>
       </van-dropdown-menu>
+      <div class="courseList">
+        <div style="text-align: center">
+          <van-image
+            v-if="allCourses[semesterItem].length == 0"
+            width="200"
+            height="200"
+            :src="asserts.noCourseSrc"
+            contain
+          />
+        </div>
+        <van-collapse v-model="activeCourse" accordion>
+          <van-collapse-item
+            v-for="(course, index) in allCourses[semesterItem]"
+            :key="course.id"
+          >
+            <template #title style="width: 200px">
+              <div class="courseItem">{{ course.name }}</div>
+            </template>
+            <van-cell-group>
+              <van-cell title="课程号" :value="course.id" />
+              <van-cell title="任课老师" :value="course.teachername" />
+              <van-cell title="上课时间" :value="course.time" />
+              <van-cell title="周次" :value="course.week" />
+              <van-cell title="学期" :value="course.semester" />
+            </van-cell-group>
+            <div style="text-align: center">
+              <van-button
+                plain
+                color="#005bea"
+                size="small"
+                icon="contact"
+                @click="goToStudentList(index)"
+                >学生名单</van-button
+              >
+              <van-button
+                plain
+                color="#3cba92"
+                size="small"
+                icon="todo-list-o"
+                style="margin-left: 10px"
+                @click="goToAttendance(index)"
+                >签到记录</van-button
+              >
+              <van-button
+                plain
+                v-if="role == '老师'"
+                color="#fda34b"
+                size="small"
+                icon="scan"
+                style="margin-left: 10px"
+                @click="photoSign(index)"
+                >拍照签到</van-button
+              >
+            </div>
+          </van-collapse-item>
+        </van-collapse>
+      </div>
 
-      <van-collapse v-model="activeCourse" accordion class="courseList">
-        <van-collapse-item
-          v-for="(course, index) in allCourses[semesterItem]"
-          :key="course.id"
-        >
-          <template #title style="width: 200px">
-            <div class="courseItem">{{ course.name }}</div>
-          </template>
-          <van-cell-group>
-            <van-cell title="课程号" :value="course.id" />
-            <van-cell title="任课老师" :value="course.teachername" />
-            <van-cell title="上课时间" :value="course.time" />
-            <van-cell title="周次" :value="course.week" />
-            <van-cell title="学期" :value="course.semester" />
-          </van-cell-group>
-          <div style="text-align: center">
-            <van-button
-              plain
-              type="info"
-              size="small"
-              icon="contact"
-              @click="goToStudentList(index)"
-              >学生名单</van-button
-            >
-            <van-button
-              plain
-              type="primary"
-              size="small"
-              icon="eye-o"
-              style="margin-left: 10px"
-              @click="goToAttendance(index)"
-              >签到记录</van-button
-            >
-            <van-button
-              v-if="role == '老师'"
-              type="primary"
-              size="small"
-              icon="scan"
-              style="margin-left: 10px"
-              @click="photoSign(index)"
-              >拍照签到</van-button
-            >
-          </div>
-        </van-collapse-item>
-      </van-collapse>
       <div style="height: 50px"></div>
     </div>
     <transition>
@@ -99,6 +116,10 @@
 export default {
   data() {
     return {
+      asserts: {
+        addCourse_icon: require("@/assets/icon/addCourse_icon.png"),
+        noCourseSrc: require("@/assets/course/noCourse.png"),
+      },
       creatCoursePopoverActions: [{ text: "新建课程" }],
       addCoursePopoverActions: [{ text: "添加课程" }],
       searchValue: "",
@@ -384,7 +405,12 @@ export default {
 .courseItem {
   padding: 10px;
   // background: rgb(117, 213, 236);
-  background: linear-gradient(to right, #63d5f1, #5d87d4);
+  background-image: linear-gradient(
+    -225deg,
+    #d4ffec 0%,
+    #57f2cc 48%,
+    #4596fb 100%
+  );
   border-radius: 10px;
   font-size: medium;
 }
@@ -406,6 +432,7 @@ export default {
   animation-duration: 0.8s;
 }
 .courseList {
+  position: relative;
   top: 1vh;
   left: 0;
   right: 0;

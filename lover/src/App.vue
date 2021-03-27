@@ -1,6 +1,9 @@
 <template>
   <div id="app" :style="backgroundImg">
-    <transition enter-active-class="pt-page-flipInRight">
+    <transition
+      enter-active-class="pt-page-flipInRight"
+      leave-active-class="pt-page-flipInRight"
+    >
       <keep-alive>
         <router-view />
       </keep-alive>

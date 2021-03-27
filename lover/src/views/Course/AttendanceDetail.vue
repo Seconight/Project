@@ -13,7 +13,7 @@
       </template>
     </van-nav-bar>
     <div class="signInImgCell">
-      <van-cell title="签到图片" clickable @click="showImagePreview = true" />
+      <van-cell title="签到图片" clickable @click="onclickImgCell" is-link />
     </div>
     <div class="ABCStudentsList">
       <van-tabs v-model="mode" animated>
@@ -23,7 +23,7 @@
               v-if="record.acStudent.length == 0"
               width="200"
               height="200"
-              :src="noStudentSrc"
+              :src="noacStudentSrc"
               contain
             />
           </div>
@@ -35,15 +35,16 @@
               :label="acStudent.class"
               @click="onClickacStudent(index)"
               clickable
-            /> </van-cell-group
-        ></van-tab>
+            />
+          </van-cell-group>
+        </van-tab>
         <van-tab :title="'未签学生(' + record.abStudentNum + '人)'"
           ><div style="text-align: center">
             <van-image
               v-if="record.abStudent.length == 0"
               width="200"
               height="200"
-              :src="noStudentSrc"
+              :src="noabStudentSrc"
               contain
             />
           </div>
@@ -77,11 +78,18 @@
                 </van-cell-group>
               </van-checkbox-group>
             </div>
-            <van-button type="danger" block round @click="supply"
-              >补签</van-button
+            <van-button
+              color="linear-gradient(to right, #f83600 0%, #f9d423 100%)"
+              block
+              round
+              @click="supply"
+              v-if="checkboxResult.length != 0"
+              style="width: 60%;margin-left:20%"
             >
-          </div></van-tab
-        >
+              补签
+            </van-button>
+          </div>
+        </van-tab>
       </van-tabs>
     </div>
     <van-action-sheet
@@ -146,9 +154,11 @@ export default {
       showabStudentInfo: false,
       acStudentIndex: 0,
       abStudentIndex: 0,
-      noStudentSrc: require("@/assets/course/nobody.png"),
+      noabStudentSrc: require("@/assets/course/noabstudent.png"),
+      noacStudentSrc: require("@/assets/course/noacstudent.png"),
       showImagePreview: false,
       signInImg: [],
+      checkAll: false,
     };
   },
   created() {
@@ -159,14 +169,17 @@ export default {
 
     var config = {
       method: "get",
-      url: this.GLOBAL.port + "/teacher/getSignPictures?id="+this.record.attendanceId,
+      url:
+        this.GLOBAL.port +
+        "/teacher/getSignPictures?id=" +
+        this.record.attendanceId,
       headers: {},
     };
 
     axios(config)
       .then(function (response) {
-        for(let i=0;i<response.data.length;i++){
-          _this.signInImg.push("data:image/jpg;base64,"+response.data[i])
+        for (let i = 0; i < response.data.length; i++) {
+          _this.signInImg.push("data:image/jpg;base64," + response.data[i]);
         }
       })
       .catch(function (error) {
@@ -181,11 +194,6 @@ export default {
     toggle(index) {
       this.$refs.checkboxes[index].toggle();
     },
-    onExchange() {
-      //this.mode = !this.mode;
-      this.checkbox = false;
-      this.checkboxResult = [];
-    },
     onClickacStudent(index) {
       this.showacStudentInfo = true;
       this.acStudentIndex = index;
@@ -193,6 +201,13 @@ export default {
     onClickabStudent(index) {
       this.showabStudentInfo = true;
       this.abStudentIndex = index;
+    },
+    onclickImgCell() {
+      if (this.signInImg.length == 0) {
+        this.$toast("获取图片失败");
+      } else {
+        this.showImagePreview = true;
+      }
     },
     supply() {
       let studentIds = [];
@@ -224,7 +239,7 @@ export default {
 
           var config = {
             method: "post",
-            url: this.GLOBAL.port+"/teacher/supply",
+            url: this.GLOBAL.port + "/teacher/supply",
             headers: {
               "Content-Type": "multipart/form-data",
             },

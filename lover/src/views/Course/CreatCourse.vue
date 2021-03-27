@@ -1,110 +1,114 @@
 <template>
   <div>
     <van-nav-bar title="创建课程" left-text="返回" @click-left="onClickLeft" />
-    <van-form @submit="onSubmit">
-      <van-field
-        v-model="className"
-        label="课程名"
-        placeholder="请输入课程名"
-        required
-      />
-      <van-field
-        readonly
-        clickable
-        label="上课工作日"
-        :value="dayText"
-        placeholder="点击选择工作日"
-        @click="showCourseDayPicker = true"
-      />
-      <van-popup v-model="showCourseDayPicker" round position="bottom">
-        <van-checkbox-group v-model="day">
-          <van-cell-group>
-            <van-cell
-              v-for="(item, index) in dayList"
-              clickable
-              :key="item"
-              :title="item"
-              @click="toggle(index)"
-            >
-              <template #right-icon>
-                <van-checkbox :name="index" ref="checkboxes" />
-              </template>
-            </van-cell>
-          </van-cell-group>
-        </van-checkbox-group>
-      </van-popup>
-      <van-field
-        readonly
-        clickable
-        name="timePicker"
-        label="上课时间"
-        :value="timeText"
-        placeholder="点击选择上课时间段"
-        @click="showCourseTimePicker = true"
-      />
-      <van-popup v-model="showCourseTimePicker" position="bottom">
-        <van-picker
-          title="选择上课时间段"
-          show-toolbar
-          :columns="timeColumns"
-          @confirm="onTimePickerConfirm"
-          @cancel="showCourseTimePicker = false"
-          @change="onTimePickerChange"
-        />
-      </van-popup>
-      <van-field
-        readonly
-        clickable
-        name="weekPicker"
-        label="上课周"
-        :value="weekText"
-        placeholder="点击选择课程周段"
-        @click="showCourseWeekPicker = true"
-      />
-      <van-popup v-model="showCourseWeekPicker" position="bottom">
-        <van-picker
-          title="选择课程周段"
-          show-toolbar
-          :columns="weekColumns"
-          @confirm="onWeekPickerConfirm"
-          @cancel="showCourseWeekPicker = false"
-          @change="onWeekPickerChange"
-        />
-      </van-popup>
-      <van-field
-        readonly
-        clickable
-        name="semesterPicker"
-        label="学期"
-        :value="semesterText"
-        placeholder="点击选择学期"
-        @click="showCourseSemesterPicker = true"
-      />
-      <van-popup v-model="showCourseSemesterPicker" position="bottom">
-        <van-picker
-          title="选择学期"
-          show-toolbar
-          :columns="semesterColumns"
-          @confirm="onSemesterPickerConfirm"
-          @cancel="showCourseSemesterPicker = false"
-        />
-      </van-popup>
-      <div style="text-align: center; padding: 20px">
-        <van-uploader
-          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          v-model="excelfile"
-          :after-read="onRead"
-        >
-          <van-button icon="plus" type="primary">导入学生名单</van-button>
-        </van-uploader>
-      </div>
 
-      <div style="margin: 16px">
-        <van-button round block type="info" native-type="submit"
-          >提交</van-button
-        >
-      </div>
-    </van-form>
+    <div class="creatCourse">
+      <van-form @submit="onSubmit">
+        <van-field
+          v-model="className"
+          label="课程名"
+          placeholder="请输入课程名"
+          required
+        />
+        <van-field
+          readonly
+          clickable
+          label="上课工作日"
+          :value="dayText"
+          placeholder="点击选择工作日"
+          @click="showCourseDayPicker = true"
+        />
+        <van-popup v-model="showCourseDayPicker" round position="bottom">
+          <van-checkbox-group v-model="day">
+            <van-cell-group>
+              <van-cell
+                v-for="(item, index) in dayList"
+                clickable
+                :key="item"
+                :title="item"
+                @click="toggle(index)"
+              >
+                <template #right-icon>
+                  <van-checkbox :name="index" ref="checkboxes" />
+                </template>
+              </van-cell>
+            </van-cell-group>
+          </van-checkbox-group>
+        </van-popup>
+        <van-field
+          readonly
+          clickable
+          name="timePicker"
+          label="上课时间"
+          :value="timeText"
+          placeholder="点击选择上课时间段"
+          @click="showCourseTimePicker = true"
+        />
+        <van-popup v-model="showCourseTimePicker" position="bottom">
+          <van-picker
+            title="选择上课时间段"
+            show-toolbar
+            :columns="timeColumns"
+            @confirm="onTimePickerConfirm"
+            @cancel="showCourseTimePicker = false"
+            @change="onTimePickerChange"
+          />
+        </van-popup>
+        <van-field
+          readonly
+          clickable
+          name="weekPicker"
+          label="上课周"
+          :value="weekText"
+          placeholder="点击选择课程周段"
+          @click="showCourseWeekPicker = true"
+        />
+        <van-popup v-model="showCourseWeekPicker" position="bottom">
+          <van-picker
+            title="选择课程周段"
+            show-toolbar
+            :columns="weekColumns"
+            @confirm="onWeekPickerConfirm"
+            @cancel="showCourseWeekPicker = false"
+            @change="onWeekPickerChange"
+          />
+        </van-popup>
+        <van-field
+          readonly
+          clickable
+          name="semesterPicker"
+          label="学期"
+          :value="semesterText"
+          placeholder="点击选择学期"
+          @click="showCourseSemesterPicker = true"
+        />
+        <van-popup v-model="showCourseSemesterPicker" position="bottom">
+          <van-picker
+            title="选择学期"
+            show-toolbar
+            :columns="semesterColumns"
+            @confirm="onSemesterPickerConfirm"
+            @cancel="showCourseSemesterPicker = false"
+          />
+        </van-popup>
+        <div style="text-align: center; padding: 20px">
+          <van-uploader
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            v-model="excelfile"
+            :after-read="onRead"
+          >
+            <van-button icon="plus" type="primary" color="linear-gradient(to top, #0ba360 0%, #3cba92 100%)">导入学生名单</van-button>
+          </van-uploader>
+        </div>
+
+        <div style="margin: 16px">
+          <van-button round block type="info" native-type="submit"
+          color="linear-gradient(to top, #00c6fb 0%, #005bea 100%)"
+            >提交</van-button
+          >
+        </div>
+      </van-form>
+    </div>
   </div>
 </template>
 
@@ -380,4 +384,17 @@ export default {
 </script>
 
 <style>
+.creatCourse {
+  position: relative;
+  top: 2vh;
+  left: 0;
+  right: 0;
+  margin: 0 15px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  animation-duration: 0.8s;
+}
 </style>

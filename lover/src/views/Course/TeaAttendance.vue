@@ -6,47 +6,63 @@
       left-arrow
       @click-left="onClickLeft"
       @click-right="onClickRight"
+      title="签到记录"
     >
-      <template #title>
-        <span> 签到记录</span>
-      </template>
     </van-nav-bar>
-    <van-cell-group class="recordsList">
-      <van-cell
-        center
-        v-for="(record, index) in records"
-        :key="record.id"
-        is-link
-        @click="goToDetail(record)"
-      >
-        <template #title style="display: flex">
-          <div
-            style="float: left; padding: 10px; font-size: 20px; color: #b3b3b3"
+    <div class="recordsList">
+      <div v-if="records.length != 0">
+        <div style="margin-left: 76%; position: relative; font-size: 12px">
+          出勤率
+        </div>
+        <van-cell-group>
+          <van-cell
+            center
+            v-for="(record, index) in records"
+            :key="record.id"
+            is-link
+            @click="goToDetail(record)"
           >
-            {{ index + 1 }}
-          </div>
-          <div style="margin-left: 5px; float: left; font-size: 18px">
-            <div>{{ record.time }}</div>
+            <template #title style="display: flex">
+              <div
+                style="
+                  float: left;
+                  padding: 10px;
+                  font-size: 20px;
+                  color: #b3b3b3;
+                "
+              >
+                {{ index + 1 }}
+              </div>
+              <div style="margin-left: 5px; float: left; font-size: 18px">
+                <div>{{ record.time }}</div>
 
-            <div style="font-size: 10px; color: #b3b3b3">
-              签到{{ record.acStudentNum }}人 缺勤{{ record.abStudentNum }}人
-            </div>
-          </div>
-        </template>
-        <template #default>
-          <van-circle
-            v-model="currentRate[index]"
-            :speed="100"
-            :color="gradientColor[index]"
-            :rate="data[index].rate"
-            :text="data[index].text"
-            :clockwise="false"
-            size="60px"
-            :stroke-width="100"
-          />
-        </template>
-      </van-cell>
-    </van-cell-group>
+                <div style="font-size: 10px; color: #b3b3b3">
+                  签到{{ record.acStudentNum }}人 缺勤{{
+                    record.abStudentNum
+                  }}人
+                </div>
+              </div>
+            </template>
+            <template #default>
+              <van-circle
+                v-model="currentRate[index]"
+                :speed="100"
+                :color="gradientColor[index]"
+                :rate="data[index].rate"
+                :text="data[index].text"
+                :clockwise="false"
+                size="60px"
+                :stroke-width="100"
+              />
+            </template>
+          </van-cell>
+        </van-cell-group>
+      </div>
+      <div v-if="records.length == 0" style="text-align:center">
+        <van-image width="200" height="200" :src="noRecordSrc" contain />
+      </div>
+    </div>
+
     <van-action-sheet v-model="showCourseInfo" title="课程信息" position="top">
       <div class="content">
         <van-cell-group>
@@ -71,9 +87,9 @@ export default {
   props: ["course"],
   data() {
     return {
+      noRecordSrc: require("@/assets/course/noRecord.png"),
       currentRate: [],
       gradientColor: [],
-
       showCourseInfo: false,
       records: [],
       data: [],
@@ -84,6 +100,7 @@ export default {
   },
   created() {
     let courseID = this.course.id;
+    console.log(courseID);
     //根据courseID和获得课程所有签到记录
     var axios = require("axios");
 
@@ -195,7 +212,7 @@ export default {
     },
     goToDetail(record) {
       localStorage.setItem("attendanceDetail", JSON.stringify(record));
-      console.log(record)
+      console.log(record);
       this.$router.push("/Course/attendanceDetail");
     },
   },
@@ -210,8 +227,8 @@ export default {
   border-radius: 10px;
 }
 .recordsList {
-
-  top: 1vh;
+  position: relative;
+  top: 3vh;
   left: 0;
   right: 0;
   margin: 0 5px;

@@ -24,26 +24,30 @@
     <van-dropdown-menu active-color="#1989fa">
       <van-dropdown-item v-model="semesterItem" :options="semesterOptions" />
     </van-dropdown-menu>
-    <van-cell-group>
-      <van-cell
-        :title="course.name"
-        center
-        :label="course.teachername"
-        v-for="course in allCourses[semesterItem]"
-        :key="course.id"
-        @click="showCourseDetail(course)"
-      >
-        <template #default>
-          <van-button
-            plain
-            type="primary"
-            size="mini"
-            @click.stop="addCourse(course)"
-            >添加课程</van-button
-          >
-        </template>
-      </van-cell>
-    </van-cell-group>
+    <div class="addcourse">
+      <van-cell-group>
+        <van-cell
+          :title="course.name"
+          center
+          :label="course.teachername"
+          v-for="course in allCourses[semesterItem]"
+          :key="course.id"
+          @click="showCourseDetail(course)"
+          clickable
+        >
+          <template #default>
+            <van-button
+              icon="plus"
+              size="mini"
+              color="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+              @click.stop="addCourse(course)"
+              >添加课程</van-button
+            >
+          </template>
+        </van-cell>
+      </van-cell-group>
+    </div>
+
     <van-action-sheet
       v-model="showCourseInfo"
       title="课程信息"
@@ -264,18 +268,19 @@ export default {
       var config = {
         method: "post",
         url:
-          this.GLOBAL.port+"/user/joinCourse?studentId="+
-          studentId+
-          "&courseId="+
+          this.GLOBAL.port +
+          "/user/joinCourse?studentId=" +
+          studentId +
+          "&courseId=" +
           courseId,
         headers: {},
       };
 
       axios(config)
         .then(function (response) {
-          if(response.data.data){
+          if (response.data.data) {
             _this.$toast("添加课程成功!");
-            _this.$emit('refresh',true);//让父页面刷新
+            _this.$emit("refresh", true); //让父页面刷新
           }
         })
         .catch(function (error) {
@@ -287,4 +292,17 @@ export default {
 </script>
 
 <style>
+.addcourse {
+  position: relative;
+  top: 3vh;
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  animation-duration: 0.8s;
+}
 </style>

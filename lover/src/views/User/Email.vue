@@ -6,46 +6,90 @@
       left-arrow
       @click-left="onClickLeft"
     />
-    <van-steps :active="stepsActive">
-      <van-step>选择验证方式</van-step>
-      <van-step>验证身份</van-step>
-      <van-step>绑定邮箱</van-step>
-      <van-step>绑定成功</van-step>
-    </van-steps>
-    <div v-if="stepsActive == 0">
-      <van-cell-group>
-        <van-cell
-          center
-          title="通过密码验证"
-          value="验证身份"
-          label="使用账号密码"
-          is-link
-          @click="onChoicePassword"
-        />
-        <van-cell
-          center
-          title="通过邮箱验证"
-          value="验证身份"
-          label="向已绑定邮箱发送验证码"
-          is-link
-          @click="onChoiceEmail"
-        />
-      </van-cell-group>
-    </div>
-    <div v-if="stepsActive == 1">
-      <div v-if="identityMethod == 'Password'">
-        <van-field
-          v-model="password"
-          type="password"
-          label="密码"
-          placeholder="请输入密码"
-        />
-      </div>
-      <div v-if="identityMethod == 'Email'">
+    <div class="emil">
+      <van-steps :active="stepsActive">
+        <van-step>选择验证方式</van-step>
+        <van-step>验证身份</van-step>
+        <van-step>绑定邮箱</van-step>
+        <van-step>绑定成功</van-step>
+      </van-steps>
+      <div v-if="stepsActive == 0">
         <van-cell-group>
-          <van-field label="已绑定邮箱" :value="oldEmail" disabled />
+          <van-cell
+            center
+            title="通过密码验证"
+            value="验证身份"
+            label="使用账号密码"
+            is-link
+            @click="onChoicePassword"
+          />
+          <van-cell
+            center
+            title="通过邮箱验证"
+            value="验证身份"
+            label="向已绑定邮箱发送验证码"
+            is-link
+            @click="onChoiceEmail"
+          />
+        </van-cell-group>
+      </div>
+      <div v-if="stepsActive == 1">
+        <div v-if="identityMethod == 'Password'">
           <van-field
-            v-model="sms1"
+            v-model="password"
+            type="password"
+            label="密码"
+            placeholder="请输入密码"
+          />
+        </div>
+        <div v-if="identityMethod == 'Email'">
+          <van-cell-group>
+            <van-field label="已绑定邮箱" :value="oldEmail" disabled />
+            <van-field
+              v-model="sms1"
+              center
+              clearable
+              label="验证码"
+              placeholder="请输入邮箱验证码"
+            >
+              <template #button>
+                <!-- <van-button size="small" type="primary">发送验证码</van-button> -->
+                <van-button
+                  size="small"
+                  type="primary"
+                  :disabled="!smsCountdown1"
+                  @click="sendsms1"
+                >
+                  <span v-if="smsCountdown1">{{ smsText1 }}</span>
+                  <span v-if="!smsCountdown1"
+                    >{{ smsText1 }} ({{ smsCount1 }})</span
+                  >
+                </van-button>
+              </template>
+            </van-field>
+          </van-cell-group>
+        </div>
+        <div style="margin: 10px auto; width: 80%">
+          <van-button type="primary" block @click="identitySubmit"
+            >下一步</van-button
+          >
+        </div>
+      </div>
+      <div v-if="stepsActive == 2">
+        <van-form @submit="newEmailSubmit">
+          <van-field
+            v-model="newEmail"
+            label="新邮箱"
+            placeholder="请输入新邮箱地址"
+            :rules="[
+              {
+                pattern: /^$|^([a-zA-Z0-9]+[-_\.]?)+@[a-zA-Z0-9]+\.[a-z]+$/,
+                message: '请填写正确邮箱格式',
+              },
+            ]"
+          />
+          <van-field
+            v-model="sms2"
             center
             clearable
             label="验证码"
@@ -56,78 +100,36 @@
               <van-button
                 size="small"
                 type="primary"
-                :disabled="!smsCountdown1"
-                @click="sendsms1"
+                :disabled="!smsCountdown2"
+                @click="sendsms2"
               >
-                <span v-if="smsCountdown1">{{ smsText1 }}</span>
-                <span v-if="!smsCountdown1"
-                  >{{ smsText1 }} ({{ smsCount1 }})</span
+                <span v-if="smsCountdown2">{{ smsText2 }}</span>
+                <span v-if="!smsCountdown2"
+                  >{{ smsText2 }} ({{ smsCount2 }})</span
                 >
               </van-button>
             </template>
           </van-field>
-        </van-cell-group>
-      </div>
-      <div style="margin: 10px auto; width: 80%">
-        <van-button type="primary" block @click="identitySubmit"
-          >下一步</van-button
-        >
-      </div>
-    </div>
-    <div v-if="stepsActive == 2">
-      <van-form @submit="newEmailSubmit">
-        <van-field
-          v-model="newEmail"
-          label="新邮箱"
-          placeholder="请输入新邮箱地址"
-          :rules="[
-            {
-              pattern: /^$|^([a-zA-Z0-9]+[-_\.]?)+@[a-zA-Z0-9]+\.[a-z]+$/,
-              message: '请填写正确邮箱格式',
-            },
-          ]"
-        />
-        <van-field
-          v-model="sms2"
-          center
-          clearable
-          label="验证码"
-          placeholder="请输入邮箱验证码"
-        >
-          <template #button>
-            <!-- <van-button size="small" type="primary">发送验证码</van-button> -->
-            <van-button
-              size="small"
-              type="primary"
-              :disabled="!smsCountdown2"
-              @click="sendsms2"
+          <div style="margin: 10px auto; width: 80%">
+            <van-button type="primary" block @click="addAddress"
+              >下一步</van-button
             >
-              <span v-if="smsCountdown2">{{ smsText2 }}</span>
-              <span v-if="!smsCountdown2"
-                >{{ smsText2 }} ({{ smsCount2 }})</span
-              >
-            </van-button>
-          </template>
-        </van-field>
-        <div style="margin: 10px auto; width: 80%">
-          <van-button type="primary" block @click="addAddress"
-            >下一步</van-button
-          >
-        </div>
-      </van-form>
-    </div>
-    <div v-if="stepsActive == 3">
-      <van-row>
-        <van-col span="4"></van-col>
-        <van-col span="6">
-          <van-icon name="checked" color="#2cc20e" size="80" />
-        </van-col>
-        <van-col span="0">
-          <div style="font-size: 20px; font-weight: 700">邮箱绑定成功!</div>
-        </van-col>
-        <!-- <van-col span='10' @submit="uploadface"> -->
-      </van-row>
-      <div style="text-align: center">已绑定邮箱账号:{{ newEmail }}</div>
+          </div>
+        </van-form>
+      </div>
+      <div v-if="stepsActive == 3">
+        <van-row>
+          <van-col span="4"></van-col>
+          <van-col span="6">
+            <van-icon name="checked" color="#2cc20e" size="80" />
+          </van-col>
+          <van-col span="0">
+            <div style="font-size: 20px; font-weight: 700">邮箱绑定成功!</div>
+          </van-col>
+          <!-- <van-col span='10' @submit="uploadface"> -->
+        </van-row>
+        <div style="text-align: center">已绑定邮箱账号:{{ newEmail }}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -359,5 +361,18 @@ export default {
     font-size: 20px;
     text-align: center;
   }
+}
+.emil {
+  position: relative;
+  top: 3vh;
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  animation-duration: 0.8s;
 }
 </style>

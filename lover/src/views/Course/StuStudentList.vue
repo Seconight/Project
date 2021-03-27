@@ -8,24 +8,28 @@
       @click-left="onClickLeft"
       @click-right="onClickRight"
     />
-    <van-cell-group>
-      <template #title>
-        <div @click="showOrderPicker = true">
-          <span>学生({{ students.length }}人)</span>
-          <span style="float: right">
-            {{ orderName }}
-          </span>
-        </div>
-      </template>
+    <div class="studentList">
+      <van-cell-group>
+        <template #title>
+          <div @click="showOrderPicker = true">
+            <span>学生({{ students.length }}人)</span>
+            <span style="float: right">
+              {{ orderName }}
+            </span>
+          </div>
+        </template>
 
-      <van-cell
-        v-for="(student, index) in students"
-        :key="student.id"
-        :title="student.name"
-        :value="student.rate"
-        @click="onClickStudent(index)"
-      />
-    </van-cell-group>
+        <van-cell
+          v-for="(student, index) in students"
+          :key="student.id"
+          :title="student.name"
+          :value="student.rate"
+          @click="onClickStudent(index)"
+          clickable
+        />
+      </van-cell-group>
+    </div>
+
     <van-popup v-model="showOrderPicker" position="bottom">
       <van-picker
         show-toolbar
@@ -49,7 +53,7 @@
       title="学生信息"
       position="bottom"
     >
-      <van-cell-group v-if="students.length!=0">
+      <van-cell-group v-if="students.length != 0">
         <van-cell title="姓名" :value="students[choice].name" />
         <van-cell title="班级" :value="students[choice].class" />
         <van-cell title="学号" :value="students[choice].id" />
@@ -96,7 +100,6 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
-    
   },
   methods: {
     onClickLeft() {
@@ -106,42 +109,41 @@ export default {
       this.showCourseInfo = true;
     },
 
-    compareById(id){
-      return function(a,b){
+    compareById(id) {
+      return function (a, b) {
         return a[id] - b[id];
-      }
+      };
     },
 
-    compareByName(name){
-      return function(a,b){
-        return a[name] - b[name]
-      }
+    compareByName(name) {
+      return function (a, b) {
+        return a[name] - b[name];
+      };
     },
 
-    compareByRateUpToDown(rate){
-      return function(a,b){
-        return b[rate] - a[rate]
-      }
+    compareByRateUpToDown(rate) {
+      return function (a, b) {
+        return b[rate] - a[rate];
+      };
     },
 
-    compareByRateDownToUp(rate){
-      return function(a,b){
-        return a[rate] - b[rate]
-      }
+    compareByRateDownToUp(rate) {
+      return function (a, b) {
+        return a[rate] - b[rate];
+      };
     },
 
     onOrderConfirm(value) {
-      if(value == "学号")
-        console.log(this.students.sort(this.compareById('id')));
-      if(value == "姓名")
-        console.log(this.students.sort(this.compareByName('name')));
-      if(value == "出勤率从大到小")
-        console.log(this.students.sort(this.compareByRateUpToDown('rate')));
-      if(value == "出勤率从小到大")
-        console.log(this.students.sort(this.compareByRateDownToUp('rate')));
+      if (value == "学号")
+        console.log(this.students.sort(this.compareById("id")));
+      if (value == "姓名")
+        console.log(this.students.sort(this.compareByName("name")));
+      if (value == "出勤率从大到小")
+        console.log(this.students.sort(this.compareByRateUpToDown("rate")));
+      if (value == "出勤率从小到大")
+        console.log(this.students.sort(this.compareByRateDownToUp("rate")));
       this.showOrderPicker = false;
     },
-
 
     onClickStudent(index) {
       this.showStudentInfo = true;
@@ -152,4 +154,17 @@ export default {
 </script>
 
 <style>
+.studentList {
+  position: relative;
+  top: 2vh;
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  animation-duration: 0.8s;
+}
 </style>

@@ -15,7 +15,7 @@
         />
       </template>
     </van-nav-bar>
-    <div>
+    <div class="personInfo">
       <van-cell-group>
         <van-field label="姓名" :value="name" :readonly="readonly" />
         <van-field label="身份" :value="role" :readonly="readonly" />
@@ -34,18 +34,19 @@
           label="人脸状态"
           :value="checkFace == 'true' ? '人脸已上传' : '人脸未上传'"
           disabled
+          v-if="role == '学生'"
         />
       </van-cell-group>
+      <van-button
+        style="width: 60%; margin-left: 20%"
+        color="linear-gradient(to top, #48c6ef 0%, #6f86d6 100%)"
+        round
+        block
+        v-if="readonly == false"
+        @click="onSave"
+        >保存修改</van-button
+      >
     </div>
-
-    <van-button
-      type="primary"
-      round
-      block
-      v-if="readonly == false"
-      @click="onSave"
-      >保存修改</van-button
-    >
   </div>
 </template>
 
@@ -89,4 +90,17 @@ export default {
 </script>
 
 <style>
+.personInfo {
+  position: relative;
+  top: 2vh;
+  left: 0;
+  right: 0;
+  margin: 0 15px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  animation-duration: 0.8s;
+}
 </style>
