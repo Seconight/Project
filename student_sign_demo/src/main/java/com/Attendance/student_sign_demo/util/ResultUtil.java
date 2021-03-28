@@ -18,7 +18,7 @@ public class ResultUtil {
         ResultVO resultVO = new ResultVO();
         resultVO.setCode(0);
         resultVO.setMessage("失败");
-        resultVO.setData(null);
+        resultVO.setData(message);
         return resultVO;
     }
 }

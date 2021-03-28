@@ -28,6 +28,7 @@ import javax.imageio.stream.FileImageInputStream;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.Future;
 import java.io.File;
 
@@ -55,6 +56,7 @@ public class StudentServiceImpl implements StudentService {
         if(id.length()==9)
         {//老师登录
             Teacher teacher=teacherRepository.findByTeacherNo(id);
+
             if(teacher.getTeacherPassword()!=null&&!teacher.getTeacherPassword().equals("")&&pwd.equals(teacher.getTeacherPassword()))
             {//密码不为空，不为空字符串
                 loginVO.setUserNO(teacher.getTeacherNo());
@@ -286,6 +288,68 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Async("asyncServiceExecutor")
+    public Future<List<CourseVO>> searchInitialForAdd(String studentId) throws Exception{
+        //所有课程列表
+        List<Course> courseList1=courseRepository.findAll();
+        //当前学生
+        Student student=studentRepository.findByStudentNo(studentId);
+        //当前学生已经添加的课程
+        String courses=student.getStudentCourses();
+        if(courses == null) courses = "";
+        //应当加入的课程
+        List<Course> courseList=new ArrayList<>();
+        for(int i=0;i<courseList1.toArray().length;i++){
+            if(!courses.contains(courseList1.get(i).getCourseNo())&&courseList1.get(i).getCourseStudent().contains(studentId)){
+                courseList.add(courseList1.get(i));
+            }
+        }
+        for(int i=0;i<courseList.toArray().length;i++){
+            System.out.println((courseList.get(i)));
+        }
+        List<String> semesterList=new ArrayList<>();//新建学期列表
+        for(int i=0;i<courseList.toArray().length;i++)
+        {
+            Course course= courseList.get(i);
+            if(semesterList.toArray().length==0){//列表为空直接添加
+                semesterList.add(course.getCourseSemester());
+            }
+            else {
+                if (!semesterList.contains(course.getCourseSemester())) {
+                    semesterList.add(course.getCourseSemester());//列表不为空比较后添加
+                }
+            }
+
+        }
+        List<CourseVO> courseVOList=new ArrayList<>();
+        for(int i = 0; i<semesterList.toArray().length; i++){//遍历学期列表创建courseVO对象
+            CourseVO courseVO=new CourseVO();
+            courseVO.setSemester(semesterList.get(i));
+            List<Course1VO> course1VOList=new ArrayList<>();
+            for(int j=0;j<courseList.toArray().length;j++){//取出合适学期的课程
+                if(courseList.get(j).getCourseSemester().equals(semesterList.get(i))){
+                    Course course=courseList.get(j);
+                    Course1VO course1VO=new Course1VO();
+                    course1VO.setId(course.getCourseNo());
+                    course1VO.setDays(course.getCourseDays());
+                    course1VO.setEndTime(course.getCourseEndTime());
+                    course1VO.setName(course.getCourseName());
+                    course1VO.setWeeks(course.getCourseWeeks());
+                    course1VO.setStartTime(course.getCourseStartTime());
+                    course1VO.setCourseTeacher(teacherRepository.findByTeacherNo(course.getCourseTeacherNo()).getTeacherName());
+                    course1VOList.add(course1VO);
+                }
+            }
+            courseVO.setCourse1VOList(course1VOList);
+            courseVOList.add(courseVO);
+        }
+        return new AsyncResult<>(courseVOList);
+    }
+
+
+
+
+    @Override
+    @Async("asyncServiceExecutor")
     public Future<CourseVO> searchByCourseId(String courseId,String studentId)throws Exception {
         Course course=courseRepository.findByCourseNo(courseId);
         Student student=studentRepository.findByStudentNo(studentId);
@@ -401,6 +465,9 @@ public class StudentServiceImpl implements StudentService {
         if(files!=null){
             List<byte[]> fileList=new ArrayList<>();
             for(File f :files){
+                //参数文件跳过
+                if(f.getName().charAt(f.getName().length()-1) == 'y')
+                    continue;
                 byte[] data = null;
                 FileImageInputStream input = null;
                 try {
@@ -460,9 +527,14 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Async("asyncServiceExecutor")
     public Future<List<CourseVO>> searchByCourseNameForAdd(String courseName, String studentId) throws Exception {
+        //所有课程列表
         List<Course> courseList1=courseRepository.findAll();
+        //当前学生
         Student student=studentRepository.findByStudentNo(studentId);
-        String courses=student.getStudentCourses();//当前学生已经添加的课程
+        //当前学生已经添加的课程
+        String courses=student.getStudentCourses();
+        if(courses == null) courses = "";
+        //应当加入的课程
         List<Course> courseList=new ArrayList<>();
         for(int i=0;i<courseList1.toArray().length;i++){
             if(!courses.contains(courseList1.get(i).getCourseNo())&&courseList1.get(i).getCourseStudent().contains(studentId)){
@@ -517,11 +589,15 @@ public class StudentServiceImpl implements StudentService {
     public Future<Boolean> joinCourse(String studentId, String courseId) throws Exception {
         Student student=studentRepository.findByStudentNo(studentId);
         String courses=student.getStudentCourses();
-        if(courses==null||courses.equals("")){
-            student.setStudentCourse(courseId);
+        if(!student.getStudentCourses().contains(courseId)) {
+            if (courses == null || courses.equals("")) {
+                student.setStudentCourse(courseId);
+            } else {
+                student.setStudentCourse(courses + "," + courseId);
+            }
         }
-        else {
-            student.setStudentCourse(courses+","+courseId);
+        else{
+            return new AsyncResult<>(false);
         }
         studentRepository.save(student);
         return new AsyncResult<>(true);

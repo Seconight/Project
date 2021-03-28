@@ -76,7 +76,7 @@ export default {
               );
               location.replace(document.referrer);
             } else {
-              _this.$toast.fail("账号密码错误");
+              _this.$toast.fail(JSON.stringify(response.data.data));
               _this.username = "";
               _this.password = "";
             }

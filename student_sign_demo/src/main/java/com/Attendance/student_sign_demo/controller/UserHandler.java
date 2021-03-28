@@ -46,9 +46,8 @@ public class UserHandler {
                 else
                     return ResultUtil.success(studentService.checkLogin(loginForm).get());
             } catch (Exception e) {
-                e.printStackTrace();
+                return ResultUtil.failed("未找到此用户！请注册！");
             }
-            return null;
         }
     }
 
@@ -76,7 +75,7 @@ public class UserHandler {
     public ResultVO faceInfo(FaceForm faceForm,BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             //System.out.println("【学生登录】参数错误");
-            return ResultUtil.failed("学生账号和密码错误");
+            return ResultUtil.failed("ID或文件错误！");
             //throw new StudentException(bindingResult.getFieldError().getDefaultMessage());
         }
         else{
@@ -302,6 +301,22 @@ public class UserHandler {
         else{
             try {
                 return ResultUtil.success(studentService.searchByCourseNameForAdd(courseName, studentId).get());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    //获取初始化的添加课程
+    @GetMapping("searchInitialForAdd")
+    public ResultVO searchInitialForAdd(String studentId){
+        if(studentId.equals("")||studentId == null){
+            return ResultUtil.failed("id为空！");
+        }
+        else{
+            try {
+                return ResultUtil.success(studentService.searchInitialForAdd(studentId).get());
             } catch (Exception e) {
                 e.printStackTrace();
             }

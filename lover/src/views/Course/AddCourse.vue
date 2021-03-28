@@ -87,9 +87,7 @@ export default {
       method: "get",
       url:
         this.GLOBAL.port +
-        "/user/searchByCourseName?courseName=" +
-        "" +
-        "&studentId=" +
+        "/user/searchInitialForAdd?studentId=" +
         userInfo.id,
       headers: {},
     };

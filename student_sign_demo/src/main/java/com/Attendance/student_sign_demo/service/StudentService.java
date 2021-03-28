@@ -1,5 +1,6 @@
 package com.Attendance.student_sign_demo.service;
 
+import com.Attendance.student_sign_demo.entity.Course;
 import com.Attendance.student_sign_demo.entity.Student;
 import com.Attendance.student_sign_demo.form.FaceForm;
 import com.Attendance.student_sign_demo.form.LoginForm;
@@ -31,6 +32,7 @@ public interface StudentService {
     public Future<List<byte[]>> getStudentFace(String studentId)throws Exception;
     public Future<CourseVO> searchByCourseIdForAdd(String studentId,String courseId)throws Exception;//查找所有课程
     public Future<List<CourseVO>> searchByCourseNameForAdd(String courseName,String studentId)throws Exception;//查找所有课程
+    public Future<List<CourseVO>> searchInitialForAdd(String studentId) throws Exception;
     public Future<Boolean> joinCourse(String studentId,String courseId)throws Exception;
     public Future<String> getPassword(String id) throws Exception;
     public Future<String> getEmail(String id) throws Exception;

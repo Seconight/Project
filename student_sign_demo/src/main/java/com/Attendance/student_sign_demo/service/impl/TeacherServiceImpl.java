@@ -312,27 +312,32 @@ public class TeacherServiceImpl implements TeacherService {
         }catch (IOException e){
             e.printStackTrace();
         }
-        //根据课程号把学生名单以及对应的人脸encoding
+//        //根据课程号把学生名单以及对应的人脸encoding
+//        String [] studentsId=courseRepository.findByCourseNo(courseId).getCourseShouldStudent();
+//        String studentAndEncoding="";
+//        for(int i=0;i<studentsId.length;i++){
+//            Student student=studentRepository.findByStudentNo(studentsId[i]);
+//            String[] encodings = student.getStudentEncoding().split(";");
+//            for(String encoding : encodings){
+//                studentAndEncoding=studentAndEncoding+studentsId[i]+":"+encoding+";";
+//            }
+//        }
+//
+//        //当前应到学生名单
+//        studentAndEncoding=studentAndEncoding.substring(0,studentAndEncoding.length()-1);
+        String shouldStudents = courseRepository.findByCourseNo(courseId).getCourseStudent();
         String [] studentsId=courseRepository.findByCourseNo(courseId).getCourseShouldStudent();
-        String studentAndEncoding="";
-        for(int i=0;i<studentsId.length;i++){
-            Student student=studentRepository.findByStudentNo(studentsId[i]);
-            String[] encodings = student.getStudentEncoding().split(";");
-            for(String encoding : encodings){
-                studentAndEncoding=studentAndEncoding+studentsId[i]+":"+encoding+";";
-            }
-        }
-
-        //当前应到学生名单
-        studentAndEncoding=studentAndEncoding.substring(0,studentAndEncoding.length()-1);
-
         //设置实到学生，缺席学生
         String actualStudent = "";
         String absentStudent = "";
+
         //grpc获取服务结果
         ClientService clientService=new ClientService();
-        actualStudent=actualStudent+clientService.FaceDetect(currentId,studentAndEncoding);
+        actualStudent=actualStudent+clientService.FaceDetect(currentId,shouldStudents);
+
+
         System.out.println("获得结果为:"+actualStudent);
+        if(actualStudent.equals("null")) actualStudent = "";
         String [] actualStudentString=actualStudent.split(",");
         Set set = new HashSet();
         for (int i = 0; i < actualStudentString.length; i++) {
@@ -391,6 +396,8 @@ public class TeacherServiceImpl implements TeacherService {
             attendance.setAttendanceAbsentStudent(absentStudent);
         }
         attendance.setAttendanceCourseNo(courseId);
+        //添加currentID
+        attendance.setAttendanceId(currentId);
         attendanceRepository.save(attendance);
         return new AsyncResult<>(true);
     }
