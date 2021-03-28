@@ -173,7 +173,7 @@ export default {
       this.identityMethod = "Password";
     },
     onChoiceEmail() {
-      if (this.oldEmail == null) {
+      if (this.oldEmail == "") {
         this.$dialog({ message: "第一次绑定邮箱请使用密码验证身份。" });
       } else {
         this.stepsActive = 1;

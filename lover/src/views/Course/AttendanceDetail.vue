@@ -104,14 +104,6 @@
           :value="record.acStudent[acStudentIndex].class"
         />
         <van-cell title="学号" :value="record.acStudent[acStudentIndex].id" />
-        <van-cell
-          title="出勤次数"
-          :value="record.acStudent[acStudentIndex].times"
-        />
-        <van-cell
-          title="出勤率"
-          :value="record.acStudent[acStudentIndex].rate"
-        />
       </van-cell-group>
     </van-action-sheet>
     <van-action-sheet
@@ -126,14 +118,6 @@
           :value="record.abStudent[abStudentIndex].class"
         />
         <van-cell title="学号" :value="record.abStudent[abStudentIndex].id" />
-        <van-cell
-          title="出勤次数"
-          :value="record.abStudent[abStudentIndex].times"
-        />
-        <van-cell
-          title="出勤率"
-          :value="record.abStudent[abStudentIndex].rate"
-        />
       </van-cell-group>
       <van-button type="danger" block round @click="supply"> 补签 </van-button>
     </van-action-sheet>

@@ -94,7 +94,10 @@ export default {
           _this.$toast.fail("获取学生名单失败！");
         } else {
           _this.students = response.data.data;
-          console.log(response.data);
+          //出勤率保留2位小数
+          for (let i = 0; i < _this.students.length; i++) {
+            _this.students[i].rate = _this.students[i].rate.toFixed(2)*100+"%";
+          }
         }
       })
       .catch(function (error) {
