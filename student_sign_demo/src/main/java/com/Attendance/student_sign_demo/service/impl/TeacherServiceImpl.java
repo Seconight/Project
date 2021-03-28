@@ -175,6 +175,12 @@ public class TeacherServiceImpl implements TeacherService {
                     courseStudentVO.setStudentClass(student.getStudentClass());
                     courseStudentVOList.add(courseStudentVO);
                 }
+                else{
+                    courseStudentVO.setStudentNo(abStudents[i]);
+                    courseStudentVO.setStudentName(abStudents[i]+"(该学生未注册)");
+                    courseStudentVO.setStudentClass("未知班级");
+                    courseStudentVOList.add(courseStudentVO);
+                }
             }
             attendanceVO.setAbStudent(courseStudentVOList);
             attendanceVOList.add(attendanceVO);
