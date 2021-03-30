@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div class="body">
     <van-nav-bar
       left-text="返回"
       left-arrow
       @click-left="onClickLeft"
       title="签到详情"
+      safe-area-inset-top
     >
       <template #right v-if="mode == 1">
         <div style="color: #1989fa" @click="checkbox = !checkbox">
@@ -18,15 +19,11 @@
     <div class="ABCStudentsList">
       <van-tabs v-model="mode" animated>
         <van-tab :title="'已签学生(' + record.acStudentNum + '人)'">
-          <div style="text-align: center">
-            <van-image
-              v-if="record.acStudent.length == 0"
-              width="200"
-              height="200"
-              :src="noacStudentSrc"
-              contain
-            />
-          </div>
+          <van-empty
+            v-if="record.acStudent.length == 0"
+            :image="noStudentSrc"
+            description="无到勤学生"
+          />
           <van-cell-group>
             <van-cell
               v-for="(acStudent, index) in record.acStudent"
@@ -38,17 +35,21 @@
             />
           </van-cell-group>
         </van-tab>
-        <van-tab :title="'未签学生(' + record.abStudentNum + '人)'"
-          ><div style="text-align: center">
-            <van-image
-              v-if="record.abStudent.length == 0"
-              width="200"
-              height="200"
-              :src="noabStudentSrc"
-              contain
-            />
-          </div>
-
+        <van-tab :title="'未签学生(' + record.abStudentNum + '人)'">
+          <van-empty
+            v-if="record.abStudent.length == 0"
+            :image="noStudentSrc"
+            description="无缺勤学生"
+          />
+          <van-notice-bar
+            mode="closeable"
+            wrapable
+            :scrollable="false"
+            v-if="registeRemind != ''"
+            >{{
+              registeRemind
+            }},请提醒学生进行注册并上传人脸照片。</van-notice-bar
+          >
           <van-cell-group v-if="!checkbox">
             <van-cell
               v-for="(abStudent, index) in record.abStudent"
@@ -84,7 +85,7 @@
               round
               @click="supply"
               v-if="checkboxResult.length != 0"
-              style="width: 60%;margin-left:20%"
+              style="width: 60%; margin-left: 20%"
             >
               补签
             </van-button>
@@ -138,17 +139,17 @@ export default {
       showabStudentInfo: false,
       acStudentIndex: 0,
       abStudentIndex: 0,
-      noabStudentSrc: require("@/assets/course/noabstudent.png"),
-      noacStudentSrc: require("@/assets/course/noacstudent.png"),
+      noStudentSrc: require("@/assets/course/noStudent.png"),
       showImagePreview: false,
       signInImg: [],
       checkAll: false,
+      registeRemind: "",
     };
   },
   created() {
     this.record = JSON.parse(localStorage.getItem("attendanceDetail"));
-    console.log("this is ")
-    console.log(this.record)
+    console.log("this is ");
+    console.log(this.record);
     const _this = this;
     //获得签到图片  this.record.attendanceId
     var axios = require("axios");
@@ -171,6 +172,12 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
+    //查找是否有未注册学生
+    for (let i = 0; i < this.record.abStudent.length; i++) {
+      if (this.record.abStudent[i].class == "未知班级") {
+        this.registeRemind += this.record.abStudent[i].name;
+      }
+    }
   },
   methods: {
     onClickLeft() {

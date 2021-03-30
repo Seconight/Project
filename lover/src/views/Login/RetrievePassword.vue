@@ -5,6 +5,7 @@
       left-text="返回"
       left-arrow
       @click-left="onClickLeft"
+      safe-area-inset-top
     />
     <van-steps :active="stepsActive">
       <van-step>输入账号</van-step>

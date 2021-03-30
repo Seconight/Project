@@ -100,7 +100,11 @@ const routes = [
         path: 'teaAttendance',
         name: 'TeaAttendance',
         component: TeaAttendance,
-        children: []
+        children: [{
+          path: 'attendanceDetail',
+          name: 'AttendanceDetail',
+          component: AttendanceDetail,
+        }]
       },
       {
         path: 'addCourse',
@@ -121,11 +125,6 @@ const routes = [
         path: 'photoSignIn',
         name: 'PhotoSignIn',
         component: PhotoSignIn,
-      },
-      {
-        path: 'attendanceDetail',
-        name: 'AttendanceDetail',
-        component: AttendanceDetail,
       }
     ],
     meta: {

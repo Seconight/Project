@@ -1,6 +1,11 @@
 <template>
-  <div>
-    <van-nav-bar title="添加课程" left-text="返回" @click-left="onClickLeft" />
+  <div class="body">
+    <van-nav-bar
+      title="添加课程"
+      left-text="返回"
+      @click-left="onClickLeft"
+      safe-area-inset-top
+    />
     <form action="/">
       <van-search
         v-model="searchValue"
@@ -25,6 +30,11 @@
       <van-dropdown-item v-model="semesterItem" :options="semesterOptions" />
     </van-dropdown-menu>
     <div class="addcourse">
+      <van-empty
+        v-if="allCourses[semesterItem].length == 0"
+        :image="asserts.noCourseSrc"
+        description="暂无可以添加的课程"
+      />
       <van-cell-group>
         <van-cell
           :title="course.name"
@@ -77,6 +87,9 @@ export default {
       courseDetail: [],
       showCourseInfo: false,
       coursesStorage: [],
+      asserts: {
+        noCourseSrc: require("@/assets/course/noCourse.png"),
+      },
     };
   },
   created() {
@@ -86,9 +99,7 @@ export default {
     var config = {
       method: "get",
       url:
-        this.GLOBAL.port +
-        "/user/searchInitialForAdd?studentId=" +
-        userInfo.id,
+        this.GLOBAL.port + "/user/searchInitialForAdd?studentId=" + userInfo.id,
       headers: {},
     };
     let _this = this;

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <van-nav-bar title="创建课程" left-text="返回" @click-left="onClickLeft" />
+  <div class="body">
+    <van-nav-bar title="创建课程" left-text="返回" @click-left="onClickLeft" safe-area-inset-top />
 
     <div class="creatCourse">
       <van-form @submit="onSubmit">

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="body">
     <van-nav-bar
       left-text="返回"
       right-text="课程信息"
@@ -7,6 +7,7 @@
       @click-left="onClickLeft"
       @click-right="onClickRight"
       title="签到记录"
+      safe-area-inset-top
     >
     </van-nav-bar>
     <div class="recordsList">
@@ -58,9 +59,11 @@
           </van-cell>
         </van-cell-group>
       </div>
-      <div v-if="records.length == 0" style="text-align:center">
-        <van-image width="200" height="200" :src="noRecordSrc" contain />
-      </div>
+      <van-empty
+        v-if="records.length == 0"
+        :image="noRecordSrc"
+        description="暂无签到记录"
+      />
     </div>
 
     <van-action-sheet v-model="showCourseInfo" title="课程信息" position="top">
@@ -74,15 +77,13 @@
         </van-cell-group>
       </div>
     </van-action-sheet>
-    <transition>
+    <transition name="van-slide-right">
       <router-view></router-view>
     </transition>
   </div>
 </template>
 
 <script>
-import TabHead from "@/components/TabHead.vue";
-
 export default {
   props: ["course"],
   data() {
@@ -94,9 +95,6 @@ export default {
       records: [],
       data: [],
     };
-  },
-  components: {
-    TabHead,
   },
   created() {
     let courseID = this.course.id;
@@ -213,7 +211,7 @@ export default {
     goToDetail(record) {
       localStorage.setItem("attendanceDetail", JSON.stringify(record));
       console.log(record);
-      this.$router.push("/Course/attendanceDetail");
+      this.$router.push("/course/teaAttendance/attendanceDetail");
     },
   },
 };

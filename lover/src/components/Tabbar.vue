@@ -9,7 +9,8 @@
 export default {
   data() {
     return {
-
+      userIcon: require("@/assets/icon/course.png"),
+      courseIcon: require("@/assets/icon/course.png"),
     };
   },
   computed: {

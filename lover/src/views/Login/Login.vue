@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div style="position: fixed; background: #fff; height: 100%; width: 100%">
     <!-- <van-nav-bar left-text="返回" @click-left="onClickLeft" style="opacity: .5;"/> -->
-    <div class="login" v-if="$route.path == '/login'">
-      <div class="login-banner">
-        <img :src="background" alt contain />
+    <div v-if="$route.path == '/login'">
+      <div style="text-align: center">
+        <van-image width="200" height="200" :src="logo" />
       </div>
+
       <van-form @submit="onSubmit" class="login-box">
         <h3>登录</h3>
         <div class="_input-group">
@@ -34,7 +35,7 @@
         >
       </van-form>
     </div>
-    <transition>
+    <transition >
       <router-view></router-view>
     </transition>
   </div>
@@ -45,7 +46,7 @@ export default {
   name: "login",
   data() {
     return {
-      background: require("@/assets/login/login_background.jpg"),
+      logo: require("@/assets/login/logo.png"),
       username: "",
       password: "",
     };
@@ -102,99 +103,69 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.login {
-  position: absolute;
-  top: 0;
-  width: 100vw;
-  height: 100%;
-  .login-banner {
-    position: relative;
+.login-box {
+  position: fixed;
+  top: 28vh;
+  left: 0;
+  right: 0;
+  margin: 0 26px;
+  height: 290px;
+  background: linear-gradient(#fffeff 0%, #d7fffe 100%);
+
+  padding: 16px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  animation-duration: 0.8s;
+  & > h3 {
+    margin-top: 8px;
+    padding-bottom: 10px;
+    text-align: center;
+    color: #717171;
+  }
+  ._input-group {
     width: 100%;
-    height: 52vh;
-    border-radius: 0 0 43px 43px;
+    height: 46px;
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    grid-template-rows: 1fr;
+    background: #fafafc;
+    border-radius: 16px;
     overflow: hidden;
-    &::before {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      display: block;
-      width: 100%;
-      height: 50%;
-      background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0),
-        rgba(0, 0, 0, 0.6)
-      );
-    }
-    img {
-      width: 100%;
-      height: 100%;
+    margin: 20px 0;
+    label {
+      justify-self: center;
+      align-self: center;
+      color: #2575fc;
+      font-size: 1.125rem;
     }
   }
-  .login-box {
-    position: fixed;
-    top: 18vh;
+  .router-link {
+    text-align: center;
+    font-size: 1rem;
+    &:active {
+      color: crimson;
+    }
+  }
+  .van-button {
+    position: absolute;
     left: 0;
     right: 0;
-    margin: 0 26px;
-    height: 290px;
-    background: linear-gradient(#fffeff 0%, #d7fffe 100%);
-    
-    padding: 16px;
-    box-sizing: border-box;
-    box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
-    animation-duration: 0.8s;
-    & > h3 {
-      margin-top: 8px;
-      padding-bottom: 10px;
-      text-align: center;
-      color: #717171;
-    }
-    ._input-group {
-      width: 100%;
-      height: 46px;
-      display: grid;
-      grid-template-columns: 50px 1fr;
-      grid-template-rows: 1fr;
-      background: #fafafc;
-      border-radius: 16px;
-      overflow: hidden;
-      margin: 20px 0;
-      label {
-        justify-self: center;
-        align-self: center;
-        color: #2575fc;
-        font-size: 1.125rem;
-      }
-    }
-    .router-link {
-      text-align: center;
-      font-size: 1rem;
-      &:active {
-        color: crimson;
-      }
-    }
-    .van-button {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -30px;
-      margin: 0 auto;
-      width: 86%;
-      height: 52px;
-      border: none;
-      background-image: linear-gradient(-20deg, #fc6076 0%, #ff9a44 100%);
-      color: #fff;
-      border-radius: 46px;
-      letter-spacing: 4px;
-      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-      outline: none;
-      font-size: 0.875rem;
-      transition: all 0.2s;
-      &:active {
-        background: linear-gradient(to right, #2ce2fa, #1ff5e4);
-      }
+    bottom: -30px;
+    margin: 0 auto;
+    width: 86%;
+    height: 52px;
+    border: none;
+    background-image: linear-gradient(-20deg, #fc6076 0%, #ff9a44 100%);
+    color: #fff;
+    border-radius: 46px;
+    letter-spacing: 4px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    outline: none;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    &:active {
+      background: linear-gradient(to right, #2ce2fa, #1ff5e4);
     }
   }
 }

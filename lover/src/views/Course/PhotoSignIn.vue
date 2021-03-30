@@ -1,7 +1,12 @@
 <template>
-  <div>
-    <van-nav-bar title="拍照签到" left-text="返回" @click-left="onClickLeft" />
-    <div class="photoSign" :style="backgroundImg">
+  <div class="body">
+    <van-nav-bar
+      title="拍照签到"
+      left-text="返回"
+      @click-left="onClickLeft"
+      safe-area-inset-top
+    />
+    <div class="photoSign">
       <van-uploader
         :preview-options="preview_options"
         v-model="imgList"
@@ -9,7 +14,9 @@
         accept="image/*"
         :after-read="onRead"
         :max-count="3"
-        preview-size="100px"
+        :preview-size="uploader_preview_size"
+        deletable
+        style="margin-top: 10%"
       />
       <div class="button">
         <van-button
@@ -18,19 +25,25 @@
           block
           type="info"
           native-type="submit"
-          color="linear-gradient(to top, #f77062 0%, #fe5196 100%)"
           @click="upLodaeSign"
-          icon="upgrade"
+          color="linear-gradient(to top, #f77062 0%, #fe5196 100%)"
+          style="position: absolute; top: 50%"
           >上传签到</van-button
         >
       </div>
-      <van-image width="320" height="231" :src="backgroundImg" />
+      <div style="position: absolute; top: 60%; left: 5%">
+        <van-image width="320" height="231" :src="backgroundImg" />
+      </div>
     </div>
 
-    <van-overlay :show="photoSignUploading" style="z-index: 999">
+    <van-overlay :show="photoSignUploading">
       <div class="wrapper" @click.stop>
-        <van-loading color="#0094ff" size="80px" vertical
-          >签到识别中...</van-loading
+        <van-loading
+          color="#0094ff"
+          size="80px"
+          vertical
+          style="margin-top: 50%"
+          >人脸上传中...</van-loading
         >
       </div>
     </van-overlay>
@@ -48,7 +61,19 @@ export default {
         closeable: true,
       },
       photoSignUploading: false,
+      uploader_preview_size: "25vh",
     };
+  },
+  watch: {
+    imgList(newVal, oldVal) {
+      if (newVal.length == 0) {
+        this.uploader_preview_size = "25vh";
+      } else if (newVal.length == 1) {
+        this.uploader_preview_size = "18vh";
+      } else if (newVal.length == 2) {
+        this.uploader_preview_size = "13vh";
+      }
+    },
   },
   methods: {
     onClickLeft() {
@@ -88,8 +113,15 @@ export default {
           .then(function (response) {
             console.log(JSON.stringify(response.data));
             _this.photoSignUploading = false;
-
-            _this.$toast.success("上传成功，请在签到记录查看结果。");
+            _this.$dialog
+              .alert({
+                message: "上传成功，请在签到记录查看结果。",
+                theme: "round-button",
+              })
+              .then(() => {
+                // on close
+              });
+            // _this.$toast.success("上传成功，请在签到记录查看结果。");
           })
           .catch(function (error) {
             console.log(error);
@@ -111,8 +143,8 @@ export default {
   top: 8vh;
   left: 0;
   right: 0;
-  height: 450px;
-  margin: 0 12.6px;
+  height: 80%;
+  margin: 0 5px;
   background: #fff;
   padding: 5px;
   box-sizing: border-box;
@@ -123,16 +155,12 @@ export default {
     left: 5px;
   }
   .button {
-    margin-top: 15px;
     left: 0;
     right: 0;
     margin: 0 auto;
     width: 60%;
     height: 40px;
     border: none;
-  }
-  .van-image {
-    top: 20px;
   }
 }
 </style>

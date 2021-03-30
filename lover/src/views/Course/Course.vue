@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div v-if="$route.path == '/course'">
-      <van-nav-bar title="课程" fixed placeholder>
-        <!-- role == '老师'
-                ? creatCoursePopoverActions
-                : addCoursePopoverActions 
-                onNewAction-->
+    <div class="body">
+      <van-nav-bar title="课程" safe-area-inset-top>
         <template #right>
           <van-icon
             :name="asserts.addCourse_icon"
@@ -44,15 +40,11 @@
         </van-dropdown-item>
       </van-dropdown-menu>
       <div class="courseList">
-        <div style="text-align: center">
-          <van-image
-            v-if="allCourses[semesterItem].length == 0"
-            width="200"
-            height="200"
-            :src="asserts.noCourseSrc"
-            contain
-          />
-        </div>
+        <van-empty
+          v-if="allCourses[semesterItem].length == 0"
+          :image="asserts.noCourseSrc"
+          description="暂无课程"
+        />
         <van-collapse v-model="activeCourse" accordion>
           <van-collapse-item
             v-for="(course, index) in allCourses[semesterItem]"
@@ -100,10 +92,8 @@
           </van-collapse-item>
         </van-collapse>
       </div>
-
-      <div style="height: 50px"></div>
     </div>
-    <transition>
+    <transition name="van-slide-right">
       <router-view
         :course="allCourses[semesterItem][courseIndex]"
         @refresh="refresh"
@@ -419,17 +409,6 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
-}
-.van-nav-bar {
-  left: 0;
-  right: 0;
-  margin: 0 5px;
-  background: #fff;
-  padding: 5px;
-  box-sizing: border-box;
-  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
-  border-radius: 20px;
-  animation-duration: 0.8s;
 }
 .courseList {
   position: relative;

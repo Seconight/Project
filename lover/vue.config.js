@@ -6,7 +6,7 @@ module.exports = {
         https: false,
         hotOnly: false,
         proxy: null,
-        //public:'192.168.3.6:8080'
+        //public:'240e:45f:6290:1dcc:716b:be7e:4473:aadb:8080'
     },
     publicPath: './',
     // 输出文件目录

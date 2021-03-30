@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="body">
     <van-nav-bar
       title="签到记录"
       left-text="返回"
@@ -7,34 +7,43 @@
       left-arrow
       @click-left="onClickLeft"
       @click-right="onClickRight"
+      safe-area-inset-top
     />
-
-    <van-cell-group>
-      <van-cell
-        v-for="(record, index) in records"
-        :key="record.time"
-        :title="records[index].time"
-      >
-        <template #default>
-          <div v-if="records[index].success">
-            <span style="color: #2cc20e">已签到</span>
-            <van-icon
-              name="passed"
-              style="padding: 5px; line-height: inherit"
-              color="#2cc20e"
-            />
-          </div>
-          <div v-if="!records[index].success">
-            <span style="color: #ee0a24">未签到</span>
-            <van-icon
-              name="close"
-              style="padding: 5px; line-height: inherit"
-              color="#ee0a24"
-            />
-          </div>
-        </template>
-      </van-cell>
-    </van-cell-group>
+    <div class="recordsList">
+      <van-cell-group>
+        <van-empty
+          v-if="records.length == 0"
+          :image="noRecordSrc"
+          description="暂无签到记录"
+        />
+        <div v-if="records.length != 0">
+          <van-cell
+            v-for="(record, index) in records"
+            :key="record.time"
+            :title="records[index].time"
+          >
+            <template #default>
+              <div v-if="records[index].success">
+                <span style="color: #2cc20e">已签到</span>
+                <van-icon
+                  name="passed"
+                  style="padding: 5px; line-height: inherit"
+                  color="#2cc20e"
+                />
+              </div>
+              <div v-if="!records[index].success">
+                <span style="color: #ee0a24">未签到</span>
+                <van-icon
+                  name="close"
+                  style="padding: 5px; line-height: inherit"
+                  color="#ee0a24"
+                />
+              </div>
+            </template>
+          </van-cell>
+        </div>
+      </van-cell-group>
+    </div>
 
     <van-action-sheet v-model="showCourseInfo" title="课程信息" position="top">
       <div class="content">
@@ -56,6 +65,7 @@ export default {
   props: ["course"],
   data() {
     return {
+      noRecordSrc: require("@/assets/course/noRecord.png"),
       showCourseInfo: false,
       records: [],
     };
@@ -68,7 +78,8 @@ export default {
     var config = {
       method: "get",
       url:
-        this.GLOBAL.port+"/course/attendanceInfo?courseId=" +
+        this.GLOBAL.port +
+        "/course/attendanceInfo?courseId=" +
         courseID +
         "&studentId=" +
         userInfo.id,
@@ -116,7 +127,7 @@ export default {
       return fir + " " + sec;
     },
     loadRecord(result) {
-      if(result.length==0){
+      if (result.length == 0) {
         this.$toast("该课程无签到记录");
       }
       for (let i = 0; i < result.length; i++) {
@@ -132,4 +143,17 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.recordsList {
+  position: relative;
+  top: 3vh;
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  animation-duration: 0.8s;
+}
 </style>

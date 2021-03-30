@@ -1,24 +1,19 @@
 <template>
-  <div>
-    <div class="usercenter-banner" v-if="$route.path == '/user'">
-      <!-- <ImgLoader class="user-bg" :src="profile.background" v-if="loadflag" /> -->
-      <div></div>
-      <img :src="assert.background" alt="" />
-      <div class="_userinfo" @click="onlogout">
+  <div class="body">
+      <div class="usercenter-banner">
         <div class="_userinfo-avatar">
-          <img :src="assert.avatarSrc" alt="" />
+          <img :src="assert.avatarSrc" alt="" @click="onclickPersenInfor" />
         </div>
         <div class="_userinfo-name">{{ name }}</div>
+        <div class="_userinfo-id" v-if="this.role == '老师'">
+          职工号:{{ id }}
+        </div>
+        <div class="_userinfo-id" v-if="this.role == '学生'">学号:{{ id }}</div>
       </div>
-      <van-grid :column-num="3" square v-if="role != ''" class="menu">
-        <van-grid-item text="个人信息" to="/User/personalInfo">
-          <template #icon>
-            <van-icon :name="assert.gridImg[0]" size="40px" />
-          </template>
-        </van-grid-item>
+      <van-grid column-num="3" square v-if="role != ''" class="menu">
         <van-grid-item icon="envelop-o" text="邮箱设置" to="/User/email">
           <template #icon>
-            <van-icon :name="assert.gridImg[1]" size="40px" />
+            <van-icon :name="assert.gridImg.email" size="40px" />
           </template>
         </van-grid-item>
         <van-grid-item
@@ -27,7 +22,7 @@
           @click="onChangePassword"
         >
           <template #icon>
-            <van-icon :name="assert.gridImg[2]" size="40px" />
+            <van-icon :name="assert.gridImg.changePassword" size="40px" />
           </template>
         </van-grid-item>
         <van-grid-item
@@ -37,15 +32,16 @@
           to="/User/faceUpload"
         >
           <template #icon>
-            <van-icon :name="assert.gridImg[3]" size="40px" />
+            <van-icon :name="assert.gridImg.faceUpload" size="40px" />
           </template>
         </van-grid-item>
-        <van-grid-item icon="label-o" text="测试" to="/test" />
       </van-grid>
-    </div>
-    <transition enter-active-class="pt-page-scaleUp">
-      <router-view @logout="logout"></router-view>
-    </transition>
+      <transition
+        name="van-slide-right"
+      >
+        <router-view @logout="logout"></router-view>
+      </transition>
+    
   </div>
 </template>
 
@@ -56,18 +52,16 @@ export default {
     return {
       name: "",
       assert: {
-        background: require("@/assets/user/background.jpg"),
         avatarSrc: require("@/assets/user/defualt.jpg"),
-        gridImg: [
-          require("@/assets/icon/gerenxinxi.png"),
-          require("@/assets/icon/youxiangshezhi.png"),
-          require("@/assets/icon/xiugaimima.png"),
-          require("@/assets/icon/renlainshangchuan.png"),
-        ],
+        gridImg: {
+          email: require("@/assets/icon/youxiangshezhi.png"),
+          changePassword: require("@/assets/icon/xiugaimima.png"),
+          faceUpload: require("@/assets/icon/renlainshangchuan.png"),
+        },
       },
-
       //identity: '1',
       role: "",
+      id: "",
       imgList: [],
       preview_options: {
         closeable: true,
@@ -87,6 +81,9 @@ export default {
   },
 
   methods: {
+    onclickPersenInfor() {
+      this.$router.push("/User/personalInfo");
+    },
     onRead(file) {
       let content = file.file;
       this.GLOBAL.faceFile = content;
@@ -96,6 +93,7 @@ export default {
       let _userInfo = JSON.parse(localStorage.getItem("userInfo"));
       this.name = _userInfo.name;
       this.role = _userInfo.role;
+      this.id = _userInfo.id;
       if (this.role == "老师") {
         this.assert.avatarSrc = require("@/assets/user/teacher.jpg");
       }
@@ -149,23 +147,7 @@ export default {
     //登录
 
     //退出登录事件
-    onlogout() {
-      this.$dialog
-        .confirm({
-          title: "确定要退出登录吗？",
-        })
-        .then(() => {
-          // on confirm
-          if (!localStorage.getItem("userInfo")) {
-            this.$toast.fail("请先登录");
-            return;
-          }
-          this.logout();
-        })
-        .catch(() => {
-          // on cancel
-        });
-    },
+
     logout() {
       localStorage.removeItem("userInfo");
       localStorage.removeItem("checkFace");
@@ -209,77 +191,56 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+
 .usercenter-banner {
   position: relative;
   width: 100%;
-  height: 30vh;
+  height: 15vh;
   box-sizing: border-box;
   box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
-  border-radius: 0 0 36px 36px;
+  border-radius: 0 0 20px 20px;
   animation-duration: 0.8s;
-
-  .user-bg,
-  & > img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 0 0 36px 36px;
+  background-image: linear-gradient(#a1c4fd 0%, #c2e9fb 100%);
+  ._userinfo-avatar {
+    position: relative;
+    top: 2vh;
+    left: 2vh;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
     overflow: hidden;
-    z-index: 1;
+    img {
+      left: auto;
+      width: 100%;
+      height: 100%;
+    }
+    // ._userinfo-name {
+    //   padding: 10px;
+    //   font-size: 1.125rem;
+    //   font-weight: 600;
+    //   color: #000;
+    // }
   }
-  //   .df-btn {
-  //     position: absolute;
-  //     left: 0;
-  //     right: 0;
-  //     margin: auto;
-  //     bottom: -22px;
-  //     display: block;
-  //     width: 140px;
-  //     height: 38px;
-  //     border-radius: 44px;
-  //     background: crimson;
-  //     color: #fff;
-  //     border: none;
-  //     font-size: 0.875rem;
-  //     z-index: 3;
-  //   }
-  ._userinfo {
+  ._userinfo-name {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 60px;
-    margin: auto;
-    bottom: 100px;
-    width: 100px;
-    text-align: center;
-    z-index: 3;
-    ._userinfo-avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      overflow: hidden;
-      img {
-        left: auto;
-        width: 100%;
-        height: 100%;
-      }
-    }
-    ._userinfo-name {
-      padding: 10px;
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: #fff;
-    }
+    top: 4vh;
+    left: 15vh;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #000;
   }
-}
-.grid {
-  position: absolute;
-  width: 100%;
-  top: 40vh;
+  ._userinfo-id {
+    position: absolute;
+    top: 8vh;
+    left: 15vh;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #000;
+  }
 }
 .menu {
   position: fixed;
-  top: 35vh;
+  top: 20vh;
   left: 0;
   right: 0;
   margin: 0 26px;

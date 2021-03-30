@@ -1,46 +1,58 @@
 <template>
-  <div class="aaa">
+  <div class="body">
     <van-nav-bar
       title="人脸上传"
       left-text="返回"
       left-arrow
-      :right-text="edit ? '取消' : '编辑'"
       @click-left="onClickLeft"
-      @click-right="onClickRight"
+      safe-area-inset-top
     />
     <div class="faceupload">
-      <van-notice-bar left-icon="volume-o" text="最多上传三张人脸照片" />
-      <div class="uploader">
-        <van-uploader
-          :preview-options="preview_options"
-          v-model="imgList"
-          multiple
-          accept="image/*"
-          preview-size="100px"
-          :max-count="3"
-          :after-read="onRead"
-          :disabled="!edit"
-          :deletable="edit"
-        />
+      <div v-if="faceDownloading == true">
+        <van-loading style="margin-top: 50%" size="50px" color="#0094ff"
+          >加载中...</van-loading
+        >
+      </div>
+      <div v-if="faceDownloading != true">
+        <van-notice-bar left-icon="volume-o" text="最多上传三张人脸照片" />
+        <div class="uploader">
+          <van-uploader
+            :preview-options="preview_options"
+            v-model="imgList"
+            multiple
+            accept="image/*"
+            :preview-size="uploader_preview_size"
+            :max-count="3"
+            :after-read="onRead"
+            deletable
+            style="margin-top: 10%"
+          />
+        </div>
+        <van-button
+          class="button"
+          round
+          block
+          type="info"
+          native-type="submit"
+          @click="uploadface"
+          color="linear-gradient(to top, #f77062 0%, #fe5196 100%)"
+          style="position: absolute; top: 60%"
+          >上传</van-button
+        >
       </div>
 
-      <van-button
-        v-if="edit"
-        class="button"
-        round
-        block
-        type="info"
-        native-type="submit"
-        @click="uploadface"
-        color="linear-gradient(to top, #f77062 0%, #fe5196 100%)"
-        >保存修改</van-button
-      >
-      <van-image width="300" height="155" :src="backgroundImg" />
+      <div style="position: absolute; left: 10%; top: 75%">
+        <van-image width="300" height="155" :src="backgroundImg" />
+      </div>
     </div>
 
     <van-overlay :show="faceUploading">
       <div class="wrapper" @click.stop>
-        <van-loading color="#0094ff" size="80px" vertical
+        <van-loading
+          color="#0094ff"
+          size="80px"
+          vertical
+          style="margin-top: 50%"
           >人脸上传中...</van-loading
         >
       </div>
@@ -58,8 +70,20 @@ export default {
         closeable: true,
       },
       faceUploading: false,
-      edit: false,
+      faceDownloading: true,
+      uploader_preview_size: "25vh",
     };
+  },
+  watch: {
+    imgList(newVal, oldVal) {
+      if (newVal.length == 0) {
+        this.uploader_preview_size = "25vh";
+      } else if (newVal.length == 1) {
+        this.uploader_preview_size = "18vh";
+      } else if (newVal.length == 2) {
+        this.uploader_preview_size = "13vh";
+      }
+    },
   },
   created() {
     //进入清空之前存入的照片
@@ -84,17 +108,15 @@ export default {
             isImage: true,
           });
         }
+        // _this.imgList.push({ url: "https://img01.yzcdn.cn/vant/leaf.jpg" });
+        // _this.imgList.push({ url: "https://img01.yzcdn.cn/vant/leaf.jpg" });
+        //_this.faceDownloading = false;
       })
       .catch(function (error) {
         console.log(error);
       });
   },
   methods: {
-    onClickRight() {
-      this.edit = !this.edit;
-      this.GLOBAL.faceFile = [];
-      this.imgList = [];
-    },
     onClickLeft() {
       console.log(this.imgList);
       this.$router.go(-1);
@@ -107,7 +129,6 @@ export default {
     },
     //上传人脸
     uploadface() {
-      this.$dialog;
       this.$dialog
         .confirm({
           title: "确定上传人脸数据",
@@ -141,7 +162,14 @@ export default {
             .then(function (response) {
               console.log(JSON.stringify(response.data));
               _this.faceUploading = false;
-              _this.$toast("人脸上传成功！");
+              _this.$dialog
+                .alert({
+                  message: "人脸上传成功！",
+                  theme: "round-button",
+                })
+                .then(() => {
+                  // on close
+                });
             })
             .catch(function (error) {
               console.log(error);
@@ -162,6 +190,7 @@ export default {
   top: 3vh;
   left: 0;
   right: 0;
+  height: 80%;
   margin: 0 5px;
   background: #fff;
   padding: 5px;
@@ -180,7 +209,6 @@ export default {
     width: 60%;
     height: 40px;
     border: none;
-
   }
 }
 </style>

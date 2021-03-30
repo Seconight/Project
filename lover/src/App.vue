@@ -33,15 +33,32 @@ export default {
 <style>
 @import "colorui/main.css";
 @import "colorui/icon.css";
+/* #f7f8fa */
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-
   min-height: 100%;
 }
 html,
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: "montserrat";
+  background-image: #ecffff;
+}
+.body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ecffff;
+}
+/* html,
 body {
   width: 100vw;
   height: 100vh;
@@ -69,6 +86,6 @@ body {
   100% {
     background-position: 0% 50%;
   }
-}
+} */
 @import "assets/css/animations.css";
 </style>

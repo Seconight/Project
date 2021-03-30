@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div class="body">
     <van-nav-bar
       title="修改密码"
       left-text="返回"
       left-arrow
       @click-left="onClickLeft"
+      safe-area-inset-top
     />
     <div class="changPassword">
             <van-steps :active="stepsActive">
@@ -203,6 +204,7 @@ export default {
 </script>
 
 <style lang='less' scoped>
+
 .van-row {
   height: 100px;
   padding: 10px;

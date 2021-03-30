@@ -1,51 +1,55 @@
 <template>
-  <div>
+  <div class="body">
     <van-nav-bar
-      :title="readonly == true ? '个人信息' : '个人信息编辑'"
+      title="个人信息"
       left-text="返回"
       left-arrow
       @click-left="onClickLeft"
+      safe-area-inset-top
     >
-      <template #right>
-        <van-icon
-          v-if="readonly == true"
-          name="edit"
-          size="18"
-          @click="readonly = false"
-        />
-      </template>
     </van-nav-bar>
     <div class="personInfo">
-      <van-cell-group>
-        <van-field label="姓名" :value="name" :readonly="readonly" />
-        <van-field label="身份" :value="role" :readonly="readonly" />
-        <van-field
-          :label="role == '老师' ? '工号' : '学号'"
+      <van-cell-group title="基础信息">
+        <van-cell title="姓名" :value="name" :readonly="readonly" />
+        <van-cell title="身份" :value="role" :readonly="readonly" />
+        <van-cell
+          :title="role == '老师' ? '工号' : '学号'"
           :value="id"
           :readonly="readonly"
         />
-        <van-field v-if="role == '学生'" label="班级" :value="class_" />
-        <van-field
-          label="邮箱"
-          :value="address == null ? '未绑定' : address"
-          disabled
-        />
-        <van-field
-          label="人脸状态"
-          :value="checkFace == 'true' ? '人脸已上传' : '人脸未上传'"
-          disabled
-          v-if="role == '学生'"
-        />
+        <van-cell v-if="role == '学生'" title="班级" :value="class_" />
       </van-cell-group>
-      <van-button
-        style="width: 60%; margin-left: 20%"
-        color="linear-gradient(to top, #48c6ef 0%, #6f86d6 100%)"
-        round
-        block
-        v-if="readonly == false"
-        @click="onSave"
-        >保存修改</van-button
-      >
+      <van-cell-group title="账号绑定">
+        <van-cell title="邮箱" v-if="address != ''" :value="address" />
+        <van-cell title="邮箱" v-if="address == ''" is-link to="/User/email">
+          <template #default>
+            <div style="color: blue">邮箱未绑定</div>
+          </template>
+        </van-cell>
+      </van-cell-group>
+      <van-cell-group title="人脸信息" v-if="role == '学生'">
+        <van-cell
+          title="人脸状态"
+          value="人脸已上传"
+          v-if="checkFace == 'true'"
+        />
+        <van-cell
+          title="人脸状态"
+          v-if="checkFace != 'true'"
+          is-link
+          to="/User/faceUpload"
+        >
+          <template #default>
+            <div style="color: blue">人脸未上传</div>
+          </template>
+        </van-cell>
+      </van-cell-group>
+      <van-cell-group title=" ">
+        <van-button block style="color: red" @click="onlogout"
+          >退出登录</van-button
+        >
+      </van-cell-group>
+      <van-cell-group title=" "> </van-cell-group>
     </div>
   </div>
 </template>
@@ -77,30 +81,27 @@ export default {
     onClickLeft() {
       this.$router.go(-1);
     },
-    onSave() {
-      console.log(this.name);
-      console.log(this.role);
-      console.log(this.id);
-      console.log(this.address);
-      console.log(this.class_);
-      this.readonly = true;
+    onlogout() {
+      this.$dialog
+        .confirm({
+          title: "确定要退出登录吗？",
+        })
+        .then(() => {
+          // on confirm
+          this.logout();
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+    logout() {
+      localStorage.removeItem("userInfo");
+      localStorage.removeItem("checkFace");
+      this.$router.push("/login");
     },
   },
 };
 </script>
 
 <style>
-.personInfo {
-  position: relative;
-  top: 2vh;
-  left: 0;
-  right: 0;
-  margin: 0 15px;
-  background: #fff;
-  padding: 5px;
-  box-sizing: border-box;
-  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  animation-duration: 0.8s;
-}
 </style>
