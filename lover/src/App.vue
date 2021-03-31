@@ -48,7 +48,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: "montserrat";
-  background-image: #ecffff;
+  background: #ecffff;
 }
 .body {
   position: absolute;

@@ -144,27 +144,27 @@ const router = new VueRouter({
 //路由拦截
 
 // 解决Vue-Router升级导致的Uncaught(in promise) navigation guard问题
-const originalPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push(location, onResolve, onReject) {
-  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
-  return originalPush.call(this, location).catch(err => err)
-}
+// const originalPush = VueRouter.prototype.push
+// VueRouter.prototype.push = function push(location, onResolve, onReject) {
+//   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+//   return originalPush.call(this, location).catch(err => err)
+// }
 
-router.beforeEach((to, from, next) => {
-  let token = localStorage.getItem('userInfo');
-  if (to.path == '/course') {
-    if (token) {
-      next();
-    } else {
-      //alert("请先登录")
-      Vue.prototype.$toast("请先登录");
-      //定时器
-      next("/user");
-    }
-    return;
-  }
-  //对所有路由适配
-  next()
-})
+// router.beforeEach((to, from, next) => {
+//   let token = localStorage.getItem('userInfo');
+//   if (to.path == '/course') {
+//     if (token) {
+//       next();
+//     } else {
+//       //alert("请先登录")
+//       Vue.prototype.$toast("请先登录");
+//       //定时器
+//       next("/user");
+//     }
+//     return;
+//   }
+//   //对所有路由适配
+//   next()
+// })
 
 export default router

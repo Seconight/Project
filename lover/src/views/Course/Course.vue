@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="body">
+  <div class="body">
+    <div>
       <van-nav-bar title="课程" safe-area-inset-top>
         <template #right>
           <van-icon
@@ -39,7 +39,7 @@
         >
         </van-dropdown-item>
       </van-dropdown-menu>
-      <div class="courseList">
+      <div class="courseList" v-if="$route.path == '/course'">
         <van-empty
           v-if="allCourses[semesterItem].length == 0"
           :image="asserts.noCourseSrc"
@@ -74,7 +74,7 @@
                 color="#3cba92"
                 size="small"
                 icon="todo-list-o"
-                style="margin-left: 10px"
+                style="margin-left: 5px"
                 @click="goToAttendance(index)"
                 >签到记录</van-button
               >
@@ -84,7 +84,7 @@
                 color="#fda34b"
                 size="small"
                 icon="scan"
-                style="margin-left: 10px"
+                style="margin-left: 5px"
                 @click="photoSign(index)"
                 >拍照签到</van-button
               >
@@ -93,6 +93,7 @@
         </van-collapse>
       </div>
     </div>
+    <div style="height: 65px"></div>
     <transition name="van-slide-right">
       <router-view
         :course="allCourses[semesterItem][courseIndex]"
@@ -104,6 +105,13 @@
 
 <script>
 export default {
+  watch: {
+    $route(to, from) {
+      if (to.name == "Course" && from.name == "User") {
+        this.showCourseToday();
+      }
+    },
+  },
   data() {
     return {
       asserts: {
@@ -113,7 +121,7 @@ export default {
       creatCoursePopoverActions: [{ text: "新建课程" }],
       addCoursePopoverActions: [{ text: "添加课程" }],
       searchValue: "",
-      activeCourse: [],
+      activeCourse: -1,
       role: "",
       allCourses: [[]],
       courseIndex: 0,
@@ -123,6 +131,7 @@ export default {
     };
   },
   created() {
+    console.log("123:" + this.selectCourseId);
     //判断是否登录
     let userInfo = localStorage.getItem("userInfo");
     if (userInfo) {
@@ -151,6 +160,7 @@ export default {
             }
             _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
+            // _this.showCourseToday();
           })
           .catch(function (error) {
             console.log(error);
@@ -170,6 +180,8 @@ export default {
             }
             _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
+            _this.setSemesterNow();
+            _this.showCourseToday();
           })
           .catch(function (error) {
             console.log(error);
@@ -178,6 +190,19 @@ export default {
     }
   },
   methods: {
+    showCourseToday() {
+      let courseToday = JSON.parse(localStorage.getItem("courseToday"));
+      if (courseToday) {
+        this.setSemesterNow();
+        for (let i = 0; i < this.allCourses[this.semesterItem].length; i++) {
+          if (this.allCourses[this.semesterItem][i].id == courseToday.id) {
+            this.activeCourse = i;
+            console.log(this.activeCourse);
+            localStorage.removeItem("courseToday");
+          }
+        }
+      }
+    },
     refresh(val) {
       if (val) {
         //刷新页面
@@ -234,6 +259,15 @@ export default {
         time += this.dayChange(days[i]) + " ";
       }
       return time + stime + "-" + etime + "节 ";
+    },
+    setSemesterNow() {
+      let semesterNow = localStorage.getItem("semester");
+      for(let i=0;i<this.coursesStorage.length;i++){
+        if(this.coursesStorage[i].semester==semesterNow){
+          this.semesterItem = i + 1;
+          return;
+        }
+      }
     },
     loadCourse(data) {
       this.allCourses = [[]];

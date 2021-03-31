@@ -129,9 +129,10 @@
 
 <script>
 export default {
+  props: ["record"],
   data() {
     return {
-      record: [],
+      //record: [],
       mode: 0,
       checkbox: false,
       checkboxResult: [],
@@ -147,9 +148,6 @@ export default {
     };
   },
   created() {
-    this.record = JSON.parse(localStorage.getItem("attendanceDetail"));
-    console.log("this is ");
-    console.log(this.record);
     const _this = this;
     //获得签到图片  this.record.attendanceId
     var axios = require("axios");

@@ -10,7 +10,7 @@
       safe-area-inset-top
     >
     </van-nav-bar>
-    <div class="recordsList">
+    <div class="recordsList" v-if="$route.path == '/Course/teaAttendance'">
       <div v-if="records.length != 0">
         <div style="margin-left: 76%; position: relative; font-size: 12px">
           出勤率
@@ -21,14 +21,13 @@
             v-for="(record, index) in records"
             :key="record.id"
             is-link
-            @click="goToDetail(record)"
+            @click="goToDetail(index)"
           >
             <template #title style="display: flex">
               <div
                 style="
                   float: left;
-                  padding: 10px;
-                  font-size: 20px;
+                  font-size: 25px;
                   color: #b3b3b3;
                 "
               >
@@ -70,6 +69,7 @@
       <div class="content">
         <van-cell-group>
           <van-cell title="课程号" :value="course.id" />
+          <van-cell title="课程名" :value="course.name" />
           <van-cell title="任课老师" :value="course.teachername" />
           <van-cell title="上课时间" :value="course.time" />
           <van-cell title="周次" :value="course.week" />
@@ -78,7 +78,7 @@
       </div>
     </van-action-sheet>
     <transition name="van-slide-right">
-      <router-view></router-view>
+      <router-view :record="records[attendanceDetailIndex]"></router-view>
     </transition>
   </div>
 </template>
@@ -94,6 +94,7 @@ export default {
       showCourseInfo: false,
       records: [],
       data: [],
+      attendanceDetailIndex:0,
     };
   },
   created() {
@@ -208,9 +209,8 @@ export default {
         };
       }
     },
-    goToDetail(record) {
-      localStorage.setItem("attendanceDetail", JSON.stringify(record));
-      console.log(record);
+    goToDetail(index) {
+      this.attendanceDetailIndex=index;
       this.$router.push("/course/teaAttendance/attendanceDetail");
     },
   },

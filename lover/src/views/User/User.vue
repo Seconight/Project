@@ -1,47 +1,71 @@
 <template>
   <div class="body">
-      <div class="usercenter-banner">
-        <div class="_userinfo-avatar">
-          <img :src="assert.avatarSrc" alt="" @click="onclickPersenInfor" />
-        </div>
-        <div class="_userinfo-name">{{ name }}</div>
-        <div class="_userinfo-id" v-if="this.role == '老师'">
-          职工号:{{ id }}
-        </div>
-        <div class="_userinfo-id" v-if="this.role == '学生'">学号:{{ id }}</div>
+    <div class="usercenter-banner">
+      <div class="_userinfo-avatar">
+        <img :src="assert.avatarSrc" alt="" @click="onclickPersenInfor" />
       </div>
-      <van-grid column-num="3" square v-if="role != ''" class="menu">
-        <van-grid-item icon="envelop-o" text="邮箱设置" to="/User/email">
-          <template #icon>
-            <van-icon :name="assert.gridImg.email" size="40px" />
-          </template>
-        </van-grid-item>
-        <van-grid-item
-          icon="closed-eye"
-          text="修改密码"
-          @click="onChangePassword"
-        >
-          <template #icon>
-            <van-icon :name="assert.gridImg.changePassword" size="40px" />
-          </template>
-        </van-grid-item>
-        <van-grid-item
-          v-if="role == '学生'"
-          icon="smile-o"
-          text="人脸上传"
-          to="/User/faceUpload"
-        >
-          <template #icon>
-            <van-icon :name="assert.gridImg.faceUpload" size="40px" />
-          </template>
-        </van-grid-item>
-      </van-grid>
-      <transition
-        name="van-slide-right"
+      <div class="_userinfo-name">{{ name }}</div>
+      <div class="_userinfo-id" v-if="this.role == '老师'">职工号:{{ id }}</div>
+      <div class="_userinfo-id" v-if="this.role == '学生'">学号:{{ id }}</div>
+    </div>
+    <van-grid column-num="3" square v-if="role != ''" class="menu">
+      <van-grid-item icon="envelop-o" text="邮箱设置" to="/User/email">
+        <template #icon>
+          <van-icon :name="assert.gridImg.email" size="40px" />
+        </template>
+      </van-grid-item>
+      <van-grid-item
+        icon="closed-eye"
+        text="修改密码"
+        @click="onChangePassword"
       >
-        <router-view @logout="logout"></router-view>
-      </transition>
-    
+        <template #icon>
+          <van-icon :name="assert.gridImg.changePassword" size="40px" />
+        </template>
+      </van-grid-item>
+      <van-grid-item
+        v-if="role == '学生'"
+        icon="smile-o"
+        text="人脸上传"
+        to="/User/faceUpload"
+      >
+        <template #icon>
+          <van-icon :name="assert.gridImg.faceUpload" size="40px" />
+        </template>
+      </van-grid-item>
+    </van-grid>
+    <div class="courseToday">
+      <van-cell-group>
+        <template #title>
+          <span>今日课程</span>
+          <span style="float: right">{{ time }}</span>
+        </template>
+        <van-empty
+          v-if="courseToday.length == 0"
+          :image="assert.noCourseTodaySrc"
+          image-size="30%"
+          description="今日无课"
+        />
+        <van-cell
+          v-for="(course, index) in courseToday"
+          :key="course.id"
+          :title="course.name"
+          center
+          clickable
+          :label="course.stime + '-' + course.etime + '节'"
+          size="large"
+          is-link
+          @click="onClickCourseToday(index)"
+        >
+          <template #default>
+            <div style="color: blue">点击查看</div>
+          </template>
+        </van-cell>
+      </van-cell-group>
+    </div>
+    <transition name="van-slide-right">
+      <router-view @logout="logout"></router-view>
+    </transition>
   </div>
 </template>
 
@@ -52,6 +76,7 @@ export default {
     return {
       name: "",
       assert: {
+        noCourseTodaySrc:require("@/assets/user/noCourseToday.png"),
         avatarSrc: require("@/assets/user/defualt.jpg"),
         gridImg: {
           email: require("@/assets/icon/youxiangshezhi.png"),
@@ -63,14 +88,23 @@ export default {
       role: "",
       id: "",
       imgList: [],
-      preview_options: {
-        closeable: true,
-      },
+      time: "",
+      courseToday: [],
     };
   },
   created() {
+    let date = new Date();
+    let month = date.getMonth();
+    let year = date.getFullYear();
+    let semester = "";
+    if (month <= 8) {
+      semester = year - 1 + "-" + year + "-" + "2";
+    } else {
+      semester = year + "-" + (year + 1) + "-" + "1";
+    }
+    localStorage.setItem("semester", semester);
     //进入user页面判断是否登录
-    let userInfo = localStorage.getItem("userInfo");
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     if (userInfo) {
       //存在已登录信息
       this.showinfor(); //更新组件信息显示
@@ -94,6 +128,17 @@ export default {
       this.name = _userInfo.name;
       this.role = _userInfo.role;
       this.id = _userInfo.id;
+      let date = new Date();
+      this.time =
+        "      " +
+        date.getFullYear() +
+        "年" +
+        (date.getMonth() + 1) +
+        "月" +
+        date.getDate() +
+        "日" +
+        "  " +
+        this.dayChange(date.getDay());
       if (this.role == "老师") {
         this.assert.avatarSrc = require("@/assets/user/teacher.jpg");
       }
@@ -102,6 +147,71 @@ export default {
         //判断人脸是否注册
         this.axiosCheckFace(_userInfo.id);
       }
+      let _this = this;
+      if (_userInfo.role == "老师") {
+        var axios = require("axios");
+        var config = {
+          method: "get",
+          url: this.GLOBAL.port + "/teacher/getCourseInfo?id=" + _userInfo.id,
+          headers: {},
+        };
+        axios(config)
+          .then(function (response) {
+            if (response.data.code == 0) {
+              _this.$toast("获取课程信息失败");
+              return;
+            } else {
+              _this.loadCourseToday(response.data.data);
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+    },
+    loadCourseToday(data) {
+      let date = new Date();
+      let day = date.getDay();
+
+      let semester = localStorage.getItem("semester");
+      // day=2;
+      //console.log("day:" + day + "  month:" + month + " year:" + year);
+      for (let i = 0; i < data.length; i++) {
+        //判断是否是当前学期
+        if (data[i].semester == semester) {
+          for (let j = 0; j < data[i].course.length; j++) {
+            //今天可能上的课程（没判断周次，只判断星期）
+            if (data[i].course[j].days.indexOf(day) != -1) {
+              this.courseToday.push(data[i].course[j]);
+            }
+          }
+        }
+      }
+    },
+    dayChange(day) {
+      switch (day) {
+        case 1:
+          return "星期一";
+        case 2:
+          return "星期二";
+        case 3:
+          return "星期三";
+        case 4:
+          return "星期四";
+        case 5:
+          return "星期五";
+        case 6:
+          return "星期六";
+        case 7:
+          return "星期天";
+      }
+    },
+    onClickCourseToday(index) {
+      localStorage.setItem(
+        "courseToday",
+        JSON.stringify(this.courseToday[index])
+      );
+      this.$router.push("/course");
     },
     //上传人脸
     // uploadface() {
@@ -147,10 +257,10 @@ export default {
     //登录
 
     //退出登录事件
-
     logout() {
       localStorage.removeItem("userInfo");
       localStorage.removeItem("checkFace");
+      localStorage.removeItem("semester");
       this.name = "";
       this.avatarSrc = require("@/assets/defualt.jpg");
       this.username = "";
@@ -191,7 +301,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-
 .usercenter-banner {
   position: relative;
   width: 100%;
@@ -250,5 +359,19 @@ export default {
   box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
   border-radius: 20px;
   animation-duration: 0.8s;
+}
+.courseToday {
+  position: relative;
+  top: 25vh;
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  animation-duration: 0.8s;
+  white-space: pre;
 }
 </style>

@@ -114,14 +114,18 @@ export default {
             console.log(JSON.stringify(response.data));
             _this.photoSignUploading = false;
             _this.$dialog
-              .alert({
-                message: "上传成功，请在签到记录查看结果。",
-                theme: "round-button",
+              .confirm({
+                title: "上传成功",
+                message: "点击确认查看签到结果。",
               })
               .then(() => {
-                // on close
+                _this.$router.replace("/course");
+                _this.$router.push("/Course/teaAttendance");
+                _this.$router.push("/course/teaAttendance/attendanceDetail");
+              })
+              .catch(() => {
+                // on cancel
               });
-            // _this.$toast.success("上传成功，请在签到记录查看结果。");
           })
           .catch(function (error) {
             console.log(error);
