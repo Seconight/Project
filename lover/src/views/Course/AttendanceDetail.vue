@@ -7,7 +7,7 @@
       title="签到详情"
       safe-area-inset-top
     >
-      <template #right v-if="mode == 1">
+      <template #right v-if="mode == 1 && record.abStudentNum != 0">
         <div style="color: #1989fa" @click="checkbox = !checkbox">
           {{ checkbox ? "取消" : "批量操作" }}
         </div>
@@ -61,7 +61,7 @@
             />
           </van-cell-group>
           <div v-if="checkbox">
-            <div style="overflow-y: scroll">
+            <div>
               <van-checkbox-group v-model="checkboxResult">
                 <van-cell-group>
                   <van-cell
@@ -79,16 +79,41 @@
                 </van-cell-group>
               </van-checkbox-group>
             </div>
-            <van-button
-              color="linear-gradient(to right, #f83600 0%, #f9d423 100%)"
-              block
-              round
-              @click="supply"
-              v-if="checkboxResult.length != 0"
-              style="width: 60%; margin-left: 20%"
-            >
-              补签
-            </van-button>
+            <van-row>
+              <van-col span="8"></van-col>
+              <van-col span="8">
+                <van-button
+                  color="linear-gradient(to right, #f83600 0%, #f9d423 100%)"
+                  block
+                  round
+                  @click="supply"
+                >
+                  补签
+                </van-button></van-col
+              >
+              <van-col span="8">
+                <van-checkbox v-model="checkAll" @click="onCheckAll"
+                  >全选</van-checkbox
+                >
+              </van-col>
+            </van-row>
+            <!-- <div style="text-align: center">
+              <span>
+                <van-button
+                  color="linear-gradient(to right, #f83600 0%, #f9d423 100%)"
+                  block
+                  round
+                  @click="supply"
+                  v-if="checkboxResult.length != 0"
+                  style="width: 40%; margin-left: 20%"
+                >
+                  补签
+                </van-button></span
+              >
+              <span
+                ><van-checkbox v-model="checkAll">复选框</van-checkbox></span
+              >
+            </div> -->
           </div>
         </van-tab>
       </van-tabs>
@@ -147,7 +172,15 @@ export default {
       registeRemind: "",
     };
   },
+  watch: {
+    checkboxResult(newVal, oldVal) {
+      if (newVal.length < this.record.abStudentNum) {
+        this.checkAll = false;
+      }
+    },
+  },
   created() {
+    console.log(this.record);
     const _this = this;
     //获得签到图片  this.record.attendanceId
     var axios = require("axios");
@@ -180,7 +213,6 @@ export default {
   methods: {
     onClickLeft() {
       this.$router.go(-1);
-      console.log(this.record);
     },
     toggle(index) {
       this.$refs.checkboxes[index].toggle();
@@ -263,11 +295,22 @@ export default {
         });
       // if(this.supply())
     },
+    onCheckAll() {
+      if (this.checkAll == true) {
+        var temp = [];
+        for (let i = 0; i < this.record.abStudentNum; i++) {
+          temp.push(i);
+        }
+        this.checkboxResult = temp;
+      } else {
+        this.checkboxResult = [];
+      }
+    },
   },
 };
 </script>
 
-<style>
+<style lang="less" scoped>
 .signInImgCell {
   position: relative;
   top: 1vh;
@@ -293,5 +336,17 @@ export default {
   box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   animation-duration: 0.8s;
+}
+.van-row {
+  height: 50px;
+  .van-col {
+    height: 50px;
+    .van-button {
+      margin-top: 5px;
+    }
+    .van-checkbox {
+      padding: 15px;
+    }
+  }
 }
 </style>

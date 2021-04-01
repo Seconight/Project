@@ -10,7 +10,11 @@
       safe-area-inset-top
     >
     </van-nav-bar>
-    <div class="recordsList" v-if="$route.path == '/Course/teaAttendance'">
+    <div
+      class="recordsList"
+      v-if="$route.path == '/Course/teaAttendance'"
+      :key="menuKey"
+    >
       <div v-if="records.length != 0">
         <div style="margin-left: 76%; position: relative; font-size: 12px">
           出勤率
@@ -24,13 +28,7 @@
             @click="goToDetail(index)"
           >
             <template #title style="display: flex">
-              <div
-                style="
-                  float: left;
-                  font-size: 25px;
-                  color: #b3b3b3;
-                "
-              >
+              <div style="float: left; font-size: 25px; color: #b3b3b3">
                 {{ index + 1 }}
               </div>
               <div style="margin-left: 5px; float: left; font-size: 18px">
@@ -85,47 +83,33 @@
 
 <script>
 export default {
+  watch: {
+    $route(to) {
+      if (to.name == "TeaAttendance") {
+        this.records = [];
+        this.data = [];
+        this.gradientColor = [];
+        this.currentRate = [];
+        this.attendanceDetailIndex = 0;
+        this.axiosRecords();
+      }
+    },
+  },
   props: ["course"],
   data() {
     return {
+      menuKey: 0,
       noRecordSrc: require("@/assets/course/noRecord.png"),
       currentRate: [],
       gradientColor: [],
       showCourseInfo: false,
       records: [],
       data: [],
-      attendanceDetailIndex:0,
+      attendanceDetailIndex: 0,
     };
   },
   created() {
-    let courseID = this.course.id;
-    console.log(courseID);
-    //根据courseID和获得课程所有签到记录
-    var axios = require("axios");
-
-    var config = {
-      method: "get",
-      url: this.GLOBAL.port + "/teacher/checkAttendanceInfo?id=" + courseID,
-      headers: {},
-    };
-    let _this = this;
-    axios(config)
-      .then(function (response) {
-        console.log(response);
-        if (response.data.code == 1) {
-          let data = response.data.data;
-          if (data.length == 0) {
-            _this.$toast("没有签到记录。");
-          } else {
-            _this.loadRecord(data);
-          }
-        } else {
-          _this.$toast("获取签到记录失败！");
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    this.axiosRecords();
   },
   methods: {
     onClickLeft() {
@@ -157,8 +141,25 @@ export default {
       let index = time.indexOf("-");
       let fir = "第" + parseInt(time.substring(0, index)) + "周";
       let sec = this.dayChange(parseInt(time.substring(index + 1)));
-      console.log(time.substring(index + 1));
       return fir + " " + sec;
+    },
+    dayChange(day) {
+      switch (day) {
+        case 1:
+          return "星期一";
+        case 2:
+          return "星期二";
+        case 3:
+          return "星期三";
+        case 4:
+          return "星期四";
+        case 5:
+          return "星期五";
+        case 6:
+          return "星期六";
+        case 7:
+          return "星期天";
+      }
     },
     loadRecord(result) {
       for (let i = 0; i < result.length; i++) {
@@ -189,7 +190,6 @@ export default {
         this.data.push({ text: text, rate: rate });
         this.currentRate.push(0);
       }
-      console.log(this.data);
     },
     switchcolor(rate) {
       if (rate < 50) {
@@ -210,8 +210,36 @@ export default {
       }
     },
     goToDetail(index) {
-      this.attendanceDetailIndex=index;
+      this.attendanceDetailIndex = index;
       this.$router.push("/course/teaAttendance/attendanceDetail");
+    },
+
+    axiosRecords() {
+      let courseID = this.course.id;
+      //根据courseID和获得课程所有签到记录
+      var axios = require("axios");
+      var config = {
+        method: "get",
+        url: this.GLOBAL.port + "/teacher/checkAttendanceInfo?id=" + courseID,
+        headers: {},
+      };
+      let _this = this;
+      axios(config)
+        .then(function (response) {
+          if (response.data.code == 1) {
+            let data = response.data.data;
+            if (data.length == 0) {
+              _this.$toast("没有签到记录。");
+            } else {
+              _this.loadRecord(data);
+            }
+          } else {
+            _this.$toast("获取签到记录失败！");
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   },
 };

@@ -1,13 +1,25 @@
 <template>
   <div class="body">
-    <div class="usercenter-banner">
+    <!-- <div class="usercenter-banner">
       <div class="_userinfo-avatar">
         <img :src="assert.avatarSrc" alt="" @click="onclickPersenInfor" />
       </div>
       <div class="_userinfo-name">{{ name }}</div>
       <div class="_userinfo-id" v-if="this.role == '老师'">职工号:{{ id }}</div>
       <div class="_userinfo-id" v-if="this.role == '学生'">学号:{{ id }}</div>
-    </div>
+    </div> -->
+    <van-row>
+      <van-col span="8">
+        <img :src="assert.avatarSrc" alt="" @click="onclickPersenInfor" />
+      </van-col>
+      <van-col span="8" class="userInfo">
+        <div class="name">{{ name }}</div>
+        <div class="id" v-if="this.role == '老师'">职工号:{{ id }}</div>
+        <div class="id" v-if="this.role == '学生'">学号:{{ id }}</div>
+      </van-col>
+      <van-col span="8" >
+      </van-col>
+    </van-row>
     <van-grid column-num="3" square v-if="role != ''" class="menu">
       <van-grid-item icon="envelop-o" text="邮箱设置" to="/User/email">
         <template #icon>
@@ -76,7 +88,7 @@ export default {
     return {
       name: "",
       assert: {
-        noCourseTodaySrc:require("@/assets/user/noCourseToday.png"),
+        noCourseTodaySrc: require("@/assets/user/noCourseToday.png"),
         avatarSrc: require("@/assets/user/defualt.jpg"),
         gridImg: {
           email: require("@/assets/icon/youxiangshezhi.png"),
@@ -139,6 +151,7 @@ export default {
         "日" +
         "  " +
         this.dayChange(date.getDay());
+      localStorage.setItem("date", this.time);
       if (this.role == "老师") {
         this.assert.avatarSrc = require("@/assets/user/teacher.jpg");
       }
@@ -301,58 +314,91 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.usercenter-banner {
-  position: relative;
-  width: 100%;
-  height: 15vh;
+.van-row {
+  height: 120px;
+  padding: 10px;
+  background-image: linear-gradient(#a1c4fd 0%, #c2e9fb 100%);
+  color: #000;
   box-sizing: border-box;
   box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
   border-radius: 0 0 20px 20px;
   animation-duration: 0.8s;
-  background-image: linear-gradient(#a1c4fd 0%, #c2e9fb 100%);
-  ._userinfo-avatar {
-    position: relative;
-    top: 2vh;
-    left: 2vh;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    overflow: hidden;
+  .van-col {
+    height: 100px;
+    line-height: 100px;
     img {
-      left: auto;
-      width: 100%;
-      height: 100%;
+      width: 100px;
+      border-radius: 50%;
     }
-    // ._userinfo-name {
-    //   padding: 10px;
-    //   font-size: 1.125rem;
-    //   font-weight: 600;
-    //   color: #000;
-    // }
+    &:last-child {
+      text-align: right;
+    }
   }
-  ._userinfo-name {
-    position: absolute;
-    top: 4vh;
-    left: 15vh;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #000;
-  }
-  ._userinfo-id {
-    position: absolute;
-    top: 8vh;
-    left: 15vh;
-    font-size: 0.8rem;
-    font-weight: 400;
-    color: #000;
+  .userInfo {
+    margin-top: 30px;
+    height: 50px;
+    line-height: 25px;
+    .name {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .id {
+      font-size: 10px;
+    }
   }
 }
+// .usercenter-banner {
+//   position: relative;
+//   width: 100%;
+//   height: 15vh;
+//   box-sizing: border-box;
+//   box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+//   border-radius: 0 0 20px 20px;
+//   animation-duration: 0.8s;
+//   background-image: linear-gradient(#a1c4fd 0%, #c2e9fb 100%);
+//   ._userinfo-avatar {
+//     position: relative;
+//     top: 2vh;
+//     left: 2vh;
+//     width: 80px;
+//     height: 80px;
+//     border-radius: 50%;
+//     overflow: hidden;
+//     img {
+//       left: auto;
+//       width: 100%;
+//       height: 100%;
+//     }
+//     // ._userinfo-name {
+//     //   padding: 10px;
+//     //   font-size: 1.125rem;
+//     //   font-weight: 600;
+//     //   color: #000;
+//     // }
+//   }
+//   ._userinfo-name {
+//     position: absolute;
+//     top: 4vh;
+//     left: 15vh;
+//     font-size: 1.5rem;
+//     font-weight: 600;
+//     color: #000;
+//   }
+//   ._userinfo-id {
+//     position: absolute;
+//     top: 8vh;
+//     left: 15vh;
+//     font-size: 0.8rem;
+//     font-weight: 400;
+//     color: #000;
+//   }
+// }
 .menu {
-  position: fixed;
-  top: 20vh;
+  position: relative;
+  top: 5vh;
   left: 0;
   right: 0;
-  margin: 0 26px;
+  margin: 0 5px;
   background: #fff;
   padding: 5px;
   box-sizing: border-box;
@@ -362,7 +408,7 @@ export default {
 }
 .courseToday {
   position: relative;
-  top: 25vh;
+  top: 10vh;
   left: 0;
   right: 0;
   margin: 0 5px;

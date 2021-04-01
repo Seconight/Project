@@ -7,32 +7,38 @@
       safe-area-inset-top
     />
     <div class="photoSign">
-      <van-uploader
-        :preview-options="preview_options"
-        v-model="imgList"
-        multiple
-        accept="image/*"
-        :after-read="onRead"
-        :max-count="3"
-        :preview-size="uploader_preview_size"
-        deletable
-        style="margin-top: 10%"
-      />
-      <div class="button">
-        <van-button
-          class="button"
-          round
-          block
-          type="info"
-          native-type="submit"
-          @click="upLodaeSign"
-          color="linear-gradient(to top, #f77062 0%, #fe5196 100%)"
-          style="position: absolute; top: 50%"
-          >上传签到</van-button
-        >
-      </div>
-      <div style="position: absolute; top: 60%; left: 5%">
-        <van-image width="320" height="231" :src="backgroundImg" />
+      <van-cell-group>
+        <van-cell title="课程名" :value="course.name" />
+        <van-cell title="签到时间" :value="date" />
+      </van-cell-group>
+      <div style="text-align: center">
+        <van-uploader
+          :preview-options="preview_options"
+          v-model="imgList"
+          multiple
+          accept="image/*"
+          :after-read="onRead"
+          :max-count="3"
+          :preview-size="uploader_preview_size"
+          deletable
+          style="margin-top: 10%"
+        />
+        <div class="button">
+          <van-button
+            class="button"
+            round
+            block
+            type="info"
+            native-type="submit"
+            @click="upLodaeSign"
+            color="linear-gradient(to top, #f77062 0%, #fe5196 100%)"
+            style="position: absolute; top: 50%"
+            >上传签到</van-button
+          >
+        </div>
+        <div style="position: absolute; top: 60%; left: 5%">
+          <van-image width="320" height="231" :src="backgroundImg" />
+        </div>
       </div>
     </div>
 
@@ -56,6 +62,7 @@ export default {
   data() {
     return {
       backgroundImg: require("@/assets/course/photoSignIn_background.png"),
+      date: "",
       imgList: [],
       preview_options: {
         closeable: true,
@@ -74,6 +81,9 @@ export default {
         this.uploader_preview_size = "13vh";
       }
     },
+  },
+  created() {
+    this.date=localStorage.getItem("date");
   },
   methods: {
     onClickLeft() {
@@ -142,12 +152,11 @@ export default {
   height: 200px;
 } */
 .photoSign {
-  text-align: center;
   position: relative;
-  top: 8vh;
+  top: 2vh;
   left: 0;
   right: 0;
-  height: 80%;
+  height: 90%;
   margin: 0 5px;
   background: #fff;
   padding: 5px;
@@ -159,9 +168,10 @@ export default {
     left: 5px;
   }
   .button {
+    padding: 5px;
     left: 0;
     right: 0;
-    margin: 0 auto;
+    margin: 10px auto;
     width: 60%;
     height: 40px;
     border: none;
