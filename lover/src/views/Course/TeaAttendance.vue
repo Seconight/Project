@@ -10,6 +10,9 @@
       safe-area-inset-top
     >
     </van-nav-bar>
+    <div class="chartCell">
+      <van-cell title="统计图" clickable @click="onclickChartCell" is-link />
+    </div>
     <div
       class="recordsList"
       v-if="$route.path == '/Course/teaAttendance'"
@@ -75,6 +78,12 @@
         </van-cell-group>
       </div>
     </van-action-sheet>
+    <van-popup
+      v-model="showChartPopup"
+      :style="{ width: '100%', height: '400px' }"
+    >
+      <Chart :chartData="chartData" :key="chartTimerKey"></Chart>
+    </van-popup>
     <transition name="van-slide-right">
       <router-view :record="records[attendanceDetailIndex]"></router-view>
     </transition>
@@ -82,6 +91,7 @@
 </template>
 
 <script>
+import Chart from "@/components/Chart.vue";
 export default {
   watch: {
     $route(to) {
@@ -98,6 +108,7 @@ export default {
   props: ["course"],
   data() {
     return {
+      chartTimerKey: "",
       menuKey: 0,
       noRecordSrc: require("@/assets/course/noRecord.png"),
       currentRate: [],
@@ -106,12 +117,29 @@ export default {
       records: [],
       data: [],
       attendanceDetailIndex: 0,
+      showChartPopup: false,
+      chartData: {},
     };
+  },
+  components: {
+    Chart,
   },
   created() {
     this.axiosRecords();
   },
   methods: {
+    onclickChartCell() {
+      if (this.records.length != 0) {
+        this.chartData = {
+          records: this.records,
+          course: this.course,
+        };
+        this.chartTimerKey = new Date().getTime();
+        this.showChartPopup = true;
+      }else{
+        this.$toast("无签到记录,无法生成统计图");
+      }
+    },
     onClickLeft() {
       this.$router.go(-1);
     },
@@ -213,7 +241,6 @@ export default {
       this.attendanceDetailIndex = index;
       this.$router.push("/course/teaAttendance/attendanceDetail");
     },
-
     axiosRecords() {
       let courseID = this.course.id;
       //根据courseID和获得课程所有签到记录
@@ -246,6 +273,19 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.chartCell {
+  position: relative;
+  top: 1vh;
+  left: 0;
+  right: 0;
+  margin: 0 5px;
+  background: #fff;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  animation-duration: 0.8s;
+}
 .collapseTitle {
   padding: 10px;
   // background: rgb(117, 213, 236);

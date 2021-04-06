@@ -17,8 +17,7 @@
         <div class="id" v-if="this.role == '老师'">职工号:{{ id }}</div>
         <div class="id" v-if="this.role == '学生'">学号:{{ id }}</div>
       </van-col>
-      <van-col span="8" >
-      </van-col>
+      <van-col span="8"> </van-col>
     </van-row>
     <van-grid column-num="3" square v-if="role != ''" class="menu">
       <van-grid-item icon="envelop-o" text="邮箱设置" to="/User/email">
@@ -166,6 +165,26 @@ export default {
         var config = {
           method: "get",
           url: this.GLOBAL.port + "/teacher/getCourseInfo?id=" + _userInfo.id,
+          headers: {},
+        };
+        axios(config)
+          .then(function (response) {
+            if (response.data.code == 0) {
+              _this.$toast("获取课程信息失败");
+              return;
+            } else {
+              _this.loadCourseToday(response.data.data);
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+      if (_userInfo.role == "学生") {
+        var axios = require("axios");
+        var config = {
+          method: "get",
+          url: this.GLOBAL.port + "/course/info?id=" + _userInfo.id,
           headers: {},
         };
         axios(config)

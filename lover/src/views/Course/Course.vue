@@ -131,7 +131,6 @@ export default {
     };
   },
   created() {
-    console.log("123:" + this.selectCourseId);
     //判断是否登录
     let userInfo = localStorage.getItem("userInfo");
     if (userInfo) {
@@ -160,7 +159,8 @@ export default {
             }
             _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
-            // _this.showCourseToday();
+            _this.setSemesterNow();
+            _this.showCourseToday();
           })
           .catch(function (error) {
             console.log(error);

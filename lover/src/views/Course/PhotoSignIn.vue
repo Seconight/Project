@@ -3,6 +3,7 @@
     <van-nav-bar
       title="拍照签到"
       left-text="返回"
+      left-arrow
       @click-left="onClickLeft"
       safe-area-inset-top
     />

@@ -10,6 +10,7 @@
     "@growthbunker/vuetimeline": "^0.1.17",
     "@vant/popperjs": "^1.0.2",
     "core-js": "^3.6.5",
+    "echarts": "^5.0.2",
     "element-ui": "^2.15.0",
     "less": "^4.1.0",
     "less-loader": "^7.3.0",
