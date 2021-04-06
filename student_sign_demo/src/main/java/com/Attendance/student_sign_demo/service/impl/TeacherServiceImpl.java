@@ -175,7 +175,7 @@ public class TeacherServiceImpl implements TeacherService {
                     courseStudentVO.setStudentClass(student.getStudentClass());
                     courseStudentVOList.add(courseStudentVO);
                 }
-                else{
+                else if(!abStudents[0].equals("")){
                     courseStudentVO.setStudentNo(abStudents[i]);
                     courseStudentVO.setStudentName(abStudents[i]+"(该学生未注册)");
                     courseStudentVO.setStudentClass("未知班级");
@@ -185,6 +185,13 @@ public class TeacherServiceImpl implements TeacherService {
             attendanceVO.setAbStudent(courseStudentVOList);
             attendanceVOList.add(attendanceVO);
         }
+        //对签到由最近到最远排序
+        Collections.sort(attendanceVOList, (a1, a2) -> {
+            int time1 = Integer.parseInt(a1.getTime().replace("-",""));
+            int time2 = Integer.parseInt(a2.getTime().replace("-",""));
+            return time2 - time1;
+        });
+
         return new AsyncResult<>(attendanceVOList);
     }
 

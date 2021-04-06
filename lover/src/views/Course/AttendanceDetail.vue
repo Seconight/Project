@@ -226,11 +226,12 @@ export default {
       this.abStudentIndex = index;
     },
     onclickImgCell() {
-      if (this.signInImg.length == 0) {
-        this.$toast("获取图片失败");
-      } else {
-        this.showImagePreview = true;
-      }
+      // if (this.signInImg.length == 0) {
+      //   //this.$toast("获取图片失败");
+      // } else {
+      //   this.showImagePreview = true;
+      // }
+      this.showImagePreview = true;
     },
     supply() {
       let studentIds = [];

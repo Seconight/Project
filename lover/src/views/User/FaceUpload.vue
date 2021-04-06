@@ -110,7 +110,7 @@ export default {
         }
         // _this.imgList.push({ url: "https://img01.yzcdn.cn/vant/leaf.jpg" });
         // _this.imgList.push({ url: "https://img01.yzcdn.cn/vant/leaf.jpg" });
-        //_this.faceDownloading = false;
+        _this.faceDownloading = false;
       })
       .catch(function (error) {
         console.log(error);

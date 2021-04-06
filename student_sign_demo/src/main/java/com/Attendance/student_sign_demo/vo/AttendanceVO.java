@@ -24,6 +24,7 @@ public class AttendanceVO {
     {
         this.attendanceId=id;
     }
+
     public void setTime(String attendanceTime) {
         this.time=attendanceTime;
     }
@@ -42,5 +43,9 @@ public class AttendanceVO {
 
     public void setAbStudent(List<CourseStudentVO> courseStudentVOList) {
         this.abStudent=courseStudentVOList;
+    }
+
+    public String getTime() {
+        return time;
     }
 }
