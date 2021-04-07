@@ -19,7 +19,7 @@
       </van-col>
       <van-col span="8"> </van-col>
     </van-row>
-    <van-grid column-num="3" square v-if="role != ''" class="menu">
+    <van-grid column-num="3" square :border="false" class="menu">
       <van-grid-item icon="envelop-o" text="邮箱设置" to="/User/email">
         <template #icon>
           <van-icon :name="assert.gridImg.email" size="40px" />

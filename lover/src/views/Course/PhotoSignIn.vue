@@ -24,20 +24,16 @@
           deletable
           style="margin-top: 10%"
         />
-        <div class="button">
+        <div class="static">
           <van-button
-            class="button"
             round
             block
             type="info"
             native-type="submit"
             @click="upLodaeSign"
             color="linear-gradient(to top, #f77062 0%, #fe5196 100%)"
-            style="position: absolute; top: 50%"
             >上传签到</van-button
           >
-        </div>
-        <div style="position: absolute; top: 60%; left: 5%">
           <van-image width="320" height="231" :src="backgroundImg" />
         </div>
       </div>
@@ -50,7 +46,7 @@
           size="80px"
           vertical
           style="margin-top: 50%"
-          >人脸上传中...</van-loading
+          >识别中...</van-loading
         >
       </div>
     </van-overlay>
@@ -84,7 +80,7 @@ export default {
     },
   },
   created() {
-    this.date=localStorage.getItem("date");
+    this.date = localStorage.getItem("date");
   },
   methods: {
     onClickLeft() {
@@ -168,14 +164,23 @@ export default {
   .van-uploader {
     left: 5px;
   }
-  .button {
-    padding: 5px;
-    left: 0;
-    right: 0;
-    margin: 10px auto;
-    width: 60%;
-    height: 40px;
-    border: none;
+  .static {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    .van-button {
+      margin-bottom: 0;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      width: 60%;
+      height: 40px;
+      border: none;
+      margin-bottom: 20%;
+    }
+    .van-image {
+      margin-bottom: 0;
+    }
   }
 }
 </style>
