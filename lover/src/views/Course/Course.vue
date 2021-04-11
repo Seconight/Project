@@ -107,8 +107,73 @@
 export default {
   watch: {
     $route(to, from) {
-      if (to.name == "Course" && from.name == "User") {
-        this.showCourseToday();
+      if (to.name == "Course") {
+        if (from.name == "User") {
+          this.showCourseToday();
+        }
+
+        if (from.name == "CreatCourse") {
+          //调用接口重新获取课程
+          let userInfo = localStorage.getItem("userInfo");
+          if (userInfo) {
+            //存在已登录信息
+            //获取登录身份
+            let _userInfo = JSON.parse(userInfo);
+            this.role = _userInfo.role;
+            let _this = this;
+            //通过_userInfo.id获得Courses
+            //假数据
+            if (this.role == "学生") {
+              var axios = require("axios");
+
+              var config = {
+                method: "get",
+                //这里用户信息就直接在url里了
+                url: this.GLOBAL.port + "/course/info?id=" + _userInfo.id,
+                headers: {},
+              };
+
+              axios(config)
+                .then(function (response) {
+                  if (response.data.code == 0) {
+                    _this.$toast("获取课程信息失败");
+                    return;
+                  }
+                  _this.coursesStorage = response.data.data;
+                  _this.loadCourse(response.data.data);
+                  _this.setSemesterNow();
+                  _this.showCourseToday();
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            } else if (this.role == "老师") {
+              var axios = require("axios");
+              var config = {
+                method: "get",
+                url:
+                  this.GLOBAL.port +
+                  "/teacher/getCourseInfo?id=" +
+                  _userInfo.id,
+                headers: {},
+              };
+              axios(config)
+                .then(function (response) {
+                  if (response.data.code == 0) {
+                    _this.$toast("获取课程信息失败");
+                    return;
+                  }
+                  _this.coursesStorage = response.data.data;
+                  _this.loadCourse(response.data.data);
+                  _this.setSemesterNow();
+                  _this.showCourseToday();
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            }
+          }
+        }
       }
     },
   },
@@ -206,6 +271,7 @@ export default {
     refresh(val) {
       if (val) {
         //刷新页面
+        console.log("page update");
         location.reload();
       }
     },
@@ -262,8 +328,8 @@ export default {
     },
     setSemesterNow() {
       let semesterNow = localStorage.getItem("semester");
-      for(let i=0;i<this.coursesStorage.length;i++){
-        if(this.coursesStorage[i].semester==semesterNow){
+      for (let i = 0; i < this.coursesStorage.length; i++) {
+        if (this.coursesStorage[i].semester == semesterNow) {
           this.semesterItem = i + 1;
           return;
         }

@@ -33,12 +33,11 @@ public class TeacherHandler {
     //老师新建课程
     @PutMapping("/createCourse")
     public ResultVO createCourse(
-           CourseForm courseForm,BindingResult bindingResult){
+           CourseForm courseForm,BindingResult bindingResult) throws ExecutionException, InterruptedException {
         if(bindingResult.hasErrors()){
             return ResultUtil.failed(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
-        teacherService.newCourse(courseForm);
-        return ResultUtil.success(null);
+        return ResultUtil.success(teacherService.newCourse(courseForm).get());
     }
 
     //老师获取课程信息

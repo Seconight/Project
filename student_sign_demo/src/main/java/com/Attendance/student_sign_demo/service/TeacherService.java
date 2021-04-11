@@ -16,7 +16,7 @@ public interface TeacherService {
     public Future<List<CourseStudentVO>> getCourseStudent(String courseId)throws Exception;
     public Future<List<AttendanceVO>> getAttendanceInfo(String courseId)throws Exception;
     public Future<Boolean> supplyAttendance(SupplyForm supplyForm)throws Exception;
-    public void newCourse(CourseForm courseForm)throws Exception;
+    public Future<String> newCourse(CourseForm courseForm)throws Exception;
     public Future<Boolean> Sign(AttendanceForm attendanceForm)throws Exception;
     public Future<Boolean> Sign(String courseId,MultipartFile[] imageList)throws Exception;//上一个方法的改正
     public Future<CourseVO> searchByCourseId(String courseId, String teacherId)throws Exception;
