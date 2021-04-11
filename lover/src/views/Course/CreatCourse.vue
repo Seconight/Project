@@ -345,8 +345,10 @@ export default {
         return;
       }
       let newday = [];
+      
       for (let i = 0; i < this.day.length; i++) {
-        newday.push(this.day[i] + 1);
+        if(this.day[i] == 6) newday.push(0);
+        else newday.push(this.day[i] + 1);
       }
       var axios = require("axios");
       var FormData = require("form-data");
