@@ -1,6 +1,12 @@
 <template>
   <div class="body">
-    <van-nav-bar title="创建课程" left-text="返回" left-arrow @click-left="onClickLeft" safe-area-inset-top />
+    <van-nav-bar
+      title="创建课程"
+      left-text="返回"
+      left-arrow
+      @click-left="onClickLeft"
+      safe-area-inset-top
+    />
 
     <div class="creatCourse">
       <van-form @submit="onSubmit">
@@ -96,14 +102,19 @@
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             v-model="excelfile"
             :after-read="onRead"
+            :max-count="1"
           >
-            <van-button icon="plus" type="primary" color="linear-gradient(to top, #0ba360 0%, #3cba92 100%)">导入学生名单</van-button>
+            <van-button icon="plus" type="primary">导入学生名单</van-button>
           </van-uploader>
         </div>
 
         <div style="margin: 16px">
-          <van-button round block type="info" native-type="submit"
-          color="linear-gradient(to top, #00c6fb 0%, #005bea 100%)"
+          <van-button
+            round
+            block
+            type="info"
+            native-type="submit"
+            color="linear-gradient(to top, #00c6fb 0%, #005bea 100%)"
             >提交</van-button
           >
         </div>
@@ -337,15 +348,6 @@ export default {
       for (let i = 0; i < this.day.length; i++) {
         newday.push(this.day[i] + 1);
       }
-      console.log(this.className);
-      console.log(this.stime);
-      console.log(this.etime);
-      console.log(newday);
-      console.log(this.week);
-      console.log(this.semesterText);
-      console.log(JSON.parse(localStorage.getItem("userInfo")).id);
-      console.log(this.excelfile);
-
       var axios = require("axios");
       var FormData = require("form-data");
       var data = new FormData();
@@ -358,9 +360,7 @@ export default {
       data.append("teacherId", JSON.parse(localStorage.getItem("userInfo")).id);
       //此处文件在根目录，其他情况可能要加路径
       data.append("students", this.GLOBAL.studentFile);
-      
       const _this = this;
-
       var config = {
         method: "put",
         url: this.GLOBAL.port + "/teacher/createCourse",
@@ -369,14 +369,23 @@ export default {
         },
         data: data,
       };
-
       axios(config)
         .then(function (response) {
-          console.log(JSON.stringify(response.data));
-          // _this.$emit("refresh", true); //让父页面刷新
-          _this.$toast.success("新建课程成功 课程号:"+response.data.data);
-          _this.$router.go(-1);
-          _this.$emit("refresh", true); //让父页面刷新
+          let course = {
+            id: response.data.data,
+            semester: _this.semesterText,
+          };
+          _this.$dialog
+            .alert({
+              title: "新建课程成功!",
+              message: "课程号:" + response.data.data,
+              theme: "round-button",
+            })
+            .then(() => {
+              // on close
+              localStorage.setItem("courseNewCreat", JSON.stringify(course));
+              _this.$router.go(-1);
+            });
         })
         .catch(function (error) {
           console.log(error);

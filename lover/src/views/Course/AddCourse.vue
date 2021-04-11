@@ -106,7 +106,6 @@ export default {
     axios(config)
       .then(function (response) {
         console.log(response.data);
-        _this.coursesStorage = response.data.data;
         _this.loadCourse(response.data.data);
       })
       .catch(function (error) {
@@ -289,7 +288,7 @@ export default {
         .then(function (response) {
           if (response.data.data) {
             _this.$toast("添加课程成功!");
-            _this.$emit("refresh", true); //让父页面刷新
+            location.reload();
           }
         })
         .catch(function (error) {

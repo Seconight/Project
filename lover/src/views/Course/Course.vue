@@ -105,78 +105,6 @@
 
 <script>
 export default {
-  watch: {
-    $route(to, from) {
-      if (to.name == "Course") {
-        if (from.name == "User") {
-          this.showCourseToday();
-        }
-
-        if (from.name == "CreatCourse") {
-          //调用接口重新获取课程
-          let userInfo = localStorage.getItem("userInfo");
-          if (userInfo) {
-            //存在已登录信息
-            //获取登录身份
-            let _userInfo = JSON.parse(userInfo);
-            this.role = _userInfo.role;
-            let _this = this;
-            //通过_userInfo.id获得Courses
-            //假数据
-            if (this.role == "学生") {
-              var axios = require("axios");
-
-              var config = {
-                method: "get",
-                //这里用户信息就直接在url里了
-                url: this.GLOBAL.port + "/course/info?id=" + _userInfo.id,
-                headers: {},
-              };
-
-              axios(config)
-                .then(function (response) {
-                  if (response.data.code == 0) {
-                    _this.$toast("获取课程信息失败");
-                    return;
-                  }
-                  _this.coursesStorage = response.data.data;
-                  _this.loadCourse(response.data.data);
-                  _this.setSemesterNow();
-                  _this.showCourseToday();
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            } else if (this.role == "老师") {
-              var axios = require("axios");
-              var config = {
-                method: "get",
-                url:
-                  this.GLOBAL.port +
-                  "/teacher/getCourseInfo?id=" +
-                  _userInfo.id,
-                headers: {},
-              };
-              axios(config)
-                .then(function (response) {
-                  if (response.data.code == 0) {
-                    _this.$toast("获取课程信息失败");
-                    return;
-                  }
-                  _this.coursesStorage = response.data.data;
-                  _this.loadCourse(response.data.data);
-                  _this.setSemesterNow();
-                  _this.showCourseToday();
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            }
-          }
-        }
-      }
-    },
-  },
   data() {
     return {
       asserts: {
@@ -194,6 +122,39 @@ export default {
       semesterOptions: [{ text: "全部课程", value: 0 }],
       coursesStorage: [],
     };
+  },
+  watch: {
+    $route(to, from) {
+      if (to.name == "Course") {
+        if (from.name == "User") {
+          this.showCourseToday();
+        }
+        if (from.name == "CreatCourse") {
+          //调用接口重新获取课程
+          let _this = this;
+          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+          var axios = require("axios");
+          var config = {
+            method: "get",
+            url: this.GLOBAL.port + "/teacher/getCourseInfo?id=" + userInfo.id,
+            headers: {},
+          };
+          axios(config)
+            .then(function (response) {
+              console.log(response);
+              if (response.data.code == 0) {
+                _this.$toast("获取课程信息失败");
+                return;
+              }
+              _this.loadCourse(response.data.data);
+              _this.showCourseNewCreat();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+      }
+    },
   },
   created() {
     //判断是否登录
@@ -222,9 +183,7 @@ export default {
               _this.$toast("获取课程信息失败");
               return;
             }
-            _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
-            _this.setSemesterNow();
             _this.showCourseToday();
           })
           .catch(function (error) {
@@ -243,9 +202,7 @@ export default {
               _this.$toast("获取课程信息失败");
               return;
             }
-            _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
-            _this.setSemesterNow();
             _this.showCourseToday();
           })
           .catch(function (error) {
@@ -255,10 +212,26 @@ export default {
     }
   },
   methods: {
+    showCourseNewCreat() {
+      let courseNewCreat = JSON.parse(localStorage.getItem("courseNewCreat"));
+      if (courseNewCreat) {
+        let semester = courseNewCreat.semester;
+        console.log(semester);
+        this.setSemester(semester);
+        for (let i = 0; i < this.allCourses[this.semesterItem].length; i++) {
+          if (this.allCourses[this.semesterItem][i].id == courseNewCreat.id) {
+            this.activeCourse = i;
+            console.log(this.activeCourse);
+            localStorage.removeItem("courseNewCreat");
+          }
+        }
+      }
+    },
     showCourseToday() {
       let courseToday = JSON.parse(localStorage.getItem("courseToday"));
       if (courseToday) {
-        this.setSemesterNow();
+        let semesterNow = localStorage.getItem("semester");
+        this.setSemester(semesterNow);
         for (let i = 0; i < this.allCourses[this.semesterItem].length; i++) {
           if (this.allCourses[this.semesterItem][i].id == courseToday.id) {
             this.activeCourse = i;
@@ -271,7 +244,6 @@ export default {
     refresh(val) {
       if (val) {
         //刷新页面
-        console.log("page update");
         location.reload();
       }
     },
@@ -326,16 +298,16 @@ export default {
       }
       return time + stime + "-" + etime + "节 ";
     },
-    setSemesterNow() {
-      let semesterNow = localStorage.getItem("semester");
+    setSemester(semester) {
       for (let i = 0; i < this.coursesStorage.length; i++) {
-        if (this.coursesStorage[i].semester == semesterNow) {
+        if (this.coursesStorage[i].semester == semester) {
           this.semesterItem = i + 1;
           return;
         }
       }
     },
     loadCourse(data) {
+      this.coursesStorage = data;
       this.allCourses = [[]];
       this.semesterOptions = [];
       this.semesterOptions.push({ text: "全部课程", value: 0 }); //全部课程选项

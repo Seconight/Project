@@ -75,6 +75,7 @@ export default {
                 "userInfo",
                 JSON.stringify(response.data.data)
               );
+              _this.$toast.success("登录成功");
               location.replace(document.referrer);
             } else {
               _this.$toast.fail(JSON.stringify(response.data.data));

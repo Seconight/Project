@@ -160,7 +160,7 @@ export default {
           return "星期五";
         case 6:
           return "星期六";
-        case 7:
+        case 0:
           return "星期天";
       }
     },
@@ -170,24 +170,6 @@ export default {
       let fir = "第" + parseInt(time.substring(0, index)) + "周";
       let sec = this.dayChange(parseInt(time.substring(index + 1)));
       return fir + " " + sec;
-    },
-    dayChange(day) {
-      switch (day) {
-        case 1:
-          return "星期一";
-        case 2:
-          return "星期二";
-        case 3:
-          return "星期三";
-        case 4:
-          return "星期四";
-        case 5:
-          return "星期五";
-        case 6:
-          return "星期六";
-        case 7:
-          return "星期天";
-      }
     },
     loadRecord(result) {
       for (let i = 0; i < result.length; i++) {

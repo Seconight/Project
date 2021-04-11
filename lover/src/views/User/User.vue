@@ -12,12 +12,12 @@
       <van-col span="8">
         <img :src="assert.avatarSrc" alt="" @click="onclickPersenInfor" />
       </van-col>
-      <van-col span="8" class="userInfo">
+      <van-col span="12" class="userInfo">
         <div class="name">{{ name }}</div>
         <div class="id" v-if="this.role == '老师'">职工号:{{ id }}</div>
         <div class="id" v-if="this.role == '学生'">学号:{{ id }}</div>
       </van-col>
-      <van-col span="8"> </van-col>
+      <van-col span="4"> </van-col>
     </van-row>
     <van-grid column-num="3" square :border="false" class="menu">
       <van-grid-item icon="envelop-o" text="邮箱设置" to="/User/email">
@@ -119,7 +119,6 @@ export default {
     if (userInfo) {
       //存在已登录信息
       this.showinfor(); //更新组件信息显示
-      this.$toast.success("登录成功");
     } else {
       this.$router.push("/login");
     }
@@ -204,7 +203,10 @@ export default {
     loadCourseToday(data) {
       let date = new Date();
       let day = date.getDay();
-
+      if (day == 0) {
+        //星期天为0，匹配数据库模式
+        day = 7;
+      }
       let semester = localStorage.getItem("semester");
       // day=2;
       //console.log("day:" + day + "  month:" + month + " year:" + year);
@@ -234,7 +236,7 @@ export default {
           return "星期五";
         case 6:
           return "星期六";
-        case 7:
+        case 0:
           return "星期天";
       }
     },
@@ -362,7 +364,7 @@ export default {
       font-weight: 600;
     }
     .id {
-      font-size: 10px;
+      font-size: 18px;
     }
   }
 }
