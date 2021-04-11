@@ -375,8 +375,8 @@ export default {
           console.log(JSON.stringify(response.data));
           // _this.$emit("refresh", true); //让父页面刷新
           _this.$toast.success("新建课程成功 课程号:"+response.data.data);
-          _this.$router.go(-1);
           _this.$emit("refresh", true); //让父页面刷新
+          _this.$router.go(-1);
         })
         .catch(function (error) {
           console.log(error);
