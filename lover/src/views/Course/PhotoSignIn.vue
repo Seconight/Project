@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <van-overlay :show="photoSignUploading">
+    <van-overlay :show="photoSignUploading"> 
       <div class="wrapper" @click.stop>
         <van-loading
           color="#0094ff"
