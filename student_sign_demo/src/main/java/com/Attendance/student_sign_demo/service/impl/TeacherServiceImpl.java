@@ -228,7 +228,7 @@ public class TeacherServiceImpl implements TeacherService {
     //老师新建课程
     @Override
     @Async("asyncServiceExecutor")
-    public void newCourse(CourseForm courseForm) {
+    public Future<String> newCourse(CourseForm courseForm) {
 
         String courseName = courseForm.getName();
         Integer startTime = courseForm.getsTime();
@@ -299,6 +299,8 @@ public class TeacherServiceImpl implements TeacherService {
        teacherRepository.save(teacher);
 
        courseRepository.save(newCourse);
+
+       return new AsyncResult<>(courseId);
     }
 
     //签到函数

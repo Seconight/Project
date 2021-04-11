@@ -358,6 +358,8 @@ export default {
       data.append("teacherId", JSON.parse(localStorage.getItem("userInfo")).id);
       //此处文件在根目录，其他情况可能要加路径
       data.append("students", this.GLOBAL.studentFile);
+      
+      const _this = this;
 
       var config = {
         method: "put",
@@ -371,9 +373,10 @@ export default {
       axios(config)
         .then(function (response) {
           console.log(JSON.stringify(response.data));
+          // _this.$emit("refresh", true); //让父页面刷新
+          _this.$toast.success("新建课程成功 课程号:"+response.data.data);
+          _this.$router.go(-1);
           _this.$emit("refresh", true); //让父页面刷新
-          this.$toast.success("新建课程成功 课程号:");
-          this.$router.go(-1);
         })
         .catch(function (error) {
           console.log(error);

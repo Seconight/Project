@@ -204,7 +204,7 @@ public class StudentServiceImpl implements StudentService {
         encodings=clientService.FaceRecognize(studentNo);
 
         Student student=studentRepository.findByStudentNo(studentNo);
-        student.setStudentEncoding(encodings.substring(0,encodings.length()-1));
+        student.setStudentEncoding("1");
         studentRepository.save(student);//更新
         return new AsyncResult<>(true);
     }
