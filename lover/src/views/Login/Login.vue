@@ -1,12 +1,52 @@
 <template>
-  <div style="position: fixed; background: #fff; height: 100%; width: 100%">
+  <div style="position: fixed; background: #ecffff; height: 100%; width: 100%">
     <!-- <van-nav-bar left-text="返回" @click-left="onClickLeft" style="opacity: .5;"/> -->
     <div v-if="$route.path == '/login'">
-      <div style="text-align: center">
-        <van-image width="200" height="200" :src="logo" />
-      </div>
+      <div class="login">
+        <div style="height: 40px"></div>
+        <van-image width="100" height="100" :src="logo" />
+        <div style="height: 80px"></div>
+        <van-form @submit="onSubmit" style="width: 100%;">
+          <van-field class="login_box">
+            <template #input>
+              <input type="text" v-model="username" required maxlength="20" />
+              <label>用户名</label>
+            </template>
+          </van-field>
+          <van-field class="login_box">
+            <template #input>
+              <input
+                type="password"
+                v-model="password"
+                required
+                maxlength="20"
+              />
+              <label>密码</label>
+              <div @click.self="onChangePassword">忘记密码？</div>
+            </template>
+          </van-field>
+          <van-button
+            style="height: 35px; top: 5px"
+            block
+            type="info"
+            native-type="submit"
 
-      <van-form @submit="onSubmit" class="login-box">
+            >点击登录</van-button
+          >
+        </van-form>
+        <router-link
+          to="/Login/register"
+          style="top: 10px; font-size: 12px; color: blue"
+        >
+          新用户注册
+        </router-link>
+      </div>
+    </div>
+
+    <!-- <div style="text-align: center">
+        <van-image width="200" height="200" :src="logo" />
+      </div> -->
+    <!-- <van-form @submit="onSubmit" class="login-box">
         <h3>登录</h3>
         <div class="_input-group">
           <label><van-icon name="manager" /></label>
@@ -33,9 +73,8 @@
         <van-button round block type="info" native-type="submit"
           >点击登录</van-button
         >
-      </van-form>
-    </div>
-    <transition >
+      </van-form> -->
+    <transition>
       <router-view></router-view>
     </transition>
   </div>
@@ -78,7 +117,7 @@ export default {
               _this.$toast.success("登录成功");
               location.replace(document.referrer);
             } else {
-              _this.$toast.fail(JSON.stringify(response.data.data));
+              _this.$toast(JSON.stringify(response.data.data));
               _this.username = "";
               _this.password = "";
             }
@@ -89,15 +128,7 @@ export default {
       }
     },
     onChangePassword() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      if (userInfo.address == null) {
-        this.$toast("邮箱未绑定!,请先绑定邮箱！");
-      } else {
-        this.$router.push("/User/changePassword");
-      }
-    },
-    onClickLeft() {
-      this.$router.replace("/user");
+      this.$router.push("/Login/retrievePassword");
     },
   },
 };
@@ -169,5 +200,81 @@ export default {
       background: linear-gradient(to right, #2ce2fa, #1ff5e4);
     }
   }
+}
+.login {
+  /* 弹性布局 让子元素称为弹性项目 */
+  display: flex;
+  /* 让弹性项目垂直排列 原理是改变弹性盒子的主轴方向 父元素就是弹性盒子 现在改变后的主轴方向是向下了 */
+  flex-direction: column;
+  /* 让弹性项目在交叉轴方向水平居中 现在主轴的方向是向下 交叉轴的方向是与主轴垂直 交叉轴的方向是向右 */
+  align-items: center;
+  padding: 20px;
+}
+.login h2 {
+  color: #000;
+  margin-bottom: 30px;
+}
+.login .login_box {
+  /* 相对定位 */
+  background-color: #ecffff;
+  position: relative;
+  width: 100%;
+}
+.login .login_box input {
+  /* 清除input框自带的边框和轮廓 */
+  outline: none;
+  border: none;
+  width: 100%;
+  padding: 10px 0;
+  margin-bottom: 30px;
+  color: #000;
+  font-size: 16px;
+  border-bottom: 1px solid #000;
+  /* 背景颜色为透明色 */
+  background-color: transparent;
+}
+.login .login_box label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 0;
+  color: #000;
+  /* 这个属性的默认值是auto 默认是这个元素可以被点击 但是如果我们写了none 就是这个元素不能被点击 , 就好像它可见但是不能用 可望而不可即 */
+  /* 这个就是两者的区别 */
+  pointer-events: none;
+  /* 加个过渡 */
+  transition: all 0.5s;
+}
+.login .login_box div {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px 0;
+  font-size: 12px;
+  color: blue;
+  /* 这个属性的默认值是auto 默认是这个元素可以被点击 但是如果我们写了none 就是这个元素不能被点击 , 就好像它可见但是不能用 可望而不可即 */
+  /* 这个就是两者的区别 */
+
+  /* 加个过渡 */
+  transition: all 0.5s;
+}
+/* :focus 选择器是当input获得焦点是触发的样式 + 是相邻兄弟选择器 去找与input相邻的兄弟label */
+/* :valid 选择器是判断input框的内容是否合法,如果合法会执行下面的属性代码,不合法就不会执行,我们刚开始写布局的时候给input框写了required 我们删掉看对比 当没有required的话input框的值就会被认为一直合法,所以一直都是下方的样式 ,但是密码不会,密码框内的值为空,那么这句话局不合法,required不能为空 当我们给密码框写点东西的时候才会执行以下代码*/
+.login .login_box input:focus + label,
+.login .login_box input:valid + label {
+  top: -25px;
+  color: #03e9f4;
+  font-size: 16px;
+}
+
+.login a {
+  overflow: hidden;
+  position: relative;
+  padding: 10px 20px;
+  color: #03e9f4;
+  /* 取消a表现原有的下划线 */
+  text-decoration: none;
+  /* 同样加个过渡 */
+  transition: all 0.5s;
 }
 </style>

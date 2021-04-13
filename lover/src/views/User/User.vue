@@ -9,10 +9,10 @@
       <div class="_userinfo-id" v-if="this.role == '学生'">学号:{{ id }}</div>
     </div> -->
     <van-row>
-      <van-col span="8">
+      <van-col span="6">
         <img :src="assert.avatarSrc" alt="" @click="onclickPersenInfor" />
       </van-col>
-      <van-col span="12" class="userInfo">
+      <van-col span="14" class="userInfo">
         <div class="name">{{ name }}</div>
         <div class="id" v-if="this.role == '老师'">职工号:{{ id }}</div>
         <div class="id" v-if="this.role == '学生'">学号:{{ id }}</div>
@@ -336,7 +336,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .van-row {
-  height: 120px;
+  height: 100px;
   padding: 10px;
   background-image: linear-gradient(#a1c4fd 0%, #c2e9fb 100%);
   color: #000;
@@ -345,10 +345,12 @@ export default {
   border-radius: 0 0 20px 20px;
   animation-duration: 0.8s;
   .van-col {
-    height: 100px;
-    line-height: 100px;
+    height: 80px;
+    line-height: 80px;
     img {
-      width: 100px;
+      padding:5px;
+      height: 70px;
+      width: 70px;
       border-radius: 50%;
     }
     &:last-child {
@@ -356,7 +358,7 @@ export default {
     }
   }
   .userInfo {
-    margin-top: 30px;
+    margin-top: 15px;
     height: 50px;
     line-height: 25px;
     .name {

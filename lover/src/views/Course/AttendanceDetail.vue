@@ -29,10 +29,13 @@
               v-for="(acStudent, index) in record.acStudent"
               :key="acStudent.id"
               :title="acStudent.name"
-              :label="acStudent.class"
               @click="onClickacStudent(index)"
               clickable
-            />
+            >
+              <template #default>
+                <span style="font-size: 12px">{{ acStudent.class }}</span>
+              </template>
+            </van-cell>
           </van-cell-group>
         </van-tab>
         <van-tab :title="'未签学生(' + record.abStudentNum + '人)'">
@@ -55,10 +58,13 @@
               v-for="(abStudent, index) in record.abStudent"
               :key="abStudent.id"
               :title="abStudent.name"
-              :label="abStudent.class"
               @click="onClickabStudent(index)"
               clickable
-            />
+            >
+              <template #default>
+                <span style="font-size: 12px">{{ abStudent.class }}</span>
+              </template>
+            </van-cell>
           </van-cell-group>
           <div v-if="checkbox">
             <div>

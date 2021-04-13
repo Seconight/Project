@@ -10,7 +10,7 @@
       safe-area-inset-top
     />
     <div class="studentList">
-      <van-cell-group >
+      <van-cell-group>
         <template #title>
           <div @click="showOrderPicker = true">
             <span>学生({{ students.length }}人)</span>
@@ -98,7 +98,7 @@ export default {
           //出勤率保留2位小数
           for (let i = 0; i < _this.students.length; i++) {
             _this.students[i].rate =
-              _this.students[i].rate.toFixed(2) * 100 + "%";
+              parseInt(_this.students[i].rate.toFixed(2) * 100) + "%";
           }
         }
       })

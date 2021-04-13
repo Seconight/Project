@@ -54,11 +54,11 @@
               <div class="courseItem">{{ course.name }}</div>
             </template>
             <van-cell-group>
-              <van-cell title="课程号" :value="course.id" />
-              <van-cell title="任课老师" :value="course.teachername" />
-              <van-cell title="上课时间" :value="course.time" />
-              <van-cell title="周次" :value="course.week" />
-              <van-cell title="学期" :value="course.semester" />
+              <van-cell class="cell" title="课程号" :value="course.id" />
+              <van-cell class="cell" title="任课老师" :value="course.teachername" />
+              <van-cell class="cell" title="上课时间" :value="course.time" />
+              <van-cell class="cell" title="周次" :value="course.week" />
+              <van-cell class="cell" title="学期" :value="course.semester" />
             </van-cell-group>
             <div style="text-align: center">
               <van-button
@@ -146,6 +146,7 @@ export default {
                 _this.$toast("获取课程信息失败");
                 return;
               }
+              _this.coursesStorage = response.data.data;
               _this.loadCourse(response.data.data);
               _this.showCourseNewCreat();
             })
@@ -183,6 +184,7 @@ export default {
               _this.$toast("获取课程信息失败");
               return;
             }
+            _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
             _this.showCourseToday();
           })
@@ -198,10 +200,13 @@ export default {
         };
         axios(config)
           .then(function (response) {
+
             if (response.data.code == 0) {
               _this.$toast("获取课程信息失败");
               return;
             }
+            console.log(response.data.data)
+            _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
             _this.showCourseToday();
           })
@@ -287,7 +292,7 @@ export default {
           return "星期五";
         case 6:
           return "星期六";
-        case 0:
+        case 7:
           return "星期天";
       }
     },
@@ -307,7 +312,6 @@ export default {
       }
     },
     loadCourse(data) {
-      this.coursesStorage = data;
       this.allCourses = [[]];
       this.semesterOptions = [];
       this.semesterOptions.push({ text: "全部课程", value: 0 }); //全部课程选项
@@ -358,10 +362,12 @@ export default {
       }
     },
     onClear() {
+      this.semesterItem = 0;
       this.loadCourse(this.coursesStorage);
     },
     onSearch() {
       //调用接口
+      this.semesterItem = 0;
       console.log("search " + this.searchValue);
       var sign = 0;
       for (var i = 0; i < this.searchValue.length; i++) {
@@ -495,4 +501,14 @@ export default {
   border-radius: 20px;
   animation-duration: 0.8s;
 }
+.cell {
+    .van-cell__value {
+      min-width: 70%;
+      span {
+        display: inline-block;
+        text-align: right;
+        word-break: break-all;
+      }
+    }
+  }
 </style>

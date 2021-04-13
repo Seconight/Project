@@ -2,7 +2,7 @@
   <div id="myChart" :style="{ width: 'screenWidth', height: '400px' }"></div>
 </template>
 <script>
-import * as echarts from 'echarts';
+import * as echarts from "echarts";
 //Vue.prototype.$echarts = echarts;
 export default {
   props: ["chartData"],
@@ -10,20 +10,19 @@ export default {
     return {
       xAxisData: [],
       acStuData: [],
-
       screenWidth: document.body.clientWidth, // 屏幕尺寸
     };
   },
   mounted() {
-    console.log(this.chartData);
     for (let i = 0; i < this.chartData.records.length; i++) {
       this.xAxisData.push(i + 1);
-      this.acStuData.push(this.chartData.records[i].acStudentNum);
+      this.acStuData.push(this.chartData.records[this.chartData.records.length-i-1].acStudentNum);
     }
     this.drawLine();
   },
   methods: {
     drawLine() {
+      let _this = this;
       // 基于准备好的dom，初始化echarts实例
       let myChart = echarts.init(document.getElementById("myChart"));
       // 绘制图表
@@ -58,8 +57,37 @@ export default {
         },
 
         // 提示框
+
         tooltip: {
           trigger: "axis",
+          formatter: function (params, ticket, callback) {
+            var htmlStr = "<div style='text-align:center;font-size: 18px;'>";
+            console.log(_this.chartData.records);
+            var param = params[0];
+            var xName = param.name; //x轴的名称
+            var seriesName = param.seriesName; //图例名称
+            var value = param.value; //y轴值
+            var color = param.color; //图例颜色
+            htmlStr += "第" + xName + "次考勤" + "</div>"; //x轴的名称
+            let index = parseInt(xName)-1;
+            htmlStr +=
+              '<div style="font-size: 12px;text-align:center;">' +
+              _this.chartData.records[_this.chartData.records.length-1-index].time +
+              "</div>";
+            // 具体显示的数据【字段名称：seriesName，值：value】
+            // 这里判断一下name，如果是我们需要特殊处理的，就处理
+
+            // 正常显示的数据，走默认
+            htmlStr +=
+              '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' +
+              color +
+              ';"></span>';
+            htmlStr += seriesName + "：" + value + "人";
+
+            htmlStr += "</div>";
+
+            return htmlStr;
+          },
         },
         //工具框，可以选择
         toolbox: {
@@ -72,7 +100,7 @@ export default {
           axisLine: {
             lineStyle: {
               // 设置x轴颜色
-              color: "#6E7FF3", 
+              color: "#6E7FF3",
             },
           },
           // // 设置X轴数据旋转倾斜
@@ -117,7 +145,7 @@ export default {
                 type: "solid", //'dotted'虚线 'solid'实线
               },
             },
-            smooth: 0.3,
+            smooth: 0.5,
           },
         ],
         color: ["#3dff3d"],
@@ -127,7 +155,7 @@ export default {
 };
 </script>
 <style scoped>
-.a{
-    color:#3dff3d
+.a {
+  color: #3dff3d;
 }
 </style>

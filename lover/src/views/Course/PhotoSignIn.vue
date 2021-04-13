@@ -8,9 +8,10 @@
       safe-area-inset-top
     />
     <div class="photoSign">
+      <van-notice-bar left-icon="volume-o" text="最多使用三张照片进行签到" />
       <van-cell-group>
-        <van-cell title="课程名" :value="course.name" />
-        <van-cell title="签到时间" :value="date" />
+        <van-cell class="cell" title="课程名" :value="course.name" size="large" />
+        <van-cell class="cell" title="签到时间" :value="date" size="large"/>
       </van-cell-group>
       <div style="text-align: center">
         <van-uploader
@@ -34,12 +35,11 @@
             color="linear-gradient(to top, #f77062 0%, #fe5196 100%)"
             >上传签到</van-button
           >
-          <van-image width="320" height="231" :src="backgroundImg" />
         </div>
       </div>
     </div>
 
-    <van-overlay :show="photoSignUploading"> 
+    <van-overlay :show="photoSignUploading">
       <div class="wrapper" @click.stop>
         <van-loading
           color="#0094ff"
@@ -153,7 +153,7 @@ export default {
   top: 2vh;
   left: 0;
   right: 0;
-  height: 90%;
+  height: 70%;
   margin: 0 5px;
   background: #fff;
   padding: 5px;
@@ -183,4 +183,15 @@ export default {
     }
   }
 }
+
+.cell {
+    .van-cell__value {
+      min-width: 70%;
+      span {
+        display: inline-block;
+        text-align: right;
+        word-break: break-all;
+      }
+    }
+  }
 </style>
