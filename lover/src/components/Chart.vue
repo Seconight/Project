@@ -62,7 +62,6 @@ export default {
           trigger: "axis",
           formatter: function (params, ticket, callback) {
             var htmlStr = "<div style='text-align:center;font-size: 18px;'>";
-            console.log(_this.chartData.records);
             var param = params[0];
             var xName = param.name; //x轴的名称
             var seriesName = param.seriesName; //图例名称

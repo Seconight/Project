@@ -7,7 +7,7 @@ import {
     Dialog, Collapse, CollapseItem, NavBar, ActionSheet, Tab, Tabs, Popover,
     Picker, Checkbox, CheckboxGroup, Search, DropdownMenu, DropdownItem,
     List, Grid, GridItem, NoticeBar, Step, Steps, Loading, Overlay, Tag, Circle, 
-    ImagePreview,Empty 
+    ImagePreview,Empty,Sticky 
 } from 'vant'
 Vue.use(Button)
 Vue.use(Icon)
@@ -57,5 +57,6 @@ Vue.use(Tag);
 Vue.use(Circle);
 Vue.use(ImagePreview);
 Vue.use(Empty);
+Vue.use(Sticky);
 
 

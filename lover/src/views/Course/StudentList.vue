@@ -8,6 +8,8 @@
       @click-left="onClickLeft"
       @click-right="onClickRight"
       safe-area-inset-top
+      fixed
+      placeholder 
     />
     <div class="studentList">
       <van-cell-group>

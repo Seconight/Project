@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-nav-bar title="账号注册" left-text="返回" @click-left="onClickLeft" safe-area-inset-top />
+    <van-nav-bar title="账号注册" left-text="返回" @click-left="onClickLeft" left-arrow safe-area-inset-top />
     <div>
       <van-form @submit="onSubmit">
         <van-field label="身份">

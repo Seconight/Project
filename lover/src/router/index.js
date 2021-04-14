@@ -7,7 +7,7 @@ import StuAttendance from '../views/Course/StuAttendance.vue'
 import TeaAttendance from '../views/Course/TeaAttendance.vue'
 import AddCourse from '../views/Course/AddCourse.vue'
 import CreatCourse from '../views/Course/CreatCourse.vue'
-import StuStudentList from '../views/Course/StuStudentList.vue'
+import StudentList from '../views/Course/StudentList.vue'
 import PhotoSignIn from '../views/Course/PhotoSignIn.vue'
 import AttendanceDetail from '../views/Course/AttendanceDetail.vue'
 
@@ -117,9 +117,9 @@ const routes = [
         component: CreatCourse,
       },
       {
-        path: 'stuStudentList',
-        name: 'StuStudentList',
-        component: StuStudentList,
+        path: 'studentList',
+        name: 'studentList',
+        component: StudentList,
       },
       {
         path: 'photoSignIn',

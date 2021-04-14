@@ -55,7 +55,11 @@
             </template>
             <van-cell-group>
               <van-cell class="cell" title="课程号" :value="course.id" />
-              <van-cell class="cell" title="任课老师" :value="course.teachername" />
+              <van-cell
+                class="cell"
+                title="任课老师"
+                :value="course.teachername"
+              />
               <van-cell class="cell" title="上课时间" :value="course.time" />
               <van-cell class="cell" title="周次" :value="course.week" />
               <van-cell class="cell" title="学期" :value="course.semester" />
@@ -200,12 +204,11 @@ export default {
         };
         axios(config)
           .then(function (response) {
-
             if (response.data.code == 0) {
               _this.$toast("获取课程信息失败");
               return;
             }
-            console.log(response.data.data)
+            console.log(response.data.data);
             _this.coursesStorage = response.data.data;
             _this.loadCourse(response.data.data);
             _this.showCourseToday();
@@ -264,13 +267,8 @@ export default {
       }
     },
     goToStudentList(index) {
-      //暂时老师和学生共用一个学生列表界面
       this.courseIndex = index;
-      if (this.role == "老师") {
-        this.$router.push("/Course/stuStudentList");
-      } else if (this.role == "学生") {
-        this.$router.push("/Course/stuStudentList");
-      }
+      this.$router.push("/Course/studentList");
     },
     photoSign(index) {
       //console.log(JSON.stringify(this.allCourses));
@@ -502,13 +500,13 @@ export default {
   animation-duration: 0.8s;
 }
 .cell {
-    .van-cell__value {
-      min-width: 70%;
-      span {
-        display: inline-block;
-        text-align: right;
-        word-break: break-all;
-      }
+  .van-cell__value {
+    min-width: 70%;
+    span {
+      display: inline-block;
+      text-align: right;
+      word-break: break-all;
     }
   }
+}
 </style>

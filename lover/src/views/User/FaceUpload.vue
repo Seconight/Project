@@ -202,7 +202,7 @@ export default {
   .static {
     position: absolute;
     width: 100%;
-    bottom:0;
+    bottom: 0;
     .van-button {
       left: 0;
       right: 0;

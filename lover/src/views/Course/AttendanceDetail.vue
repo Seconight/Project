@@ -17,7 +17,7 @@
       <van-cell title="签到图片" clickable @click="onclickImgCell" is-link />
     </div>
     <div class="ABCStudentsList">
-      <van-tabs v-model="mode" animated>
+      <van-tabs v-model="mode" animated sticky>
         <van-tab :title="'已签学生(' + record.acStudentNum + '人)'">
           <van-empty
             v-if="record.acStudent.length == 0"
@@ -75,7 +75,6 @@
                     v-for="(abStudent, index) in record.abStudent"
                     :key="abStudent.id"
                     :title="abStudent.name"
-                    :label="abStudent.class"
                     @click="toggle(index)"
                   >
                     <template #right-icon>
@@ -151,7 +150,15 @@
         />
         <van-cell title="学号" :value="record.abStudent[abStudentIndex].id" />
       </van-cell-group>
-      <van-button type="danger" block round @click="supply"> 补签 </van-button>
+      <van-button
+        type="danger"
+        style="width: 60%; margin-left: 20%; padding: 5px"
+        round
+        @click="supply"
+      >
+        补签
+      </van-button>
+      <div style="height: 10px"></div>
     </van-action-sheet>
     <van-image-preview v-model="showImagePreview" :images="signInImg">
     </van-image-preview>

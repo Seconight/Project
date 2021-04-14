@@ -14,7 +14,6 @@
           v-model="className"
           label="课程名"
           placeholder="请输入课程名"
-          required
         />
         <van-field
           readonly
@@ -345,9 +344,9 @@ export default {
         return;
       }
       let newday = [];
-      
+
       for (let i = 0; i < this.day.length; i++) {
-        if(this.day[i] == 6) newday.push(0);
+        if (this.day[i] == 6) newday.push(0);
         else newday.push(this.day[i] + 1);
       }
       var axios = require("axios");
@@ -373,21 +372,27 @@ export default {
       };
       axios(config)
         .then(function (response) {
-          let course = {
-            id: response.data.data,
-            semester: _this.semesterText,
-          };
-          _this.$dialog
-            .alert({
-              title: "新建课程成功!",
-              message: "课程号:" + response.data.data,
-              theme: "round-button",
-            })
-            .then(() => {
-              // on close
-              localStorage.setItem("courseNewCreat", JSON.stringify(course));
-              _this.$router.go(-1);
-            });
+          console.log(response);
+          if (response.data.code == 0) {
+            _this.$toast.fail("创建失败");
+            return;
+          } else {
+            let course = {
+              id: response.data.data,
+              semester: _this.semesterText,
+            };
+            _this.$dialog
+              .alert({
+                title: "新建课程成功!",
+                message: "课程号:" + response.data.data,
+                theme: "round-button",
+              })
+              .then(() => {
+                // on close
+                localStorage.setItem("courseNewCreat", JSON.stringify(course));
+                _this.$router.go(-1);
+              });
+          }
         })
         .catch(function (error) {
           console.log(error);
