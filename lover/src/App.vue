@@ -31,8 +31,6 @@ export default {
 </script>
 
 <style>
-@import "colorui/main.css";
-@import "colorui/icon.css";
 /* #f7f8fa */
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

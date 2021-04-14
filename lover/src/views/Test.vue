@@ -57,7 +57,6 @@ export default {
       assert: {
         avatarSrc: require("@/assets/user/defualt.jpg"),
         gridImg: [
-          require("@/assets/icon/gerenxinxi.png"),
           require("@/assets/icon/youxiangshezhi.png"),
           require("@/assets/icon/xiugaimima.png"),
           require("@/assets/icon/renlainshangchuan.png"),
@@ -168,7 +167,7 @@ export default {
       localStorage.removeItem("userInfo");
       localStorage.removeItem("checkFace");
       this.name = "";
-      this.avatarSrc = require("@/assets/defualt.jpg");
+      this.avatarSrc = require("@/assets/user/defualt.jpg");
       this.username = "";
       this.password = "";
       this.showLoginModal = false;

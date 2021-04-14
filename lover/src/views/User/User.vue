@@ -296,7 +296,7 @@ export default {
       localStorage.removeItem("checkFace");
       localStorage.removeItem("semester");
       this.name = "";
-      this.avatarSrc = require("@/assets/defualt.jpg");
+      this.avatarSrc = require("@/assets/user/defualt.jpg");
       this.username = "";
       this.password = "";
       this.showLoginModal = false;

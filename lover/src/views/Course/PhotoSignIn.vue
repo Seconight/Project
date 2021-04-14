@@ -63,7 +63,6 @@ export default {
   props: ["course"],
   data() {
     return {
-      backgroundImg: require("@/assets/course/photoSignIn_background.png"),
       date: "",
       imgList: [],
       preview_options: {
