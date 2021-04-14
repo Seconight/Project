@@ -203,10 +203,6 @@ export default {
     loadCourseToday(data) {
       let date = new Date();
       let day = date.getDay();
-      if (day == 0) {
-        //星期天为0，匹配数据库模式
-        day = 0;
-      }
       let semester = localStorage.getItem("semester");
       // day=2;
       //console.log("day:" + day + "  month:" + month + " year:" + year);
@@ -349,8 +345,8 @@ export default {
     line-height: 22vw;
     img {
       padding: 2vw;
-      height: 19vw;
-      width: 19vw;
+      height: 18vw;
+      width: 18vw;
       border-radius: 50%;
     }
     &:last-child {
