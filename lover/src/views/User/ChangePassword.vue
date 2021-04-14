@@ -8,13 +8,13 @@
       safe-area-inset-top
     />
     <div class="changPassword">
-            <van-steps :active="stepsActive">
+      <van-steps :active="stepsActive">
         <van-step>验证身份</van-step>
         <van-step>修改密码</van-step>
         <van-step>修改成功</van-step>
       </van-steps>
       <div v-if="stepsActive == 0">
-        <van-cell-group>
+        <van-cell-group :border="false">
           <van-field label="已绑定邮箱" :value="email" disabled />
           <van-field
             v-model="sms1"
@@ -204,7 +204,6 @@ export default {
 </script>
 
 <style lang='less' scoped>
-
 .van-row {
   height: 100px;
   padding: 10px;

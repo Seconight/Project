@@ -7,13 +7,13 @@
         <van-image width="100" height="100" :src="logo" />
         <div style="height: 80px"></div>
         <van-form @submit="onSubmit" style="width: 100%;">
-          <van-field class="login_box">
+          <van-field class="login_box" :border="false">
             <template #input>
               <input type="text" v-model="username" required maxlength="20" />
               <label>用户名</label>
             </template>
           </van-field>
-          <van-field class="login_box">
+          <van-field class="login_box" :border="false">
             <template #input>
               <input
                 type="password"

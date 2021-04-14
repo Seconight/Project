@@ -15,7 +15,7 @@
         <van-step>绑定成功</van-step>
       </van-steps>
       <div v-if="stepsActive == 0">
-        <van-cell-group>
+        <van-cell-group :border="false">
           <van-cell
             center
             title="通过密码验证"
@@ -44,7 +44,7 @@
           />
         </div>
         <div v-if="identityMethod == 'Email'">
-          <van-cell-group>
+          <van-cell-group :border="false">
             <van-field label="已绑定邮箱" :value="oldEmail" disabled />
             <van-field
               v-model="sms1"
@@ -174,7 +174,7 @@ export default {
       this.identityMethod = "Password";
     },
     onChoiceEmail() {
-      if (this.oldEmail == "") {
+      if (this.oldEmail == ""||this.oldEmail == null) {
         this.$dialog({ message: "第一次绑定邮箱请使用密码验证身份。" });
       } else {
         this.stepsActive = 1;
@@ -353,7 +353,6 @@ export default {
 </script>
 
 <style lang='less' scoped>
-
 .van-row {
   height: 100px;
   padding: 10px;

@@ -49,7 +49,6 @@
           >退出登录</van-button
         >
       </van-cell-group>
-      <van-cell-group title=" "> </van-cell-group>
     </div>
   </div>
 </template>

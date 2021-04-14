@@ -19,7 +19,7 @@
       </div>
     </div>
     <div v-if="stepsActive == 1">
-      <van-cell-group>
+      <van-cell-group :border="false">
         <van-field label="已绑定邮箱" :value="email" disabled />
         <van-field
           v-model="sms1"

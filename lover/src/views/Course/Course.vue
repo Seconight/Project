@@ -45,24 +45,46 @@
           :image="asserts.noCourseSrc"
           description="暂无课程"
         />
-        <van-collapse v-model="activeCourse" accordion>
+        <van-collapse v-model="activeCourse" accordion :border="false">
           <van-collapse-item
             v-for="(course, index) in allCourses[semesterItem]"
             :key="course.id"
+            :border="false"
           >
             <template #title style="width: 200px">
               <div class="courseItem">{{ course.name }}</div>
             </template>
-            <van-cell-group>
-              <van-cell class="cell" title="课程号" :value="course.id" />
+            <van-cell-group :border="false">
               <van-cell
+                :border="false"
+                class="cell"
+                title="课程号"
+                :value="course.id"
+              />
+              <van-cell
+                :border="false"
                 class="cell"
                 title="任课老师"
                 :value="course.teachername"
               />
-              <van-cell class="cell" title="上课时间" :value="course.time" />
-              <van-cell class="cell" title="周次" :value="course.week" />
-              <van-cell class="cell" title="学期" :value="course.semester" />
+              <van-cell
+                :border="false"
+                class="cell"
+                title="上课时间"
+                :value="course.time"
+              />
+              <van-cell
+                :border="false"
+                class="cell"
+                title="周次"
+                :value="course.week"
+              />
+              <van-cell
+                :border="false"
+                class="cell"
+                title="学期"
+                :value="course.semester"
+              />
             </van-cell-group>
             <div style="text-align: center">
               <van-button

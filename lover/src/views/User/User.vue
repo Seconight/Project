@@ -46,7 +46,7 @@
       </van-grid-item>
     </van-grid>
     <div class="courseToday">
-      <van-cell-group>
+      <van-cell-group :border="false">
         <template #title>
           <span>今日课程</span>
           <span style="float: right">{{ time }}</span>

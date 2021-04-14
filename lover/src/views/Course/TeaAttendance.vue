@@ -22,7 +22,7 @@
         <div style="margin-left: 76%; position: relative; font-size: 12px">
           出勤率
         </div>
-        <van-cell-group>
+        <van-cell-group :border="false">
           <van-cell
             center
             v-for="(record, index) in records"

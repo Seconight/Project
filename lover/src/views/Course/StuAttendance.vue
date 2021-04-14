@@ -12,7 +12,7 @@
       placeholder
     />
     <div class="recordsList">
-      <van-cell-group>
+      <van-cell-group :border="false">
         <van-empty
           v-if="records.length == 0"
           :image="noRecordSrc"

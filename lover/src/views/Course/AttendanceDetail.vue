@@ -24,7 +24,7 @@
             :image="noStudentSrc"
             description="无到勤学生"
           />
-          <van-cell-group>
+          <van-cell-group :border="false">
             <van-cell
               v-for="(acStudent, index) in record.acStudent"
               :key="acStudent.id"
@@ -53,7 +53,7 @@
               registeRemind
             }},请提醒学生进行注册并上传人脸照片。</van-notice-bar
           >
-          <van-cell-group v-if="!checkbox">
+          <van-cell-group v-if="!checkbox" :border="false">
             <van-cell
               v-for="(abStudent, index) in record.abStudent"
               :key="abStudent.id"
@@ -69,7 +69,7 @@
           <div v-if="checkbox">
             <div>
               <van-checkbox-group v-model="checkboxResult">
-                <van-cell-group>
+                <van-cell-group :border="false">
                   <van-cell
                     clickable
                     v-for="(abStudent, index) in record.abStudent"
@@ -150,6 +150,7 @@
         />
         <van-cell title="学号" :value="record.abStudent[abStudentIndex].id" />
       </van-cell-group>
+      <div style="height: 5px"></div>
       <van-button
         type="danger"
         style="width: 60%; margin-left: 20%; padding: 5px"
