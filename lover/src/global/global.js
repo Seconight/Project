@@ -1,6 +1,8 @@
 //定义全局变量
 // const port = 'https://seconight.cn1.utools.club';
-const port = 'http://39.106.43.242:8081'
+// const port = 'http://localhost:8081'
+const port = 'http://192.168.43.48:8081'
+// const port = 'http://39.106.43.242:8081'
 var faceFile = new Array();
 var studentFile = null;
 var signFiles = new Array();
