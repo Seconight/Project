@@ -3,3 +3,5 @@ TXW/src/main/resources/application.yml
 *.class
 *.xml
 *.yml
+*.jar
+*.jar
