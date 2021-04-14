@@ -336,21 +336,21 @@ export default {
 </script>
 <style lang="less" scoped>
 .van-row {
-  height: 100px;
-  padding: 10px;
+  height: 27vw;
+  padding: 3vw;
   background-image: linear-gradient(#a1c4fd 0%, #c2e9fb 100%);
   color: #000;
   box-sizing: border-box;
-  box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
-  border-radius: 0 0 20px 20px;
+  box-shadow: 0 0 7vw rgba(0, 0, 0, 0.5);
+  border-radius: 0 0 5vw 5vw;
   animation-duration: 0.8s;
   .van-col {
-    height: 80px;
-    line-height: 80px;
+    height: 22vw;
+    line-height: 22vw;
     img {
-      padding: 5px;
-      height: 70px;
-      width: 70px;
+      padding: 2vw;
+      height: 19vw;
+      width: 19vw;
       border-radius: 50%;
     }
     &:last-child {
@@ -358,15 +358,15 @@ export default {
     }
   }
   .userInfo {
-    margin-top: 15px;
-    height: 50px;
-    line-height: 25px;
+    margin-top: 5vw;
+    height: 17vw;
+    line-height: 7vw;
     .name {
-      font-size: 20px;
+      font-size: 6vw;
       font-weight: 600;
     }
     .id {
-      font-size: 18px;
+      font-size: 5.3vw;
     }
   }
 }
