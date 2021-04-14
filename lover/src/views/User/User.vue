@@ -205,7 +205,7 @@ export default {
       let day = date.getDay();
       if (day == 0) {
         //星期天为0，匹配数据库模式
-        day = 7;
+        day = 0;
       }
       let semester = localStorage.getItem("semester");
       // day=2;
@@ -348,7 +348,7 @@ export default {
     height: 80px;
     line-height: 80px;
     img {
-      padding:5px;
+      padding: 5px;
       height: 70px;
       width: 70px;
       border-radius: 50%;
