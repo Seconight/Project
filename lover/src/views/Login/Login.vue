@@ -115,7 +115,10 @@ export default {
                 JSON.stringify(response.data.data)
               );
               _this.$toast.success("登录成功");
-              location.replace(document.referrer);
+              setTimeout(()=>{   //设置延迟执行
+                location.replace(document.referrer);
+            },1000);
+              
             } else {
               _this.$toast(JSON.stringify(response.data.data));
               _this.username = "";
