@@ -42,38 +42,6 @@
         </router-link>
       </div>
     </div>
-
-    <!-- <div style="text-align: center">
-        <van-image width="200" height="200" :src="logo" />
-      </div> -->
-    <!-- <van-form @submit="onSubmit" class="login-box">
-        <h3>登录</h3>
-        <div class="_input-group">
-          <label><van-icon name="manager" /></label>
-          <van-field v-model="username" name="用户名" placeholder="用户名" />
-        </div>
-        <div class="_input-group">
-          <label><van-icon name="lock" /></label>
-          <van-field
-            v-model="password"
-            type="password"
-            name="密码"
-            placeholder="密码"
-          />
-        </div>
-
-        <router-link to="/Login/register" style="font-size: 12px"
-          >注册</router-link
-        >
-        <router-link
-          to="/Login/retrievePassword"
-          style="font-size: 12px; float: right"
-          >忘记密码？</router-link
-        >
-        <van-button round block type="info" native-type="submit"
-          >点击登录</van-button
-        >
-      </van-form> -->
     <transition>
       <router-view></router-view>
     </transition>
@@ -257,7 +225,6 @@ export default {
   color: blue;
   /* 这个属性的默认值是auto 默认是这个元素可以被点击 但是如果我们写了none 就是这个元素不能被点击 , 就好像它可见但是不能用 可望而不可即 */
   /* 这个就是两者的区别 */
-
   /* 加个过渡 */
   transition: all 0.5s;
 }

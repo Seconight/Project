@@ -26,7 +26,7 @@
           v-for="(student, index) in students"
           :key="student.id"
           :title="student.name"
-          :value="student.rate"
+          :value="student.rateText"
           @click="onClickStudent(index)"
           clickable
         />
@@ -61,7 +61,7 @@
         <van-cell title="班级" :value="students[choice].class" />
         <van-cell title="学号" :value="students[choice].id" />
         <van-cell title="出勤次数" :value="students[choice].times" />
-        <van-cell title="出勤率" :value="students[choice].rate" />
+        <van-cell title="出勤率" :value="students[choice].rateText" />
       </van-cell-group>
     </van-action-sheet>
   </div>
@@ -99,7 +99,7 @@ export default {
           _this.students = response.data.data;
           //出勤率保留2位小数
           for (let i = 0; i < _this.students.length; i++) {
-            _this.students[i].rate =
+            _this.students[i].rateText =
               parseInt(_this.students[i].rate.toFixed(2) * 100) + "%";
           }
         }

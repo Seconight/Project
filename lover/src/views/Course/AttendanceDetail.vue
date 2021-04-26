@@ -1,5 +1,5 @@
 <template>
-  <div class="body">
+  <div class="body" v-if="record != null">
     <van-nav-bar
       left-text="返回"
       left-arrow
@@ -192,45 +192,12 @@ export default {
         this.checkAll = false;
       }
     },
-    //跳转后执行相应操作
-    $router() {
-      console.log(this.record);
-      const _this = this;
-      //获得签到图片  this.record.attendanceId
-      var axios = require("axios");
-
-      var config = {
-        method: "get",
-        url:
-          this.GLOBAL.port +
-          "/teacher/getSignPictures?id=" +
-          this.record.attendanceId,
-        headers: {},
-      };
-
-      axios(config)
-        .then(function (response) {
-          for (let i = 0; i < response.data.length; i++) {
-            _this.signInImg.push("data:image/jpg;base64," + response.data[i]);
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      //查找是否有未注册学生
-      for (let i = 0; i < this.record.abStudent.length; i++) {
-        if (this.record.abStudent[i].class == "未知班级") {
-          this.registeRemind += this.record.abStudent[i].name;
-        }
-      }
-    },
   },
-  created() {
+  updated() {
     console.log(this.record);
     const _this = this;
     //获得签到图片  this.record.attendanceId
     var axios = require("axios");
-
     var config = {
       method: "get",
       url:
@@ -239,7 +206,6 @@ export default {
         this.record.attendanceId,
       headers: {},
     };
-
     axios(config)
       .then(function (response) {
         for (let i = 0; i < response.data.length; i++) {
