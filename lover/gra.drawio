@@ -1,29 +1,131 @@
 <mxfile>
     <diagram id="AODF0eXFpHo_rQ8Tv_MO" name="第 1 页">
-        <mxGraphModel dx="438" dy="349" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
+        <mxGraphModel dx="733" dy="419" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-                    <mxGeometry x="130" y="310" width="120" height="60" as="geometry"/>
+                <mxCell id="8" value="Vue框架+HBuilder搭建用户端手机APP&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="124" y="106" width="130" height="287" as="geometry"/>
                 </mxCell>
-                <mxCell id="12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="8" target="9">
+                <mxCell id="10" value="" style="shape=actor;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="170" width="40" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="老师" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="210" width="40" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="利用gRPC&lt;br&gt;搭建访问服务&lt;br&gt;&lt;br&gt;MTCNN算法：&lt;br&gt;多人脸检测&lt;br&gt;&lt;br&gt;FaceNet模型：&lt;br&gt;多人脸识别" style="shape=card;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+                    <mxGeometry x="490" y="170" width="90" height="199" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="&lt;span&gt;调用手机设备接口对学生拍照&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="144" y="165" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="签到信息显示并统计数据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="144" y="222" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="SpringBoot搭建服务器，对数据进行处理与交互&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="309" y="106" width="130" height="287" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="&lt;span style=&quot;color: rgb(0 , 0 , 0)&quot;&gt;基于Tensorflow与Keras平台搭建&lt;br&gt;模型&lt;/span&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="470" y="60" width="125" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="&lt;span&gt;对照片信息和课程信息预处理&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="329" y="165" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="32" target="28" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="8" value="利用手机APP&lt;br&gt;对课程学生拍照" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-                    <mxGeometry x="120" y="140" width="120" height="60" as="geometry"/>
+                <mxCell id="32" value="解析签到信息" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="329" y="222" width="90" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="上传服务端&lt;br&gt;进行多人脸识别" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-                    <mxGeometry x="290" y="140" width="120" height="60" as="geometry"/>
+                <mxCell id="37" value="在亚洲人脸数据集&lt;br&gt;以及用户数据集&lt;br&gt;上进行训练" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="463" y="376" width="135" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.9;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="10" target="8">
+                <mxCell id="39" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="532" y="132" as="sourcePoint"/>
+                        <mxPoint x="532" y="170" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="2" target="31" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="10" value="" style="shape=actor;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
-                    <mxGeometry x="30" y="140" width="40" height="60" as="geometry"/>
+                <mxCell id="46" value="" style="endArrow=classic;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" parent="1" source="10" target="2" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="31" y="376" as="sourcePoint"/>
+                        <mxPoint x="81" y="326" as="targetPoint"/>
+                    </mxGeometry>
                 </mxCell>
-                <mxCell id="13" value="老师" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-                    <mxGeometry x="30" y="210" width="40" height="20" as="geometry"/>
+                <mxCell id="47" value="" style="endArrow=classic;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="28" target="10" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="31" y="426" as="sourcePoint"/>
+                        <mxPoint x="81" y="376" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="49" value="" style="shape=actor;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="297" width="40" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="50" value="学生" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="334" width="40" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="58" target="59">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" value="上传自己的人脸信息" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+                    <mxGeometry x="144" y="283" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="对个人图片和课程信息预处理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+                    <mxGeometry x="329" y="283" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="65" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;" edge="1" parent="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="530" y="396" as="sourcePoint"/>
+                        <mxPoint x="530" y="365" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="70" value="个人信息、课程信息回显" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+                    <mxGeometry x="144" y="334" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="81" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="73" target="70">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="73" value="处理人脸特征向量" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+                    <mxGeometry x="329" y="334" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="74" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=30;entryPerimeter=0;" edge="1" parent="1" source="31" target="19">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="313" y="511" as="sourcePoint"/>
+                        <mxPoint x="363" y="461" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="75" value="" style="endArrow=classic;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0;exitDx=0;exitDy=30;exitPerimeter=0;" edge="1" parent="1" source="19" target="32">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="346" y="337" as="sourcePoint"/>
+                        <mxPoint x="396" y="287" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="78" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.019;entryY=0.787;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="59" target="19">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="221" y="509" as="sourcePoint"/>
+                        <mxPoint x="271" y="459" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="79" value="" style="endArrow=classic;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="73">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="490" y="325" as="sourcePoint"/>
+                        <mxPoint x="368" y="457" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="82" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="50" target="58">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="61" y="470" as="sourcePoint"/>
+                        <mxPoint x="111" y="420" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="83" value="" style="endArrow=classic;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="70" target="50">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="105" y="357" as="sourcePoint"/>
+                        <mxPoint x="154" y="313" as="targetPoint"/>
+                    </mxGeometry>
                 </mxCell>
             </root>
         </mxGraphModel>

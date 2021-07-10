@@ -106,19 +106,30 @@ public class TeacherServiceImpl implements TeacherService {
         for(int i=0;i<studentId.length;i++)
         {
             Student student=studentRepository.findByStudentNo(studentId[i]);
-            CourseStudentVO courseStudentVO=new CourseStudentVO();
-            courseStudentVO.setStudentNo(student.getStudentNo());
-            courseStudentVO.setStudentClass(student.getStudentClass());
-            courseStudentVO.setStudentName(student.getStudentName());
+            CourseStudentVO courseStudentVO = new CourseStudentVO();
+            if(student!=null) {
+                courseStudentVO.setStudentNo(student.getStudentNo());
+                courseStudentVO.setStudentClass(student.getStudentClass());
+                courseStudentVO.setStudentName(student.getStudentName());
+
+            }
+            else{
+                courseStudentVO.setStudentNo(studentId[i]);
+                courseStudentVO.setStudentClass("未知班级");
+                courseStudentVO.setStudentName(studentId[i]+"未注册学生");
+            }
             //统计当前学生的出勤次数
             int attendanceTimes = 0;
             for(Attendance attendance : attendanceList){
-                if(attendance.getAttendanceActualStudent().contains(student.getStudentNo())) {
+                if(student!=null&attendance.getAttendanceActualStudent().contains(student.getStudentNo())) {
                     attendanceTimes++;
                 }
             }
             //表示当前学生课程的出勤率
-            double attendanceRate = 1.0 * attendanceTimes / attendanceList.size();
+            double attendanceRate = 0;
+            if(attendanceList.size() != 0)
+                attendanceRate = 1.0 * attendanceTimes / attendanceList.size();
+
             courseStudentVO.setAttendanceTimes(attendanceTimes);
             courseStudentVO.setAttendanceRate(attendanceRate);
             courseStudentVOList.add(courseStudentVO);
@@ -218,7 +229,10 @@ public class TeacherServiceImpl implements TeacherService {
                 attendance.setAttendanceAbsentStudent("");
             }
             else{
-                attendance.setAttendanceAbsentStudent(absentStudent.replace(","+studentId,""));
+                if(absentStudent.substring(0,13).equals(studentId))
+                    attendance.setAttendanceAbsentStudent(absentStudent.replace(studentId+",",""));
+                else
+                    attendance.setAttendanceAbsentStudent(absentStudent.replace(","+studentId,""));
             }
         }
         attendanceRepository.save(attendance);
@@ -399,6 +413,9 @@ public class TeacherServiceImpl implements TeacherService {
             int weeks=-(Days/7)+1;
             attendanceTime=attendanceTime+String.valueOf(weeks)+"-"+String.valueOf(Math.abs(Days)%7+1);
         }
+        String[] dayOut = attendanceTime.split("-");
+        if(dayOut[1].equals("7"))
+            attendanceTime = dayOut[0] + "-0";
         attendance.setAttendanceTime(attendanceTime);
 
         //设置实到学生，缺席学生
@@ -668,6 +685,7 @@ public class TeacherServiceImpl implements TeacherService {
     public Future<String> getEmail(String id) throws Exception{
         Teacher teacher = teacherRepository.findByTeacherNo(id);
         String email = teacher.getTeacherAddress();
+//        Student student = studentRepository.findByStudentNo(id);
         return new AsyncResult<>(email);
     }
 

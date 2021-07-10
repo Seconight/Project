@@ -11,6 +11,7 @@ public class TimeUtil {
         Date date = null;
         Long l = 0L;
         try {
+
             date = formatter.parse(startTime);
             long ts = date.getTime();
             date1 =  formatter.parse(endTime);
